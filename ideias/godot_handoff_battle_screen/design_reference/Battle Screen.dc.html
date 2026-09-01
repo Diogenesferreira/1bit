@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+<style>
+  body { margin:0; padding:0; background:#1a1a1a; }
+  a { color:#fff; }
+  a:hover { color:#ccc; }
+  * { image-rendering: pixelated; }
+  @keyframes cardIn { from{ opacity:0; transform:scale(.5);} to{ opacity:1; transform:scale(1);} }
+  @keyframes fusePulse { 0%{ filter:invert(0);} 50%{ filter:invert(1);} 100%{ filter:invert(0);} }
+  @keyframes shakeX { 0%,100%{ transform:translateX(0);} 25%{ transform:translateX(-6px);} 75%{ transform:translateX(6px);} }
+  @keyframes hitFlash { 0%{ filter:invert(0);} 50%{ filter:invert(1);} 100%{ filter:invert(0);} }
+  @keyframes cardWiggle {
+    0%,100% { transform: translate(0,0) rotate(0deg); }
+    25% { transform: translate(-1px,1px) rotate(-1.5deg); }
+    50% { transform: translate(0,-1px) rotate(0deg); }
+    75% { transform: translate(1px,1px) rotate(1.5deg); }
+  }
+</style>
+</helmet>
+<div style="width:1152px;height:2048px;position:relative;background:#1a1a1a;font-family:'Press Start 2P',monospace;color:#fff;overflow:hidden;filter:{{ screenFlash }};transition:filter 100ms" data-screen-label="BATTLE">
+
+  <img src="assets/map_fullscreen.png" style="position:absolute;left:0;top:0;width:1152px;height:2048px;z-index:0" alt="">
+
+  <div style="position:absolute;left:43px;top:126px;width:1065px;height:1023px;overflow:hidden;z-index:5">
+    <sc-for list="{{ enemies }}" as="u" hint-placeholder-count="4">
+      <div style="{{ u.spriteStyle }}"></div>
+    </sc-for>
+    <sc-for list="{{ allies }}" as="u" hint-placeholder-count="5">
+      <div style="{{ u.spriteStyle }}"></div>
+    </sc-for>
+
+    <sc-for list="{{ enemies }}" as="u" hint-placeholder-count="4">
+      <div style="{{ u.hud.levelStyle }}">Lv{{ u.lv }}</div>
+      <div style="{{ u.hud.heartStyle }}">
+        <svg viewBox="0 0 16 15" style="width:100%;height:100%;display:block"><path d="M8 14 L1.5 7.5 C-0.5 5.5 0.5 1.5 4 1.5 C6 1.5 8 3.8 8 3.8 C8 3.8 10 1.5 12 1.5 C15.5 1.5 16.5 5.5 14.5 7.5 Z" fill="none" stroke="#1a1a1a" stroke-width="2"></path></svg>
+      </div>
+      <div style="{{ u.hud.hpTextStyle }}">{{ u.hp }}</div>
+    </sc-for>
+    <sc-for list="{{ allies }}" as="u" hint-placeholder-count="5">
+      <div style="{{ u.hud.levelStyle }}">Lv{{ u.lv }}</div>
+      <img src="assets/slot_small_frame.png" style="{{ u.hud.elementFrameStyle }}" alt="">
+      <div style="{{ u.hud.elementBadgeStyle }}"></div>
+      <div style="{{ u.hud.barBoxStyle }}">
+        <img src="assets/unit_life_track_empty.png" style="{{ u.hud.trackImgStyle }}" alt="">
+        <div style="{{ u.hud.fillClipStyle }}">
+          <img src="assets/unit_life_fill.png" style="{{ u.hud.fillImgStyle }}" alt="">
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <img src="assets/layout_dark_overlay.png" style="position:absolute;left:0;top:0;width:1152px;height:2048px;z-index:10" alt="">
+
+  <img src="assets/screen_outer_frame.png" style="position:absolute;left:16px;top:16px;width:1121px;height:2019px;z-index:20" alt="">
+  <img src="assets/arena_frame.png" style="position: absolute; left: 37px; top: 121px; width: 1082px; height: 1038px; z-index: 20" alt="">
+  <img src="assets/bag_frame.png" style="position:absolute;left:42px;top:1177px;width:916px;height:151px;z-index:20" alt="">
+  <img src="assets/next_frame.png" style="position:absolute;left:968px;top:1177px;width:145px;height:151px;z-index:20" alt="">
+  <img src="assets/fusion_lane_frame.png" style="position:absolute;left:74px;top:1717px;width:1002px;height:129px;z-index:20" alt="">
+  <img src="assets/affinity_elemental_frame.png" style="position:absolute;left:58px;top:1861px;width:661px;height:90px;z-index:20" alt="">
+  <img src="assets/affinity_light_dark_frame.png" style="position:absolute;left:730px;top:1861px;width:365px;height:90px;z-index:20" alt="">
+
+  <img src="assets/label_bag.png" style="position:absolute;left:75px;top:1165px;width:78px;height:38px;z-index:25" alt="">
+  <img src="assets/label_next.png" style="position:absolute;left:997px;top:1190px;width:74px;height:32px;z-index:25" alt="">
+  <img src="assets/label_fusion_lane.png" style="position:absolute;left:96px;top:1702px;width:198px;height:36px;z-index:25" alt="">
+  <img src="assets/label_affinity.png" style="position:absolute;left:98px;top:1848px;width:166px;height:38px;z-index:25" alt="">
+
+  <sc-for list="{{ bagSlots }}" as="b" hint-placeholder-count="7">
+    <img src="assets/slot_small_frame.png" style="{{ b.frameStyle }}" alt="">
+    <div style="{{ b.iconStyle }}"></div>
+  </sc-for>
+  <img src="assets/slot_small_frame.png" style="left:991px;top:1217px;width:93px;height:89px;position:absolute;z-index:30" alt="">
+  <div style="{{ nextIconStyle }}"></div>
+
+  <sc-for list="{{ fieldSlots }}" as="f" hint-placeholder-count="10">
+    <img src="assets/slot_large_frame.png" style="{{ f.frameStyle }}" alt="">
+    <sc-if value="{{ f.filled }}" hint-placeholder-val="{{ true }}">
+      <div onClick="{{ f.onClick }}" style="{{ f.iconStyle }}"></div>
+    </sc-if>
+  </sc-for>
+
+  <sc-for list="{{ laneSlots }}" as="l" hint-placeholder-count="3">
+    <div style="{{ l.frameWrapStyle }}">
+      <img src="assets/slot_fusion_frame.png" style="{{ l.frameStyle }}" alt="">
+      <sc-if value="{{ l.filled }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ l.iconStyle }}"></div>
+      </sc-if>
+    </div>
+  </sc-for>
+
+  <img src="assets/affinity_dragon.png" style="position:absolute;left:166px;top:1883px;width:54px;height:50px;z-index:40" alt="">
+  <img src="assets/affinity_arrow.png" style="position:absolute;left:253px;top:1884px;width:36px;height:48px;z-index:40" alt="">
+  <img src="assets/affinity_knight.png" style="position:absolute;left:324px;top:1882px;width:53px;height:52px;z-index:40" alt="">
+  <img src="assets/affinity_arrow.png" style="position:absolute;left:411px;top:1884px;width:36px;height:48px;z-index:40" alt="">
+  <img src="assets/affinity_nature.png" style="position:absolute;left:482px;top:1881px;width:56px;height:55px;z-index:40" alt="">
+  <img src="assets/affinity_arrow.png" style="position:absolute;left:562px;top:1884px;width:36px;height:48px;z-index:40" alt="">
+  <img src="assets/affinity_fire.png" style="position:absolute;left:626px;top:1881px;width:48px;height:55px;z-index:40" alt="">
+
+  <img src="assets/affinity_light.png" style="position:absolute;left:787px;top:1881px;width:52px;height:55px;z-index:40" alt="">
+  <img src="assets/affinity_opposition.png" style="position:absolute;left:870px;top:1883px;width:53px;height:50px;z-index:40" alt="">
+  <img src="assets/affinity_dark.png" style="position:absolute;left:948px;top:1881px;width:56px;height:55px;z-index:40" alt="">
+
+  <img src="assets/player_heart.png" style="position:absolute;left:94px;top:1974px;width:43px;height:41px;z-index:40" alt="">
+  <div style="position:absolute;left:151px;top:1978px;width:105px;height:32px;font-size:20px;z-index:50">{{ hp }}/{{ maxHp }}</div>
+  <div style="position:absolute;left:260px;top:1975px;width:473px;height:39px;overflow:hidden;z-index:40">
+    <img src="assets/player_life_track_empty.png" style="position:absolute;left:0;top:0;width:473px;height:39px" alt="">
+    <div style="position:absolute;left:16px;top:0;width:{{ playerFillWidth }};height:39px;overflow:hidden">
+      <img src="assets/player_life_fill.png" style="position:absolute;left:-16px;top:0;width:473px;height:39px" alt="">
+    </div>
+  </div>
+  <img src="assets/player_energy.png" style="position:absolute;left:851px;top:1966px;width:48px;height:54px;z-index:40" alt="">
+  <div style="position:absolute;left:924px;top:1978px;width:100px;height:32px;font-size:20px;z-index:50">{{ energy }}/{{ maxEnergy }}</div>
+
+  <div style="position:absolute;left:48px;top:33px;width:220px;height:32px;font-size:19px;z-index:50">FLOOR {{ floorStr }}</div>
+  <div style="position:absolute;left:48px;top:73px;width:260px;height:32px;font-size:19px;z-index:50">SCORE {{ scoreStr }}</div>
+  <div style="position:absolute;left:456px;top:38px;width:190px;height:30px;font-size:18px;text-align:center;z-index:50">ROUND {{ round }}/{{ totalRounds }}</div>
+  <div style="position:absolute;left:386px;top:78px;width:310px;height:22px;display:flex;align-items:center;justify-content:center;gap:9px;z-index:50">
+    <svg viewBox="0 0 16 16" style="width:20px;height:20px;flex-shrink:0"><path d="M3 2h10v8h-2v2h-1v2H6v-2H5v-2H3z" fill="#fff"></path><rect x="5" y="4" width="2" height="3" fill="#1a1a1a"></rect><rect x="9" y="4" width="2" height="3" fill="#1a1a1a"></rect><rect x="7" y="8" width="2" height="2" fill="#1a1a1a"></rect></svg>
+    <sc-for list="{{ pips }}" as="p" hint-placeholder-count="5">
+      <div style="{{ p.style }}"></div>
+    </sc-for>
+    <svg viewBox="0 0 16 16" style="width:20px;height:20px;flex-shrink:0"><path d="M3 2h10v8h-2v2h-1v2H6v-2H5v-2H3z" fill="#fff"></path><rect x="5" y="4" width="2" height="3" fill="#1a1a1a"></rect><rect x="9" y="4" width="2" height="3" fill="#1a1a1a"></rect><rect x="7" y="8" width="2" height="2" fill="#1a1a1a"></rect></svg>
+  </div>
+  <img src="assets/currency_gem.png" style="position:absolute;left:755px;top:55px;width:37px;height:37px;z-index:40" alt="">
+  <div style="position:absolute;left:798px;top:60px;width:93px;height:32px;font-size:17px;z-index:50">{{ gems }}</div>
+  <img src="assets/currency_coin.png" style="position:absolute;left:904px;top:56px;width:37px;height:36px;z-index:40" alt="">
+  <div style="position:absolute;left:946px;top:60px;width:79px;height:32px;font-size:17px;z-index:50">{{ coins }}</div>
+  <img src="assets/menu.png" style="position:absolute;left:1044px;top:45px;width:60px;height:53px;z-index:40" alt="">
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;fusionDamage&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:2,&quot;min&quot;:1,&quot;max&quot;:5,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Fusão&quot;}}">
+const ICONS = {
+  dragon: 'assets/icon_dragon.png',
+  capsule: 'assets/icon_capsule.png',
+  nature: 'assets/icon_nature.png',
+  light: 'assets/icon_light.png',
+  dark: 'assets/icon_dark.png',
+  wild: 'assets/icon_wild.png',
+  knight: 'assets/icon_knight.png',
+};
+const ICON_TYPES = ['dragon', 'nature', 'light', 'dark', 'knight'];
+const ICON_NATIVE = {
+  dragon: [111, 99], capsule: [97, 97], nature: [92, 102],
+  light: [104, 105], dark: [110, 103], wild: [107, 100], knight: [99, 104],
+};
+
+const ENEMY_DEFS = [
+  { key: 'eDragon', element: 'dragon', sprite: 'assets/enemy_dragon.png', x: 491, y: 203, w: 181, h: 123, maxHp: 12, lv: 2,
+    lvlCenterX: 576, lvlTopY: 331, heartX: 526, heartY: 365, hpX: 559, hpY: 365, barX: 526, barY: 396, barRefW: 125 },
+  { key: 'eHorned', element: 'dark', sprite: 'assets/enemy_horned.png', x: 335, y: 382, w: 120, h: 123, maxHp: 10, lv: 2,
+    lvlCenterX: 395, lvlTopY: 505, heartX: 336, heartY: 538, hpX: 372, hpY: 538, barX: 334, barY: 570, barRefW: 125 },
+  { key: 'eNature', element: 'nature', sprite: 'assets/enemy_nature.png', x: 682, y: 426, w: 123, h: 116, maxHp: 8, lv: 2,
+    lvlCenterX: 744, lvlTopY: 541, heartX: 697, heartY: 572, hpX: 733, hpY: 572, barX: 666, barY: 604, barRefW: 150 },
+  { key: 'eKnight', element: 'knight', sprite: 'assets/enemy_knight.png', x: 500, y: 581, w: 143, h: 138, maxHp: 16, lv: 2,
+    lvlCenterX: 571, lvlTopY: 718, heartX: 516, heartY: 751, hpX: 550, hpY: 751, barX: 519, barY: 786, barRefW: 119 },
+];
+const ALLY_DEFS = [
+  { key: 'aDragon', element: 'dragon', sprite: 'assets/ally_dragon.png', x: 160, y: 889, w: 134, h: 136, maxHp: 14, lv: 2,
+    lvlCenterX: 227, lvlTopY: 1029, heartX: 164, heartY: 1060, hpX: 199, hpY: 1060, barX: 164, barY: 1095, barRefW: 123 },
+  { key: 'aLight', element: 'light', sprite: 'assets/ally_light.png', x: 340, y: 881, w: 125, h: 144, maxHp: 14, lv: 3,
+    lvlCenterX: 403, lvlTopY: 1029, heartX: 348, heartY: 1060, hpX: 383, hpY: 1060, barX: 348, barY: 1095, barRefW: 123 },
+  { key: 'aKnight', element: 'knight', sprite: 'assets/ally_knight.png', x: 502, y: 905, w: 137, h: 124, maxHp: 12, lv: 2,
+    lvlCenterX: 571, lvlTopY: 1031, heartX: 526, heartY: 1060, hpX: 560, hpY: 1060, barX: 520, barY: 1095, barRefW: 123 },
+  { key: 'aMage', element: 'light', sprite: 'assets/ally_mage.png', x: 684, y: 883, w: 149, h: 144, maxHp: 14, lv: 2,
+    lvlCenterX: 758, lvlTopY: 1029, heartX: 704, heartY: 1060, hpX: 739, hpY: 1060, barX: 702, barY: 1095, barRefW: 136 },
+  { key: 'aDark', element: 'dark', sprite: 'assets/ally_dark.png', x: 869, y: 890, w: 156, h: 140, maxHp: 16, lv: 2,
+    lvlCenterX: 947, lvlTopY: 1029, heartX: 892, heartY: 1060, hpX: 927, hpY: 1060, barX: 891, barY: 1095, barRefW: 132 },
+];
+const ELEMENT_ICONS = { dragon: 'assets/icon_dragon.png', knight: 'assets/icon_knight.png', nature: 'assets/icon_nature.png', light: 'assets/icon_light.png', dark: 'assets/icon_dark.png' };
+
+const BAG_TABLE = ['dragon', 'knight', 'nature', 'light', 'light', 'dark', 'capsule'];
+
+function randType() { return ICON_TYPES[Math.floor(Math.random() * ICON_TYPES.length)]; }
+
+const ARENA_X = 43, ARENA_Y = 126;
+
+function cornerDots(x, y, w, h, inset) {
+  const s = 3;
+  return [
+    { position: 'absolute', left: (x + inset) + 'px', top: (y + inset) + 'px', width: s + 'px', height: s + 'px', background: '#fff', zIndex: 31 },
+    { position: 'absolute', left: (x + w - inset - s) + 'px', top: (y + inset) + 'px', width: s + 'px', height: s + 'px', background: '#fff', zIndex: 31 },
+    { position: 'absolute', left: (x + inset) + 'px', top: (y + h - inset - s) + 'px', width: s + 'px', height: s + 'px', background: '#fff', zIndex: 31 },
+    { position: 'absolute', left: (x + w - inset - s) + 'px', top: (y + h - inset - s) + 'px', width: s + 'px', height: s + 'px', background: '#fff', zIndex: 31 },
+  ];
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.idc = 1;
+    this.noop = () => {};
+    const hpByKey = {};
+    [...ENEMY_DEFS, ...ALLY_DEFS].forEach((d) => { hpByKey[d.key] = d.maxHp; });
+    this.state = {
+      hpByKey,
+      bagQueue: BAG_TABLE.slice(),
+      fieldCards: [], laneCards: [null, null, null],
+      laneStatus: 'idle', screenFlash: false, hitKey: null,
+      hp: 10, maxHp: 10, energy: 3, maxEnergy: 3,
+      round: 1, totalRounds: 3, floor: 7, score: 1250, gems: 1250, coins: 320,
+    };
+  }
+
+  componentDidMount() {
+    const bagQueue = [...this.state.bagQueue];
+    const field = [];
+    for (let i = 0; i < 10; i++) field.push(this.drawCard(bagQueue));
+    this.setState({ bagQueue, fieldCards: field });
+  }
+
+  drawCard(bagQueue) {
+    const type = bagQueue.shift();
+    bagQueue.push(randType());
+    return { id: this.idc++, type };
+  }
+
+  onFieldClick(idx) {
+    const { laneCards, fieldCards, laneStatus, energy } = this.state;
+    if (laneStatus !== 'idle' || energy <= 0) return;
+    const card = fieldCards[idx];
+    if (!card) return;
+    const empty = laneCards.findIndex((c) => !c);
+    if (empty === -1) return;
+    const newLane = [...laneCards];
+    newLane[empty] = card;
+    const newField = [...fieldCards];
+    newField[idx] = null;
+    this.setState({ laneCards: newLane, fieldCards: newField, energy: energy - 1 });
+    setTimeout(() => {
+      this.setState((s) => {
+        const bagQueue = [...s.bagQueue];
+        const nc = this.drawCard(bagQueue);
+        const fc = [...s.fieldCards];
+        fc[idx] = nc;
+        return { fieldCards: fc, bagQueue };
+      });
+    }, 220);
+    if (newLane.every(Boolean)) setTimeout(() => this.evaluateFusion(), 400);
+  }
+
+  evaluateFusion() {
+    const { laneCards } = this.state;
+    if (!laneCards.every(Boolean)) return;
+    const same = laneCards.every((c) => c.type === laneCards[0].type);
+    this.setState({ laneStatus: same ? 'success' : 'fail' });
+    setTimeout(() => {
+      if (same) this.applyFusionReward();
+      this.setState({ laneCards: [null, null, null], laneStatus: 'idle' });
+    }, 460);
+  }
+
+  applyFusionReward() {
+    const dmg = this.props.fusionDamage ?? 2;
+    this.setState((s) => {
+      const alive = [...ENEMY_DEFS].filter((d) => s.hpByKey[d.key] > 0);
+      let hpByKey = s.hpByKey;
+      let hitKey = null;
+      if (alive.length) {
+        const target = alive[Math.floor(Math.random() * alive.length)];
+        hitKey = target.key;
+        hpByKey = { ...s.hpByKey, [target.key]: Math.max(0, s.hpByKey[target.key] - dmg) };
+      }
+      return {
+        hpByKey, hitKey,
+        score: s.score + 25, gems: s.gems + 25, screenFlash: true,
+        energy: Math.min(s.maxEnergy, s.energy + 1),
+      };
+    });
+    setTimeout(() => this.setState({ screenFlash: false, hitKey: null }), 220);
+  }
+
+  buildUnitHud(d, hp, hit) {
+    const scale = d.barRefW / 125;
+    const ratio = Math.max(0, Math.min(1, hp / d.maxHp));
+    const fillW = 8 + 109 * ratio;
+    return {
+      levelStyle: { position: 'absolute', left: (d.lvlCenterX - 40 - ARENA_X) + 'px', top: (d.lvlTopY - ARENA_Y + 7) + 'px', width: '80px', textAlign: 'center', fontSize: '17px', lineHeight: '17px', zIndex: 6, color: '#1a1a1a' },
+      heartStyle: { position: 'absolute', left: (d.heartX - ARENA_X) + 'px', top: (d.heartY - ARENA_Y + 5) + 'px', width: '24px', height: '22px', zIndex: 6 },
+      hpTextStyle: { position: 'absolute', left: (d.hpX - ARENA_X) + 'px', top: (d.hpY - ARENA_Y + 5) + 'px', fontSize: '17px', lineHeight: '17px', zIndex: 6, color: '#1a1a1a' },
+      elementFrameStyle: { position: 'absolute', left: (d.x + d.w - 40 - ARENA_X) + 'px', top: (d.y + d.h - 44 - ARENA_Y) + 'px', width: '48px', height: '46px', zIndex: 9, filter: 'invert(1)' },
+      elementBadgeStyle: { position: 'absolute', left: (d.x + d.w - 35 - ARENA_X) + 'px', top: (d.y + d.h - 39 - ARENA_Y) + 'px', width: '38px', height: '36px', zIndex: 10,
+        backgroundImage: 'url(' + ICONS[d.element] + ')', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', filter: 'invert(1)' },
+      barBoxStyle: { position: 'absolute', left: (d.barX - ARENA_X) + 'px', top: (d.barY - ARENA_Y) + 'px', width: (125 * scale) + 'px', height: (21 * scale) + 'px', zIndex: 6 },
+      trackImgStyle: { position: 'absolute', left: 0, top: 0, width: (125 * scale) + 'px', height: (21 * scale) + 'px' },
+      fillClipStyle: { position: 'absolute', left: 0, top: 0, width: (fillW * scale) + 'px', height: (21 * scale) + 'px', overflow: 'hidden' },
+      fillImgStyle: { position: 'absolute', left: 0, top: 0, width: (125 * scale) + 'px', height: (21 * scale) + 'px', filter: hit ? 'invert(1)' : 'none', animation: hit ? 'hitFlash .22s' : 'none' },
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const component = this;
+    
+    const mkUnit = (d) => {
+      const hp = s.hpByKey[d.key];
+      const hit = s.hitKey === d.key;
+      return {
+        lv: d.lv, hp,
+        sprite: d.sprite,
+        spriteStyle: { position: 'absolute', left: (d.x - ARENA_X) + 'px', top: (d.y - ARENA_Y) + 'px', width: d.w + 'px', height: d.h + 'px',
+          backgroundImage: 'url(' + d.sprite + ')', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', opacity: hp <= 0 ? 0.12 : 1, filter: hit ? 'invert(1)' : 'none', transition: 'opacity .3s' },
+        hud: component.buildUnitHud(d, hp, hit),
+      };
+    };
+
+    const pips = Array.from({ length: 5 }, (_, idx) => {
+      let bg = 'transparent', border = '2px solid #777';
+      if (idx < s.totalRounds) {
+        if (idx < s.round - 1) { bg = '#fff'; border = '2px solid #fff'; }
+        else if (idx === s.round - 1) border = '2px solid #fff';
+      }
+      return { style: { width: '9px', height: '9px', borderRadius: '50%', background: bg, border, boxSizing: 'border-box', flexShrink: 0 } };
+    });
+
+    const bagSlots = s.bagQueue.slice(0, 7).map((type, i) => {
+      const bx = 91 + i * 120;
+      const native = ICON_NATIVE[type] || [90, 90];
+      const scale = 67 / Math.max(native[0], native[1]);
+      return {
+        frameStyle: { position: 'absolute', left: bx + 'px', top: '1217px', width: '93px', height: '89px', zIndex: 30 },
+        iconStyle: { position: 'absolute', left: (bx + (93 - native[0] * scale) / 2) + 'px', top: (1217 + (89 - native[1] * scale) / 2) + 'px', width: (native[0] * scale) + 'px', height: (native[1] * scale) + 'px', zIndex: 40, backgroundImage: 'url(' + ICONS[type] + ')', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', animation: 'cardWiggle ' + (2.6 + (i % 4) * 0.3) + 's ease-in-out infinite', animationDelay: (i * 0.18) + 's' },
+      };
+    });
+
+    const fieldPos = [
+      [80, 1386], [282, 1386], [486, 1386], [690, 1386], [892, 1386],
+      [80, 1547], [282, 1547], [486, 1547], [690, 1547], [892, 1547],
+    ];
+    const fieldSlots = s.fieldCards.map((c, i) => {
+      const [fx, fy] = fieldPos[i];
+      const filled = !!c;
+      const native = filled ? (ICON_NATIVE[c.type] || [100, 100]) : [100, 100];
+      const scale = filled ? (112 / Math.max(native[0], native[1])) : 1;
+      return {
+        frameStyle: { position: 'absolute', left: fx + 'px', top: fy + 'px', width: '171px', height: '141px', zIndex: 30 },
+        filled,
+        onClick: filled ? () => this.onFieldClick(i) : this.noop,
+        iconStyle: filled ? {
+          position: 'absolute', left: (fx + (171 - native[0] * scale) / 2) + 'px', top: (fy + (141 - native[1] * scale) / 2) + 'px',
+          width: (native[0] * scale) + 'px', height: (native[1] * scale) + 'px', zIndex: 40,
+          backgroundImage: 'url(' + ICONS[c.type] + ')', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat',
+          cursor: s.laneStatus === 'idle' && s.energy > 0 ? 'pointer' : 'default',
+          animation: 'cardIn .18s ease-out, cardWiggle ' + (2.8 + (i % 5) * 0.25) + 's ease-in-out infinite .18s',
+          animationDelay: '0s, ' + (i * 0.14) + 's',
+        } : {},
+      };
+    });
+
+    const lanePos = [[332, 1739], [500, 1739], [700, 1739]];
+    const laneSlots = s.laneCards.map((c, i) => {
+      const [lx, ly] = lanePos[i];
+      const filled = !!c;
+      const native = filled ? (ICON_NATIVE[c.type] || [70, 68]) : [70, 68];
+      const scale = filled ? (66 / Math.max(native[0], native[1])) : 1;
+      let anim = filled ? 'cardIn .16s ease-out' : 'none';
+      if (s.laneStatus === 'success') anim = 'fusePulse .46s';
+      if (s.laneStatus === 'fail') anim = 'shakeX .4s';
+      return {
+        frameWrapStyle: { position: 'absolute', left: lx + 'px', top: ly + 'px', width: '100px', height: '88px', animation: anim },
+        frameStyle: { position: 'absolute', left: 0, top: 0, width: '100px', height: '88px', zIndex: 30 },
+        filled,
+        iconStyle: filled ? { position: 'absolute', left: ((100 - native[0] * scale) / 2) + 'px', top: ((88 - native[1] * scale) / 2) + 'px', width: (native[0] * scale) + 'px', height: (native[1] * scale) + 'px', zIndex: 40, backgroundImage: 'url(' + ICONS[c.type] + ')', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat' } : {},
+      };
+    });
+
+    return {
+      enemies: ENEMY_DEFS.map(mkUnit),
+      allies: ALLY_DEFS.map(mkUnit),
+      bagSlots,
+      nextIconStyle: { position: 'absolute', left: '1004px', top: '1232px', width: '69px', height: '62px', zIndex: 40, backgroundImage: 'url(' + (ICONS[s.bagQueue[0]] || ICONS.dragon) + ')', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' },
+      fieldSlots, laneSlots,
+      pips,
+      floorStr: String(s.floor).padStart(2, '0'),
+      scoreStr: String(s.score).padStart(6, '0'),
+      round: s.round, totalRounds: s.totalRounds,
+      gems: s.gems, coins: s.coins,
+      hp: s.hp, maxHp: s.maxHp, playerFillWidth: Math.max(0, (s.hp / s.maxHp) * 441) + 'px',
+      energy: s.energy, maxEnergy: s.maxEnergy,
+      screenFlash: s.screenFlash ? 'invert(1)' : 'none',
+    };
+  }
+}
+</script>
+</body>
+</html>

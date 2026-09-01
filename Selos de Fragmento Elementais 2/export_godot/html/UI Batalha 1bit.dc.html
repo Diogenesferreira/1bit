@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/digital-arena-battle-ui-97378185-7888-4ade-98f4-e0c8a1b4dc22/styles.css">
+<script src="_ds/digital-arena-battle-ui-97378185-7888-4ade-98f4-e0c8a1b4dc22/_ds_bundle.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+  body{margin:0;background:#080908}
+  a{color:#c9a842;text-decoration:none}
+  a:hover{color:#e8e3d4}
+  img{image-rendering:pixelated}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#080908;display:flex;justify-content:center;padding:40px 0;font-family:var(--font-ui, sans-serif)">
+<div style="width:940px;background:#0d0e0c;border:2px solid #2b2b28;padding:10px">
+<div style="border:1px solid rgba(201,192,168,.30);padding:14px;display:flex;flex-direction:column;gap:14px">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;height:44px">
+    <img src="assets/ui/lbl_floor07.png" style="height:24px;display:block" alt="FLOOR 07">
+    <div style="display:flex;align-items:center;gap:9px">
+      <div style="width:15px;height:15px;border:2px solid rgba(201,192,168,.75);background:#7a5f9a"></div>
+      <div style="width:9px;height:9px;border:2px solid rgba(201,192,168,.55);transform:rotate(45deg);background:#c9c0a8"></div>
+      <div style="width:9px;height:9px;border:2px solid rgba(201,192,168,.55);transform:rotate(45deg);background:#c9c0a8"></div>
+      <div style="width:9px;height:9px;border:2px solid rgba(201,192,168,.35);transform:rotate(45deg)"></div>
+      <div style="width:9px;height:9px;border:2px solid rgba(201,192,168,.35);transform:rotate(45deg)"></div>
+      <div style="width:9px;height:9px;border:2px solid rgba(201,192,168,.35);transform:rotate(45deg)"></div>
+      <div style="width:15px;height:15px;border:2px solid rgba(201,192,168,.45);background:#23231f"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:18px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="width:16px;height:26px;background:#c9a842;clip-path:polygon(55% 0,0 58%,42% 58%,30% 100%,100% 40%,55% 40%)"></div>
+      <img src="assets/ui/val_energy.png" style="height:18px;display:block" alt="12/20">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="width:34px;height:5px;background:#c9c0a8"></div>
+      <div style="width:34px;height:5px;background:#c9c0a8"></div>
+      <div style="width:34px;height:5px;background:#c9c0a8"></div>
+    </div>
+    </div>
+  </div>
+
+  <div style="position:relative;height:560px;border:1px solid rgba(201,192,168,.35);background:#101210;overflow:hidden">
+    <div style="position:absolute;inset:0"><image-slot id="ui1b-stage" shape="rect" fit="cover" placeholder="Arte do palco (pixel art)"></image-slot></div>
+    <div style="position:absolute;left:6px;top:6px;width:16px;height:16px;border-left:2px solid #c9c0a8;border-top:2px solid #c9c0a8;pointer-events:none"></div>
+    <div style="position:absolute;right:6px;top:6px;width:16px;height:16px;border-right:2px solid #c9c0a8;border-top:2px solid #c9c0a8;pointer-events:none"></div>
+    <div style="position:absolute;left:6px;bottom:6px;width:16px;height:16px;border-left:2px solid #c9c0a8;border-bottom:2px solid #c9c0a8;pointer-events:none"></div>
+    <div style="position:absolute;right:6px;bottom:6px;width:16px;height:16px;border-right:2px solid #c9c0a8;border-bottom:2px solid #c9c0a8;pointer-events:none"></div>
+
+    <div style="position:absolute;left:340px;top:30px;width:192px;height:72px;pointer-events:none">
+      <img src="assets/enemy_turn_plate_dark_v1.png" style="position:absolute;inset:0;width:192px;height:72px" alt="">
+      <div style="position:absolute;left:69px;top:6px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-63px 0"></div>
+      <img src="assets/enemy_label_turn_v1.png" style="position:absolute;left:93px;top:6px;width:72px;height:24px" alt="TURN">
+      <img src="assets/enemy_hp_well_v1.png" style="position:absolute;inset:0;width:192px;height:72px" alt="">
+      <div style="position:absolute;left:0;top:0;height:72px;width:141px;overflow:hidden"><img src="assets/enemy_hp_fill_v1.png" style="width:192px;height:72px;display:block" alt=""></div>
+    </div>
+    <div style="position:absolute;left:42px;top:214px;width:192px;height:72px;pointer-events:none">
+      <img src="assets/enemy_turn_plate_nature_v1.png" style="position:absolute;inset:0;width:192px;height:72px" alt="">
+      <div style="position:absolute;left:69px;top:6px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-42px 0"></div>
+      <img src="assets/enemy_label_turn_v1.png" style="position:absolute;left:93px;top:6px;width:72px;height:24px" alt="TURN">
+      <img src="assets/enemy_hp_well_v1.png" style="position:absolute;inset:0;width:192px;height:72px" alt="">
+      <div style="position:absolute;left:0;top:0;height:72px;width:86px;overflow:hidden"><img src="assets/enemy_hp_fill_v1.png" style="width:192px;height:72px;display:block" alt=""></div>
+    </div>
+    <div style="position:absolute;left:600px;top:322px;width:192px;height:72px;pointer-events:none">
+      <img src="assets/enemy_turn_plate_knight_v1.png" style="position:absolute;inset:0;width:192px;height:72px" alt="">
+      <div style="position:absolute;left:69px;top:6px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-84px 0"></div>
+      <img src="assets/enemy_label_turn_v1.png" style="position:absolute;left:93px;top:6px;width:72px;height:24px" alt="TURN">
+      <img src="assets/enemy_hp_well_v1.png" style="position:absolute;inset:0;width:192px;height:72px" alt="">
+      <div style="position:absolute;left:0;top:0;height:72px;width:178px;overflow:hidden"><img src="assets/enemy_hp_fill_v1.png" style="width:192px;height:72px;display:block" alt=""></div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:10px;margin-top:2px">
+    <img src="assets/ui/lbl_party.png" style="height:18px;display:block" alt="PARTY">
+    <div style="flex:1;height:1px;background:rgba(201,192,168,.28)"></div>
+    <div style="display:flex;gap:5px">
+      <div style="width:7px;height:7px;background:rgba(201,192,168,.5)"></div>
+      <div style="width:7px;height:7px;background:rgba(201,192,168,.5)"></div>
+      <div style="width:7px;height:7px;background:rgba(201,192,168,.5)"></div>
+    </div>
+  </div>
+
+  <div style="background:#121311;border-top:1px solid rgba(201,192,168,.22);border-bottom:1px solid rgba(201,192,168,.22);padding:16px 8px 12px;display:flex;gap:8px;align-items:flex-end;justify-content:center">
+
+    <div style="width:165px;display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="display:flex;gap:3px;height:9px;align-items:center">
+        <div style="width:5px;height:5px;background:#c9c0a8"></div>
+        <div style="width:5px;height:9px;background:#c9c0a8"></div>
+        <div style="width:5px;height:5px;background:#c9c0a8"></div>
+      </div>
+      <div style="position:relative;width:165px;height:165px">
+        <div style="position:absolute;left:27px;top:23px;width:111px;height:118px;clip-path:inset(0 round 55px 55px 0 0);overflow:hidden">
+          <image-slot id="ui1b-p1" shape="rect" fit="cover" placeholder="Fogo"></image-slot>
+        </div>
+        <img src="assets/fragment_seal_dragon_empty_v1.png" style="position:absolute;inset:0;width:165px;height:165px;pointer-events:none" alt="">
+        <div style="position:absolute;inset:0;pointer-events:none;background-image:url(assets/fragment_seal_dragon_charge_sheet_v1.png);background-size:165px 1485px;background-position:0 -495px"></div>
+      </div>
+    </div>
+
+    <div style="width:165px;display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="height:9px"></div>
+      <div style="position:relative;width:165px;height:165px">
+        <div style="position:absolute;left:27px;top:23px;width:111px;height:118px;clip-path:inset(0 round 55px 55px 0 0);overflow:hidden">
+          <image-slot id="ui1b-p2" shape="rect" fit="cover" placeholder="Cavaleiro"></image-slot>
+        </div>
+        <img src="assets/fragment_seal_knight_empty_v1.png" style="position:absolute;inset:0;width:165px;height:165px;pointer-events:none" alt="">
+        <div style="position:absolute;inset:0;pointer-events:none;background-image:url(assets/fragment_seal_knight_charge_sheet_v1.png);background-size:165px 1485px;background-position:0 -825px"></div>
+      </div>
+    </div>
+
+    <div style="width:165px;display:flex;flex-direction:column;align-items:center;gap:6px;transform:translateY(-16px)">
+      <div style="display:flex;justify-content:space-between;width:130px;height:9px">
+        <div style="width:16px;height:9px;border-left:2px solid #7d9455;border-top:2px solid #7d9455"></div>
+        <div style="width:16px;height:9px;border-right:2px solid #7d9455;border-top:2px solid #7d9455"></div>
+      </div>
+      <div style="position:relative;width:165px;height:165px;filter:drop-shadow(0 0 7px #7d9455)">
+        <div style="position:absolute;left:27px;top:23px;width:111px;height:118px;clip-path:inset(0 round 55px 55px 0 0);overflow:hidden">
+          <image-slot id="ui1b-p3" shape="rect" fit="cover" placeholder="Natureza"></image-slot>
+        </div>
+        <img src="assets/fragment_seal_nature_empty_v1.png" style="position:absolute;inset:0;width:165px;height:165px;pointer-events:none" alt="">
+        <div style="position:absolute;inset:0;pointer-events:none;background-image:url(assets/fragment_seal_nature_charge_sheet_v1.png);background-size:165px 1485px;background-position:0 -1320px"></div>
+      </div>
+      <div style="width:11px;height:6px;background:#7d9455;clip-path:polygon(0 0,100% 0,50% 100%)"></div>
+    </div>
+
+    <div style="width:165px;display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="height:9px"></div>
+      <div style="position:relative;width:165px;height:165px">
+        <div style="position:absolute;left:27px;top:23px;width:111px;height:118px;clip-path:inset(0 round 55px 55px 0 0);overflow:hidden">
+          <image-slot id="ui1b-p4" shape="rect" fit="cover" placeholder="Luz"></image-slot>
+        </div>
+        <img src="assets/fragment_seal_light_empty_v1.png" style="position:absolute;inset:0;width:165px;height:165px;pointer-events:none" alt="">
+        <div style="position:absolute;inset:0;pointer-events:none;background-image:url(assets/fragment_seal_light_charge_sheet_v1.png);background-size:165px 1485px;background-position:0 -330px"></div>
+      </div>
+    </div>
+
+    <div style="width:165px;display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="display:flex;gap:3px;height:9px;align-items:center">
+        <div style="width:9px;height:9px;border:2px solid rgba(201,192,168,.6);transform:rotate(45deg)"></div>
+      </div>
+      <div style="position:relative;width:165px;height:165px">
+        <div style="position:absolute;left:27px;top:23px;width:111px;height:118px;clip-path:inset(0 round 55px 55px 0 0);overflow:hidden">
+          <image-slot id="ui1b-p5" shape="rect" fit="cover" placeholder="Trevas"></image-slot>
+        </div>
+        <img src="assets/fragment_seal_dark_empty_v1.png" style="position:absolute;inset:0;width:165px;height:165px;pointer-events:none" alt="">
+        <div style="position:absolute;inset:0;pointer-events:none;background-image:url(assets/fragment_seal_dark_charge_sheet_v1.png);background-size:165px 1485px;background-position:0 -990px"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="position:relative;border:1px solid rgba(201,192,168,.35);background:#101210;padding:16px 16px 14px;display:flex;align-items:flex-end;gap:14px">
+    <div style="position:absolute;left:12px;top:-9px;background:#0d0e0c;padding:0 6px">
+      <img src="assets/ui/lbl_bag.png" style="height:16px;display:block" alt="BAG">
+    </div>
+    <div style="display:flex;align-items:flex-end;flex:1;justify-content:space-between">
+      <div style="position:relative;width:78px;height:108px">
+        <img src="assets/ui/card_face_wild_v1.png" style="width:78px;height:108px;display:block" alt="">
+      </div>
+      <div style="position:relative;width:78px;height:108px">
+        <img src="assets/ui/card_face_nature_v1.png" style="width:78px;height:108px;display:block" alt="">
+      </div>
+      <div style="position:relative;width:78px;height:108px">
+        <img src="assets/ui/card_face_heal_v1.png" style="width:78px;height:108px;display:block" alt="">
+      </div>
+      <div style="position:relative;width:78px;height:108px">
+        <img src="assets/ui/card_face_knight_v1.png" style="width:78px;height:108px;display:block" alt="">
+      </div>
+      <div style="position:relative;width:78px;height:108px">
+        <img src="assets/ui/card_face_dragon_v1.png" style="width:78px;height:108px;display:block" alt="">
+      </div>
+      <div style="position:relative;width:78px;height:108px">
+        <img src="assets/ui/card_face_dark_v1.png" style="width:78px;height:108px;display:block" alt="">
+      </div>
+      <div style="position:relative;width:78px;height:108px">
+        <img src="assets/ui/card_face_knight_v1.png" style="width:78px;height:108px;display:block" alt="">
+      </div>
+      <div style="position:relative;width:78px;height:108px">
+        <img src="assets/ui/card_face_light_v1.png" style="width:78px;height:108px;display:block" alt="">
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-end;gap:10px;border-left:1px solid rgba(201,192,168,.25);padding-left:14px;margin-left:8px">
+      <div style="width:12px;height:18px;background:#c9c0a8;clip-path:polygon(0 0,100% 50%,0 100%);margin-bottom:46px"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+        <img src="assets/ui/lbl_next.png" style="height:14px;display:block;opacity:.8" alt="NEXT">
+        <div style="position:relative;width:78px;height:108px;box-shadow:0 0 0 2px #c9c0a8">
+          <img src="assets/ui/card_face_light_v1.png" style="width:78px;height:108px;display:block" alt="">
+          <div style="position:absolute;left:6px;top:6px;width:10.5px;height:12px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:105px 12px;background-position:-42px 0"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:10px">
+    <img src="assets/ui/lbl_hand.png" style="height:18px;display:block" alt="HAND">
+    <div style="flex:1;height:1px;background:rgba(201,192,168,.28)"></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(5,156px);gap:14px;justify-content:center">
+    <div style="position:relative;width:156px;height:216px">
+      <img src="assets/ui/card_face_dragon_v1.png" style="width:156px;height:216px;display:block" alt="">
+      <div style="position:absolute;left:14px;top:14px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-42px 0"></div>
+    </div>
+    <div style="position:relative;width:156px;height:216px">
+      <img src="assets/ui/card_face_knight_v1.png" style="width:156px;height:216px;display:block" alt="">
+      <div style="position:absolute;left:14px;top:14px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-105px 0"></div>
+    </div>
+    <div style="position:relative;width:156px;height:216px;outline:2px solid #7d9455;outline-offset:2px">
+      <img src="assets/ui/card_face_nature_v1.png" style="width:156px;height:216px;display:block" alt="">
+      <div style="position:absolute;left:14px;top:14px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-84px 0"></div>
+    </div>
+    <div style="position:relative;width:156px;height:216px">
+      <img src="assets/ui/card_face_light_v1.png" style="width:156px;height:216px;display:block" alt="">
+      <div style="position:absolute;left:14px;top:14px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-21px 0"></div>
+    </div>
+    <div style="position:relative;width:156px;height:216px">
+      <img src="assets/ui/card_face_dark_v1.png" style="width:156px;height:216px;display:block" alt="">
+      <div style="position:absolute;left:14px;top:14px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-147px 0"></div>
+    </div>
+
+    <div style="position:relative;width:156px;height:216px">
+      <img src="assets/ui/card_face_heal_v1.png" style="width:156px;height:216px;display:block" alt="">
+      <div style="position:absolute;left:14px;top:14px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-105px 0"></div>
+    </div>
+    <div style="position:relative;width:156px;height:216px">
+      <img src="assets/ui/card_face_knight_v1.png" style="width:156px;height:216px;display:block" alt="">
+      <div style="position:absolute;left:14px;top:14px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-42px 0"></div>
+    </div>
+    <div style="position:relative;width:156px;height:216px">
+      <img src="assets/ui/card_face_wild_v1.png" style="width:156px;height:216px;display:block" alt="">
+      <div style="position:absolute;left:14px;top:14px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-168px 0"></div>
+    </div>
+    <div style="position:relative;width:156px;height:216px">
+      <img src="assets/ui/card_face_nature_v1.png" style="width:156px;height:216px;display:block" alt="">
+      <div style="position:absolute;left:14px;top:14px;width:21px;height:24px;background-image:url(assets/enemy_digits_sheet_v1.png);background-size:210px 24px;background-position:-63px 0"></div>
+    </div>
+    <div style="width:156px;height:216px;border:2px dashed rgba(201,192,168,.28);display:flex;align-items:center;justify-content:center">
+      <div style="width:22px;height:22px;border:2px solid rgba(201,192,168,.22);transform:rotate(45deg)"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:20px;border-top:1px solid rgba(201,192,168,.22);padding-top:14px;margin-top:2px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:28px;height:26px;background:#c04a3e;clip-path:polygon(50% 100%,0 45%,0 18%,18% 0,50% 18%,82% 0,100% 18%,100% 45%)"></div>
+      <img src="assets/ui/val_hp_9999.png" style="height:22px;display:block" alt="9999/9999">
+    </div>
+    <div style="flex:1;display:flex;align-items:center;gap:10px">
+      <img src="assets/ui/lbl_xp.png" style="height:14px;display:block;opacity:.65" alt="XP">
+      <div style="flex:1;height:20px;border:1px solid rgba(201,192,168,.55);background:#121211;padding:2px">
+        <div style="width:62%;height:100%;background:repeating-linear-gradient(90deg,#c9c0a8 0 3px,#8f886f 3px 6px)"></div>
+      </div>
+      <img src="assets/ui/val_xp.png" style="height:14px;display:block;opacity:.75" alt="1360">
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+</x-dc>
+</body>
+</html>

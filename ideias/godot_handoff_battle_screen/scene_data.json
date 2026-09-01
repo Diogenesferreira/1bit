@@ -1,0 +1,113 @@
+{
+  "canvas": { "width": 1152, "height": 2048, "note": "Design resolution (portrait). Use a Godot Control root sized 1152x2048 with stretch mode 'canvas_items' / aspect 'keep' so it scales to any Android device." },
+  "palette": {
+    "background_dark": "#1a1d24",
+    "ui_white": "#ffffff",
+    "text_on_light": "#1a1d24",
+    "text_on_dark": "#ffffff",
+    "note": "1-bit look: only two tones used almost everywhere (dark navy-black #1a1d24 and white #ffffff). Sprites/icons are white-line art on transparent bg; on the light arena floor they get filter invert(1) (in Godot: use a shader or a pre-inverted texture variant) so the linework reads dark-on-light."
+  },
+  "font": { "family": "Press Start 2P", "google_font_url": "https://fonts.googleapis.com/css2?family=Press+Start+2P", "note": "Pixel font. Import the .ttf into Godot (download from Google Fonts) and set as DynamicFont/Theme default. Sizes used: 17-20px at this canvas scale." },
+  "layers_bottom_to_top": [
+    "map_fullscreen.png (0,0 1152x2048) - full background art: walls + arena floor baked in one image",
+    "arena_units_layer (43,126 1065x1023, clipped/overflow hidden) - enemy + ally sprites and their HUD (level, heart/hp or element badge, hp bar)",
+    "layout_dark_overlay.png (0,0 1152x2048) - dark navy vignette/border overlay on top of units, under frame art",
+    "frame art (screen_outer_frame, arena_frame, bag_frame, next_frame, fusion_lane_frame, affinity frames)",
+    "labels (BAG, NEXT, FUSION LANE, AFFINITY)",
+    "bag slots + next slot icons",
+    "field slots (10 cards) + icons",
+    "fusion lane slots (3) + icons",
+    "affinity chain icons + arrows",
+    "top HUD (floor, score, round pips, gems, coins, menu button)",
+    "bottom HUD (player heart, hp bar, energy, hp/energy numbers)"
+  ],
+  "arena": {
+    "container": { "x": 43, "y": 126, "w": 1065, "h": 1023, "clip": true, "note": "All enemy/ally coordinates below are ALREADY given relative to this container's local origin (i.e. subtract 43/126 from the raw screen coords you see in map art)." },
+    "enemies": [
+      { "key": "eDragon", "element": "dragon", "sprite": "enemy_dragon.png", "x": 448, "y": 77, "w": 181, "h": 123, "max_hp": 12, "level": 2 },
+      { "key": "eHorned", "element": "dark", "sprite": "enemy_horned.png", "x": 292, "y": 256, "w": 120, "h": 123, "max_hp": 10, "level": 2 },
+      { "key": "eNature", "element": "nature", "sprite": "enemy_nature.png", "x": 639, "y": 300, "w": 123, "h": 116, "max_hp": 8, "level": 2 },
+      { "key": "eKnight", "element": "knight", "sprite": "enemy_knight.png", "x": 457, "y": 455, "w": 143, "h": 138, "max_hp": 16, "level": 2 }
+    ],
+    "allies": [
+      { "key": "aDragon", "element": "dragon", "sprite": "ally_dragon.png", "x": 117, "y": 763, "w": 134, "h": 136, "max_hp": 14, "level": 2 },
+      { "key": "aLight", "element": "light", "sprite": "ally_light.png", "x": 297, "y": 755, "w": 125, "h": 144, "max_hp": 14, "level": 3 },
+      { "key": "aKnight", "element": "knight", "sprite": "ally_knight.png", "x": 459, "y": 779, "w": 137, "h": 124, "max_hp": 12, "level": 2 },
+      { "key": "aMage", "element": "light", "sprite": "ally_mage.png", "x": 641, "y": 757, "w": 149, "h": 144, "max_hp": 14, "level": 2 },
+      { "key": "aDark", "element": "dark", "sprite": "ally_dark.png", "x": 826, "y": 764, "w": 156, "h": 140, "max_hp": 16, "level": 2 }
+    ],
+    "enemy_hud_rule": "Each enemy shows: Lv label above sprite, a heart-outline icon + numeric HP to its side, NO skill/hp bar.",
+    "ally_hud_rule": "Each ally shows: Lv label above sprite, an ELEMENT badge (framed icon matching its element, inverted so it reads dark-on-white) in the bottom-right corner of its sprite, and a horizontal skill/hp bar below the sprite. Allies do NOT show a heart or numeric HP.",
+    "hud_offsets_from_unit_box": {
+      "level_label": "centered above sprite top edge, ~7px gap",
+      "heart_or_element_badge": "44x46 frame / 38x36 icon, anchored to bottom-right corner of the sprite box (element badge) OR small 24x22 icon near hp text (enemy heart)",
+      "hp_or_skill_bar": "below sprite, ~125px reference width scaled per unit (barRefW), 21px tall"
+    }
+  },
+  "top_hud": {
+    "floor_label": { "x": 48, "y": 33, "font_size": 19, "text": "FLOOR {2-digit}" },
+    "score_label": { "x": 48, "y": 73, "font_size": 19, "text": "SCORE {6-digit zero-padded}" },
+    "round_label": { "x": 456, "y": 38, "w": 190, "font_size": 18, "align": "center", "text": "ROUND {n}/{total}" },
+    "round_pips": { "x": 386, "y": 78, "w": 310, "h": 22, "count": 5, "pip_size": 9, "gap": 9, "skull_icon_each_end": true, "note": "filled circle = completed round, outlined circle = current/future round" },
+    "gem_icon": { "x": 755, "y": 55, "w": 37, "h": 37 },
+    "gem_count": { "x": 798, "y": 60, "font_size": 17 },
+    "coin_icon": { "x": 904, "y": 56, "w": 37, "h": 36 },
+    "coin_count": { "x": 946, "y": 60, "font_size": 17 },
+    "menu_button": { "x": 1044, "y": 45, "w": 60, "h": 53 }
+  },
+  "bottom_hud": {
+    "player_heart_icon": { "x": 94, "y": 1974, "w": 43, "h": 41 },
+    "player_hp_text": { "x": 151, "y": 1978, "font_size": 20, "format": "{hp}/{maxHp}" },
+    "player_hp_bar": { "x": 260, "y": 1975, "w": 473, "h": 39, "fill_inset_left": 16, "note": "fill width = (hp/maxHp) * 441 px, clipped inside track art" },
+    "player_energy_icon": { "x": 851, "y": 1966, "w": 48, "h": 54 },
+    "player_energy_text": { "x": 924, "y": 1978, "font_size": 20, "format": "{energy}/{maxEnergy}" }
+  },
+  "bag": {
+    "frame": { "x": 42, "y": 1177, "w": 916, "h": 151 },
+    "label": { "x": 75, "y": 1165, "w": 78, "h": 38 },
+    "slot_count_visible": 7,
+    "slot_size": { "w": 93, "h": 89 },
+    "slot_start_x": 91, "slot_y": 1217, "slot_gap_x": 120,
+    "next_slot": { "x": 968, "y": 1177, "w": 145, "h": 151, "label_x": 997, "label_y": 1190, "icon_box": { "x": 991, "y": 1217, "w": 93, "h": 89 } },
+    "gameplay": "FIFO queue of card types. Drawing a card from the bag shifts the queue and appends a new random type at the end. 'NEXT' slot always previews queue[0]."
+  },
+  "field": {
+    "slot_size": { "w": 171, "h": 141 },
+    "grid": "2 rows x 5 cols",
+    "row1_y": 1386, "row2_y": 1547,
+    "col_x": [80, 282, 486, 690, 892],
+    "gameplay": "10 playable card slots drawn from the bag at battle start. Tapping a filled card (only when a fusion-lane slot is empty and energy > 0) moves it into the fusion lane and spends 1 energy; the emptied field slot redraws a new card from the bag after a short delay."
+  },
+  "fusion_lane": {
+    "frame": { "x": 74, "y": 1717, "w": 1002, "h": 129 },
+    "label": { "x": 96, "y": 1702, "w": 198, "h": 36 },
+    "slot_size": { "w": 100, "h": 88 },
+    "slot_positions": [[332, 1739], [500, 1739], [700, 1739]],
+    "gameplay": "3 slots. When all 3 are filled: if all 3 cards share the same type -> SUCCESS (fusePulse invert-flash animation), deals damage to a random alive enemy, +25 score, +25 gems, +1 energy (capped), screen flash. If types differ -> FAIL (shakeX animation), no reward. Either way lane clears back to empty after the animation."
+  },
+  "affinity_chain": {
+    "elemental_frame": { "x": 58, "y": 1861, "w": 661, "h": 90 },
+    "light_dark_frame": { "x": 730, "y": 1861, "w": 365, "h": 90 },
+    "label": { "x": 98, "y": 1848, "w": 166, "h": 38 },
+    "sequence_left_to_right": ["dragon", "arrow", "knight", "arrow", "nature", "arrow", "fire"],
+    "sequence_right_group": ["light", "opposition", "dark"],
+    "note": "Static reference chart showing which element beats which (dragon>knight>nature>fire loop; light<->dark opposition). Icons ~50-56px, arrows 36x48."
+  },
+  "elements": ["dragon", "knight", "nature", "light", "dark"],
+  "card_icon_types_in_bag_and_field": ["dragon", "nature", "light", "dark", "knight", "capsule", "wild"],
+  "animations": {
+    "card_wiggle": { "type": "loop", "duration_s": "2.6-3.05 randomized per card", "keyframes": "0%/100% no transform, 25% translate(-1,1) rotate(-1.5deg), 50% translate(0,-1) rotate(0), 75% translate(1,1) rotate(1.5deg)", "note": "Idle shake on every bag + field card icon, staggered per-slot delay so they never sync." },
+    "card_in": { "type": "one-shot", "duration_s": 0.18, "effect": "scale 0.5->1, opacity 0->1", "trigger": "a new card appears in a field/lane slot" },
+    "fuse_pulse": { "type": "one-shot", "duration_s": 0.46, "effect": "color invert flash x2 (white<->black swap)", "trigger": "fusion success" },
+    "shake_x": { "type": "one-shot", "duration_s": 0.4, "effect": "translateX -6 / +6 oscillation", "trigger": "fusion fail" },
+    "hit_flash": { "type": "one-shot", "duration_s": 0.22, "effect": "sprite + hp bar fill invert flash", "trigger": "unit takes damage" },
+    "screen_flash": { "type": "one-shot", "duration_s": 0.1, "effect": "full-screen color invert", "trigger": "fusion success" }
+  },
+  "gameplay_state": {
+    "player": { "hp": 10, "max_hp": 10, "energy": 3, "max_energy": 3 },
+    "round": { "current": 1, "total": 3 },
+    "progression": { "floor": 7, "score": 1250, "gems": 1250, "coins": 320 },
+    "fusion_damage_default": 2,
+    "loop_summary": "Player taps field cards to fill the 3-slot fusion lane, spending energy. Matching-type triples fuse into an attack on a random enemy and refund energy + reward currency. Non-matching triples fail with no penalty besides the spent energy/cards. Repeat until enemies are defeated or player hp reaches 0."
+  }
+}
