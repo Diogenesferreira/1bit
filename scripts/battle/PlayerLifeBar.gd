@@ -5,8 +5,9 @@ class_name PlayerLifeBar
 const ROW_H := 24
 const GAP := 14
 const HEART := Vector2(27, 24)
-const LABEL_GLYPH := 12
-const VALUE_GLYPH := 16
+const LABEL_GLYPH := 24
+const VALUE_GLYPH := 24
+const TEXT_SPACING := 2
 const WELL_BORDER := 3
 const BONE := Color("c9c0a8")
 const EDGE := Color("2a2620")
@@ -36,20 +37,23 @@ func _build() -> void:
 
 	var label := BitmapFontLabel.new()
 	label.glyph_height = LABEL_GLYPH
-	label.letter_spacing = 1
+	label.letter_spacing = TEXT_SPACING
 	label.text = "HP"
-	label.tint = Color(1, 1, 1, 0.65)
+	label.tint = Color(1, 1, 1, 0.85)
 	label.position = Vector2(HEART.x + GAP, (ROW_H - LABEL_GLYPH) / 2.0)
 	add_child(label)
 
 	_value = BitmapFontLabel.new()
 	_value.glyph_height = VALUE_GLYPH
-	_value.letter_spacing = 1
+	_value.letter_spacing = TEXT_SPACING
 	_value.tint = Color("e8e3d4")
 	add_child(_value)
 
-	var label_width := _text_width("HP", LABEL_GLYPH, 1)
-	var reserved_value_width := _text_width("%d/%d" % [hp_max, hp_max], VALUE_GLYPH, 1)
+	var label_width := _text_width("HP", LABEL_GLYPH, TEXT_SPACING)
+	# A reserva acompanha o HP maximo da partida. Com hp_max=9999, os nove
+	# glifos de 9999/9999 cabem sem empurrar ou cobrir a calha.
+	var reserved_value_width := _text_width(
+		"%d/%d" % [hp_max, hp_max], VALUE_GLYPH, TEXT_SPACING)
 	var well_x := int(HEART.x) + GAP + label_width + GAP
 	var well_width := row_width - well_x - GAP - reserved_value_width
 	_well = Control.new()
@@ -103,7 +107,8 @@ func _apply(value: float) -> void:
 	if _value != null:
 		var text_value := "%d/%d" % [int(round(value)), hp_max]
 		_value.text = text_value
-		_value.position = Vector2(row_width - _text_width(text_value, VALUE_GLYPH, 1),
+		_value.position = Vector2(row_width - _text_width(
+			text_value, VALUE_GLYPH, TEXT_SPACING),
 			(ROW_H - VALUE_GLYPH) / 2.0)
 
 

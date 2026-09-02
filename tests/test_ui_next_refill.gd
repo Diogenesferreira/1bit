@@ -41,6 +41,26 @@ func _executar() -> void:
 			falhas.append("a textura do LIFE esta sendo esticada")
 		if tela._life_bar._value.text != "%d/%d" % [tela.estado.hp, tela.estado.hp_max]:
 			falhas.append("o valor do LIFE nao reflete o HP real")
+		if PlayerLifeBar.LABEL_GLYPH != 24 or PlayerLifeBar.VALUE_GLYPH != 24:
+			falhas.append("os textos do LIFE voltaram ao tamanho ilegivel")
+		var width_9999 := tela._life_bar._text_width("9999/9999",
+			PlayerLifeBar.VALUE_GLYPH, PlayerLifeBar.TEXT_SPACING)
+		if width_9999 > BattleScreen.LIFE_WIDTH - 120:
+			falhas.append("o LIFE nao reserva espaco valido para 9999/9999")
+		var life_max := PlayerLifeBar.new()
+		life_max.row_width = BattleScreen.LIFE_WIDTH
+		life_max.hp_max = 9999
+		life_max.hp_current = 9999
+		root.add_child(life_max)
+		await process_frame
+		if life_max._value.text != "9999/9999" \
+				or not is_equal_approx(life_max._value.position.x + life_max._value.size.x,
+					float(BattleScreen.LIFE_WIDTH)):
+			falhas.append("9999/9999 nao fica inteiro e ancorado a direita")
+		if life_max._well.position.x + life_max._well.size.x + PlayerLifeBar.GAP \
+				> life_max._value.position.x:
+			falhas.append("9999/9999 invade a calha do LIFE")
+		life_max.queue_free()
 	tela._chain_visual = 0
 	if not is_equal_approx(tela._casas_bag[0].position.x, BattleScreen.BAG_X0):
 		falhas.append("a primeira carta da BAG nao respeita o recuo configurado")

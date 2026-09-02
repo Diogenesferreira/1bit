@@ -63,7 +63,9 @@ const FUSAO_PASSO := 148.0
 
 # --- HUD --------------------------------------------------------------
 const CAVEIRA_LADO := 20.0
-const LIFE_POSITION := Vector2(31, 1577)
+# Centro vertical do espaco entre o divisor da HAND (y=1561) e a moldura
+# interna inferior (y=1673): 44 px de respiro em cima e embaixo.
+const LIFE_POSITION := Vector2(31, 1605)
 const LIFE_WIDTH := 878
 
 var estado: EstadoBatalha
