@@ -52,8 +52,9 @@ func _executar() -> void:
 			falhas.append("o LEADER voltou a ter tamanho diferente dos aliados")
 		if BitmapFontLabel.CELL != Vector2i(12, 16):
 			falhas.append("a PARTY nao esta usando a fonte bitmap 1:1")
-		if not is_equal_approx(PartyCard.HERO_SCALE, 1.5) \
-				or PartyCard.SYMBOL_SIZE != Vector2(20, 20):
+		if not is_equal_approx(PartyCard.HERO_SCALE, 1.0) \
+				or PartyCard.ELEMENT_BADGE_SIZE != Vector2(20, 20) \
+				or PartyCard.SYMBOL_SIZE != Vector2(14, 14):
 			falhas.append("personagem ou simbolo da PARTY voltou a ser ampliado")
 		var skill_touch_state := [false]
 		tela._aliados[2]._card.skill_activated.connect(func() -> void: skill_touch_state[0] = true)

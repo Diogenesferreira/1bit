@@ -58,6 +58,13 @@ const CORES_ELEMENTAIS_CLARAS := {
 	"dark": Color("a37fd0"),
 	"heal": Color("d0bb92"),
 }
+const PARTY_SYMBOL_BOUNDS := {
+	"dragon": Rect2(18, 9, 27, 42),
+	"knight": Rect2(15, 9, 33, 45),
+	"nature": Rect2(15, 9, 33, 36),
+	"light": Rect2(3, 3, 54, 54),
+	"dark": Rect2(3, 0, 54, 60),
+}
 
 const CARD_FACE_FINAL := {
 	"dragon": "ui_v10/ui/card_face_dragon_v1.png",
@@ -167,7 +174,9 @@ static func party_scene(tipo: String) -> Texture2D:
 
 
 static func party_symbol(tipo: String) -> Texture2D:
-	return tex(PARTY_FINAL + "card_party/sym_%s.png" % tipo)
+	var selected := tipo if PARTY_SYMBOL_BOUNDS.has(tipo) else "dragon"
+	return tex_recortada(PARTY_FINAL + "card_party/sym_%s.png" % selected,
+		PARTY_SYMBOL_BOUNDS[selected])
 
 
 static func party_hero(tipo: String) -> Texture2D:
