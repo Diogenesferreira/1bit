@@ -24,6 +24,8 @@ func _executar() -> void:
 	tela._chain_visual = 99
 	if tela._velocidade_chain() > BattleScreen.CHAIN_VELOCIDADE_MAX:
 		falhas.append("a aceleracao da chain ultrapassou o limite visual")
+	if not is_equal_approx(BattleScreen.DISTRIBUICAO_FINAL_ACELERACAO, 1.5):
+		falhas.append("a distribuicao final nao esta configurada em 1.5x")
 	tela._chain_visual = 0
 	if not is_equal_approx(tela._casas_bag[0].position.x, BattleScreen.BAG_X0):
 		falhas.append("a primeira carta da BAG nao respeita o recuo configurado")

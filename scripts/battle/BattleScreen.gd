@@ -31,6 +31,7 @@ const DUR_CHUVA := 0.02         # intervalo entre as cartas da chuva final
 const CHAIN_ACELERACAO := 0.26  # +26% de velocidade por elo concluido
 const CHAIN_VELOCIDADE_MAX := 2.35
 const EMBARALHAR_VELOCIDADE_MIN := 1.45
+const DISTRIBUICAO_FINAL_ACELERACAO := 1.5
 
 # --- layout -----------------------------------------------------------
 const MOLDURAS := []
@@ -1034,15 +1035,17 @@ func _anim_nova_carta(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	var destino := _centro_casa(slot)
 	var chuva := bool(ev.get("chuva", false))
-	var duracao := _tempo_chain(DUR_QUEDA * (0.68 if chuva else 1.0))
+	var duracao := _tempo_chain(DUR_QUEDA * (0.68 if chuva else 1.0)) \
+		/ DISTRIBUICAO_FINAL_ACELERACAO
 	_sfx.descida(_pitch_chain())
 	await _voar(ev.carta, _centro_next(), destino, duracao,
 		VOO_BAG_TAM, CAMPO_TAM, 36.0)
 	_casas_campo[slot].visible = true
 	_casas_campo[slot].mostrar(String(ev.carta.tipo), int(ev.carta.valor), false)
 	await _animar_fila(ev.fila, 1,
-		_tempo_chain(DUR_BAG_DESLIZE * (0.68 if chuva else 1.0)))
-	await _espera(DUR_CHUVA if chuva else 0.01)
+		_tempo_chain(DUR_BAG_DESLIZE * (0.68 if chuva else 1.0)) \
+		/ DISTRIBUICAO_FINAL_ACELERACAO)
+	await _espera((DUR_CHUVA if chuva else 0.01) / DISTRIBUICAO_FINAL_ACELERACAO)
 
 
 func _anim_entra_na_mao(ev: Dictionary) -> void:
@@ -1056,7 +1059,8 @@ func _anim_entra_na_mao(ev: Dictionary) -> void:
 	# A carta da entrada passa para uma das cinco casas jogaveis da fileira.
 	if tipo != "":
 		await _voar({"tipo": tipo, "valor": valor},
-			origem, destino, _tempo_chain(DUR_VOO), CAMPO_TAM, CAMPO_TAM, 24.0)
+			origem, destino, _tempo_chain(DUR_VOO) / DISTRIBUICAO_FINAL_ACELERACAO,
+			CAMPO_TAM, CAMPO_TAM, 24.0)
 		_casas_campo[para].mostrar(tipo, valor, false)
 		_casas_campo[para].visible = true
 	_entrada_origem_visual.erase(de)
@@ -1101,12 +1105,14 @@ func _anim_redistribuicao(ev: Dictionary) -> void:
 	if not movimentos.is_empty():
 		var t := create_tween().set_parallel()
 		var velocidade_embaralhar := maxf(_velocidade_chain(), EMBARALHAR_VELOCIDADE_MIN)
-		var duracao_embaralhar := DUR_EMBARALHAR / velocidade_embaralhar
+		var duracao_embaralhar := DUR_EMBARALHAR / velocidade_embaralhar \
+			/ DISTRIBUICAO_FINAL_ACELERACAO
 		for movimento: Dictionary in movimentos:
 			var altura := 22.0 + float(int(movimento.ordem) % 3) * 5.0
 			t.tween_method(_mover_control_arco.bind(movimento.icone,
 				movimento.de, movimento.para, altura), 0.0, 1.0, duracao_embaralhar) \
-				.set_delay(float(int(movimento.ordem) % 5) * 0.010 / velocidade_embaralhar) \
+				.set_delay(float(int(movimento.ordem) % 5) * 0.010 \
+				/ velocidade_embaralhar / DISTRIBUICAO_FINAL_ACELERACAO) \
 				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		await t.finished
 	for icone: CardIcon in voando:
