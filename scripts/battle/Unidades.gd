@@ -24,26 +24,31 @@ const INIMIGOS := [
 
 const ALIADOS := [
 	{"chave": "aDracoBrasa", "elemento": "dragon", "sprite": "characters_v2/lineup_v2_transparente.png",
+		"nome": "IGNAR", "nivel": 12,
 		"recorte": Rect2(123, 152, 172, 194),
 		"retrato": "characters_v4/ally_dragon_v1.png", "retrato_zoom": 1.25,
 		"retrato_offset": Vector2(0, 8),
 		"hp_max": 14, "ataque": 7, "defesa": 3},
 	{"chave": "aGuardiaoFerro", "elemento": "knight", "sprite": "characters_v2/lineup_v2_transparente.png",
+		"nome": "ROLAND", "nivel": 25,
 		"recorte": Rect2(442, 151, 179, 196),
 		"retrato": "characters_v4/ally_knight_v1.png", "retrato_zoom": 1.25,
 		"retrato_offset": Vector2(0, 8),
 		"hp_max": 14, "ataque": 5, "defesa": 5},
 	{"chave": "aMagaBosque", "elemento": "nature", "sprite": "characters_v2/lineup_v2_transparente.png",
+		"nome": "SYLWEN", "nivel": 41,
 		"recorte": Rect2(751, 157, 175, 190),
 		"retrato": "characters_v4/ally_nature_v1.png", "retrato_zoom": 1.25,
 		"retrato_offset": Vector2(0, 8),
 		"hp_max": 12, "ataque": 6, "defesa": 3},
 	{"chave": "aClerigaAstral", "elemento": "light", "sprite": "characters_v2/lineup_v2_transparente.png",
+		"nome": "AUREN", "nivel": 8,
 		"recorte": Rect2(1099, 158, 168, 188),
 		"retrato": "characters_v4/ally_light_v1.png", "retrato_zoom": 1.25,
 		"retrato_offset": Vector2(0, 8),
 		"hp_max": 14, "ataque": 4, "defesa": 4},
 	{"chave": "aOraculoChacal", "elemento": "dark", "sprite": "characters_v2/lineup_v2_transparente.png",
+		"nome": "NYX", "nivel": 33,
 		"recorte": Rect2(1405, 142, 172, 202),
 		"retrato": "characters_v4/ally_dark_v1.png", "retrato_zoom": 1.25,
 		"retrato_offset": Vector2(0, 8),
@@ -75,12 +80,11 @@ const HUD_INIMIGO_GAP := 12.0
 const HUD_ALIADO_Y_LOGICO := 496.0
 const HUD_SKILL_ALIADO_TAM := Vector2(96, 96)
 
-# Os aliados nao disputam mais espaco fisico com os inimigos. Cada um ocupa
-# um Selo de Fragmento fixo na base da arena; assim a leitura permanece igual
-# com um inimigo comum, cinco inimigos ou um boss enorme.
-const SELO_ALIADO_TAM := Vector2(165, 165)
-const SELO_ALIADO_GAP := 8.0
-const SELO_ALIADO_Y := 632.0
+# Os aliados nao disputam espaco fisico com os inimigos. Cada um ocupa um card
+# fixo na faixa PARTY; o terceiro slot e o lider, mas preserva o mesmo tamanho.
+const PARTY_CARD_TAM := Vector2(152, 188)
+const PARTY_CARD_XS := [16.0, 192.0, 368.0, 544.0, 720.0]
+const PARTY_CARD_Y := 629.0
 
 
 static func escala() -> Vector2:
@@ -133,11 +137,13 @@ static func hud_skill_aliado(sprite_rect: Rect2) -> Rect2:
 	return Rect2(Vector2(round(pos.x), round(pos.y)), HUD_SKILL_ALIADO_TAM)
 
 
+static func card_aliado(indice: int) -> Rect2:
+	return Rect2(Vector2(PARTY_CARD_XS[indice], PARTY_CARD_Y), PARTY_CARD_TAM)
+
+
+# Alias temporario para pranchas antigas que ainda consultam a geometria.
 static func selo_aliado(indice: int) -> Rect2:
-	var largura_total: float = SELO_ALIADO_TAM.x * 5.0 + SELO_ALIADO_GAP * 4.0
-	var x0: float = round((ARENA_TAM.x - largura_total) / 2.0)
-	return Rect2(Vector2(x0 + float(indice) * (SELO_ALIADO_TAM.x + SELO_ALIADO_GAP),
-		SELO_ALIADO_Y), SELO_ALIADO_TAM)
+	return card_aliado(indice)
 
 
 static func ajustar_no_box(tamanho_nativo: Vector2, box_maximo: Vector2) -> Vector2:

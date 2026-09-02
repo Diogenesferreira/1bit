@@ -9,6 +9,7 @@ class_name Arte
 
 const PASTA := "res://assets/battle/"
 const UI_FINAL := "ui_v10/"
+const PARTY_FINAL := "ui_v11/"
 const MOLDURA_SELO_FRAGMENTO := "ui_v5/fragment_seal_frame_master_v1.png"
 const SELO_V6_EMPTY := {
 	"dragon": "ui_v10/seals_1a/seal_1a_dragon_empty.png",
@@ -48,6 +49,14 @@ const CORES_ELEMENTAIS := {
 	"dark": Color("7a5f9a"),
 	"capsule": Color("b09a72"),
 	"wild": Color("e8e3d4"),
+}
+const CORES_ELEMENTAIS_CLARAS := {
+	"dragon": Color("d9705f"),
+	"knight": Color("8ab6d4"),
+	"nature": Color("a8c07a"),
+	"light": Color("f0d478"),
+	"dark": Color("a37fd0"),
+	"heal": Color("d0bb92"),
 }
 
 const CARD_FACE_FINAL := {
@@ -149,6 +158,26 @@ static func selo_v6_charge(tipo: String) -> Texture2D:
 	return tex(String(SELO_V6_CHARGE.get(tipo, SELO_V6_CHARGE["dragon"])))
 
 
+static func party_field(tipo: String) -> Texture2D:
+	return tex(PARTY_FINAL + "card_party/field_%s.png" % tipo)
+
+
+static func party_scene(tipo: String) -> Texture2D:
+	return tex(PARTY_FINAL + "card_party/scene_%s.png" % tipo)
+
+
+static func party_symbol(tipo: String) -> Texture2D:
+	return tex(PARTY_FINAL + "card_party/sym_%s.png" % tipo)
+
+
+static func party_hero(tipo: String) -> Texture2D:
+	return tex(PARTY_FINAL + "char80/char_%s.png" % tipo)
+
+
+static func party_digits() -> Texture2D:
+	return tex(PARTY_FINAL + "ui/digits_1x_v1.png")
+
+
 static func hud_inimigo_v6_plate(tipo: String) -> Texture2D:
 	return tex(String(HUD_INIMIGO_V6_PLATE.get(tipo, HUD_INIMIGO_V6_PLATE["dragon"])))
 
@@ -173,6 +202,10 @@ static func escala_icone_carta_alpha(tipo: String, lado: float) -> Vector2:
 
 static func cor_elemental(tipo: String) -> Color:
 	return CORES_ELEMENTAIS.get(tipo, BRANCO)
+
+
+static func cor_elemental_clara(tipo: String) -> Color:
+	return CORES_ELEMENTAIS_CLARAS.get(tipo, BRANCO)
 
 
 static func cor_elemental_variada(tipo: String, indice: int) -> Color:

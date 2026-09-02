@@ -2,11 +2,11 @@
 extends Control
 class_name BitmapFontLabel
 
-# Texto da UI montado diretamente com o atlas oficial. Alturas 12, 16, 24 e
-# 48 preservam divisores inteiros da celula original de 36x48.
+# Texto da UI montado diretamente com o atlas final 1:1. Em 16 px, cada pixel
+# da textura corresponde a exatamente um pixel do canvas.
 
 const ORDER := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ/-:"
-const CELL := Vector2i(36, 48)
+const CELL := Vector2i(12, 16)
 
 @export var text: String = "": set = _set_text
 @export var glyph_height := 16: set = _set_height
@@ -17,7 +17,7 @@ var _sheet: Texture2D
 
 
 func _ready() -> void:
-	_sheet = Arte.tex("ui_v10/ui/ui_font_sheet_v1.png")
+	_sheet = Arte.tex("ui_v11/ui/font_1x_v1.png")
 	_rebuild()
 
 
@@ -43,7 +43,7 @@ func _set_spacing(value: int) -> void:
 
 func _rebuild() -> void:
 	if _sheet == null:
-		_sheet = Arte.tex("ui_v10/ui/ui_font_sheet_v1.png")
+		_sheet = Arte.tex("ui_v11/ui/font_1x_v1.png")
 		if _sheet == null:
 			return
 	for child in get_children():

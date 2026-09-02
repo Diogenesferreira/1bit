@@ -33,7 +33,7 @@ func _capturar() -> void:
 	var clique := InputEventMouseButton.new()
 	clique.button_index = MOUSE_BUTTON_LEFT
 	clique.pressed = true
-	tela._aliados[2]._medidor._gui_input(clique)
+	tela._aliados[2]._card._gui_input(clique)
 	await create_timer(0.06).timeout
 	_salvar("09_medidor_skill_feedback_clique_v1.png")
 	quit()

@@ -37,6 +37,30 @@ func _executar() -> void:
 		falhas.append("a fusao reduz o tamanho original das cartas da HAND")
 	if tela._voos.z_index <= tela._casas_campo[0].z_index:
 		falhas.append("a camada de fusao nao esta acima das cartas da HAND")
+	if tela._aliados.size() != 5:
+		falhas.append("a nova PARTY nao possui cinco cards")
+	else:
+		for i in tela._aliados.size():
+			var ally := tela._aliados[i]
+			if ally.size != PartyCard.CARD_SIZE or ally._card.size != PartyCard.CARD_SIZE:
+				falhas.append("o card %d da PARTY nao mede 152x188" % i)
+			if ally.position != Unidades.card_aliado(i).position:
+				falhas.append("o card %d da PARTY esta fora do encaixe final" % i)
+			if ally._card.leader != (i == 2):
+				falhas.append("a marcacao de LEADER esta no slot errado")
+		if tela._aliados[2]._card.size != tela._aliados[0]._card.size:
+			falhas.append("o LEADER voltou a ter tamanho diferente dos aliados")
+		if BitmapFontLabel.CELL != Vector2i(12, 16):
+			falhas.append("a PARTY nao esta usando a fonte bitmap 1:1")
+		var skill_touch_state := [false]
+		tela._aliados[2]._card.skill_activated.connect(func() -> void: skill_touch_state[0] = true)
+		tela._aliados[2]._card.set_charge(8)
+		var touch := InputEventScreenTouch.new()
+		touch.pressed = true
+		tela._aliados[2]._card._gui_input(touch)
+		if not skill_touch_state[0]:
+			falhas.append("o novo card de LEADER nao responde ao toque da skill")
+		tela._aliados[2]._card.set_charge(0)
 
 	# Telefones 20:9 expandem a altura logica alem do canvas de referencia.
 	# Fundo, moldura e flash precisam acompanhar essa area sem deformar a UI.
