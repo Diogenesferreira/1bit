@@ -12,8 +12,10 @@ func _executar() -> void:
 	var tela := (load("res://scenes/battle/BattleScreen.tscn") as PackedScene).instantiate() as BattleScreen
 	root.add_child(tela)
 	await process_frame
-	if not is_equal_approx(tela._casas_bag[0].position.x, tela._casas_campo[0].position.x):
-		falhas.append("a primeira carta da BAG nao esta alinhada com a primeira da HAND")
+	if not is_equal_approx(tela._casas_bag[0].position.x, BattleScreen.BAG_X0):
+		falhas.append("a primeira carta da BAG nao respeita o recuo configurado")
+	if tela._casas_bag[0].position.x <= tela._casas_campo[0].position.x:
+		falhas.append("a BAG perdeu o respiro interno em relacao a HAND")
 	if tela._casas_bag[0]._icone._wiggle:
 		falhas.append("as cartas da BAG ainda estao oscilando")
 	if BattleScreen.FUSAO_TAM != BattleScreen.CAMPO_TAM:

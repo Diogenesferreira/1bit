@@ -33,7 +33,9 @@ const MOLDURAS := []
 const ROTULOS := []
 
 # --- casas ------------------------------------------------------------
-const BAG_X0 := 31.0
+# A BAG tem respiro proprio dentro da moldura; nao precisa compartilhar o
+# alinhamento da HAND, cuja grade ocupa toda a largura disponivel.
+const BAG_X0 := 50.0
 const BAG_Y := 978.0
 const BAG_PASSO := 88.0
 const NEXT_CASA := Rect2(819, 978, 78, 108)
