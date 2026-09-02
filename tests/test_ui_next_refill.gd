@@ -12,6 +12,15 @@ func _executar() -> void:
 	var tela := (load("res://scenes/battle/BattleScreen.tscn") as PackedScene).instantiate() as BattleScreen
 	root.add_child(tela)
 	await process_frame
+	tela._chain_visual = 0
+	var velocidade_inicial := tela._velocidade_chain()
+	tela._chain_visual = 3
+	if tela._velocidade_chain() <= velocidade_inicial:
+		falhas.append("a velocidade visual nao cresce com a chain")
+	tela._chain_visual = 99
+	if tela._velocidade_chain() > BattleScreen.CHAIN_VELOCIDADE_MAX:
+		falhas.append("a aceleracao da chain ultrapassou o limite visual")
+	tela._chain_visual = 0
 	if not is_equal_approx(tela._casas_bag[0].position.x, BattleScreen.BAG_X0):
 		falhas.append("a primeira carta da BAG nao respeita o recuo configurado")
 	if tela._casas_bag[0].position.x <= tela._casas_campo[0].position.x:

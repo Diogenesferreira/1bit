@@ -4,28 +4,30 @@ class_name FusionStream
 signal finalizado
 
 const TOTAL := 48
-const ATRASO_MAX := 0.42
-const DUR_MIN := 0.52
-const DUR_EXTRA := 0.26
+const ATRASO_MAX := 0.30
+const DUR_MIN := 0.38
+const DUR_EXTRA := 0.18
 const DUR_TOTAL := ATRASO_MAX + DUR_MIN + DUR_EXTRA
 
 var tipo := "nature"
 var origem := Vector2.ZERO
 var alvo := Vector2.ZERO
 var _tempo := 0.0
+var _velocidade := 1.0
 
 
-func iniciar(p_tipo: String, de: Vector2, para: Vector2) -> void:
+func iniciar(p_tipo: String, de: Vector2, para: Vector2, velocidade := 1.0) -> void:
 	tipo = p_tipo
 	origem = de
 	alvo = para
+	_velocidade = maxf(velocidade, 0.1)
 	size = Vector2.ZERO
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_process(true)
 
 
 func _process(delta: float) -> void:
-	_tempo += delta
+	_tempo += delta * _velocidade
 	queue_redraw()
 	if _tempo >= DUR_TOTAL:
 		set_process(false)

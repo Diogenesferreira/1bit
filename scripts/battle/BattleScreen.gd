@@ -18,16 +18,19 @@ const CANVAS := Vector2(940, 1685)
 const COR_REGUA_HAND := Color(0.79, 0.75, 0.66, 0.32)
 
 # --- tempos ----------------------------------------------------------
-const DUR_VOO := 0.34
-const DUR_FUSAO_ALINHAR := 0.42
-const DUR_FUSAO_CONVERGIR := 0.40
-const DUR_QUEDA := 0.36         # NEXT descendo e crescendo ate a HAND
-const DUR_BAG_DESLIZE := 0.22
-const DUR_EMBARALHAR := 0.46
+const DUR_VOO := 0.24
+const DUR_FUSAO_ALINHAR := 0.30
+const DUR_FUSAO_CONVERGIR := 0.26
+const DUR_QUEDA := 0.24         # NEXT descendo e crescendo ate a HAND
+const DUR_BAG_DESLIZE := 0.14
+const DUR_EMBARALHAR := 0.28
 const DUR_PULSO := 0.28
 const DUR_FLASH_TELA := 0.10
-const ESPERA_ENTRE_COMBOS := 0.18
-const DUR_CHUVA := 0.05         # intervalo entre as cartas da chuva final
+const ESPERA_ENTRE_COMBOS := 0.09
+const DUR_CHUVA := 0.02         # intervalo entre as cartas da chuva final
+const CHAIN_ACELERACAO := 0.26  # +26% de velocidade por elo concluido
+const CHAIN_VELOCIDADE_MAX := 2.35
+const EMBARALHAR_VELOCIDADE_MIN := 1.45
 
 # --- layout -----------------------------------------------------------
 const MOLDURAS := []
@@ -83,6 +86,7 @@ var _flash: ColorRect
 var _voos: Control  # camada das cartas em transito
 
 var _animando := false
+var _chain_visual := 0
 var _dano_visual_acumulado: Dictionary = {}
 var _entrada_origem_visual: Dictionary = {}
 
@@ -646,6 +650,7 @@ func _ao_tocar_casa(idx: int) -> void:
 
 func _reproduzir(res: Dictionary) -> void:
 	_animando = true
+	_chain_visual = 0
 	_dano_visual_acumulado.clear()
 	_atualizar_hud()
 	for ev: Dictionary in res.eventos:
@@ -675,6 +680,15 @@ func _reproduzir(res: Dictionary) -> void:
 
 func _espera(s: float) -> void:
 	await get_tree().create_timer(s).timeout
+
+
+func _velocidade_chain() -> float:
+	return minf(1.0 + float(_chain_visual) * CHAIN_ACELERACAO,
+		CHAIN_VELOCIDADE_MAX)
+
+
+func _tempo_chain(base: float) -> float:
+	return base / _velocidade_chain()
 
 
 # Carta viajando de um ponto a outro. Devolve depois de pousar.
@@ -778,7 +792,7 @@ func _anim_selecao(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	var casa := _casas_campo[slot]
 	casa.definir_selecionada(true)
-	await _espera(0.12)
+	await _espera(0.07)
 
 
 func _anim_deselecao(ev: Dictionary) -> void:
@@ -787,7 +801,7 @@ func _anim_deselecao(ev: Dictionary) -> void:
 	casa.definir_selecionada(false)
 	casa.position = _pos_casa(slot)
 	casa.visible = true
-	await _espera(0.12)
+	await _espera(0.07)
 
 
 # A primeira e a segunda selecao puxam NEXT para a sexta casa da fileira.
@@ -796,11 +810,11 @@ func _anim_desce(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	_casas_campo[slot].position = _pos_casa(slot)
 	var destino := _centro_casa(slot)
-	await _voar(ev.carta, _centro_next(), destino, DUR_QUEDA,
+	await _voar(ev.carta, _centro_next(), destino, _tempo_chain(DUR_QUEDA),
 		VOO_BAG_TAM, CAMPO_TAM, 42.0)
 	_casas_campo[slot].visible = true
 	_casas_campo[slot].mostrar(String(ev.carta.tipo), int(ev.carta.valor), false)
-	await _animar_fila(ev.fila, 1)
+	await _animar_fila(ev.fila, 1, _tempo_chain(DUR_BAG_DESLIZE))
 
 
 func _anim_volta(ev: Dictionary) -> void:
@@ -809,9 +823,9 @@ func _anim_volta(ev: Dictionary) -> void:
 		"valor": _casas_campo[slot].valor_atual()}
 	_casas_campo[slot].limpar()
 	if String(carta.tipo) != "":
-		await _voar(carta, _centro_casa(slot), _centro_next(), DUR_QUEDA,
+		await _voar(carta, _centro_casa(slot), _centro_next(), _tempo_chain(DUR_QUEDA),
 			CAMPO_TAM, VOO_BAG_TAM, 42.0)
-	await _animar_fila(ev.fila, -1)
+	await _animar_fila(ev.fila, -1, _tempo_chain(DUR_BAG_DESLIZE))
 	_entrada_origem_visual.erase(slot)
 	_casas_campo[slot].visible = true
 
@@ -821,12 +835,12 @@ func _anim_abandono() -> void:
 		var casa := _casas_campo[i]
 		casa.definir_selecionada(false)
 		casa.position = _pos_casa(i)
-	await _espera(0.13)
+	await _espera(0.08)
 
 
 # A cascata puxou a carta do topo do saco para completar o trio.
 func _anim_puxa(ev: Dictionary) -> void:
-	await _animar_fila(ev.fila, 1)
+	await _animar_fila(ev.fila, 1, _tempo_chain(DUR_BAG_DESLIZE))
 
 
 # As cartas nunca saem para uma lane permanente: copias visuais se
@@ -856,17 +870,19 @@ func _anim_trio(ev: Dictionary) -> void:
 		icone.mostrar(String(cartas[i].tipo), int(cartas[i].valor), false)
 		icones.append(icone)
 	var chegada := create_tween().set_parallel()
+	var dur_alinhar := _tempo_chain(DUR_FUSAO_ALINHAR)
 	for i in icones.size():
 		var destino := FUSAO_CENTRO + Vector2((float(i) - 1.0) * FUSAO_PASSO, 0)
 		var destino_pos := destino - FUSAO_TAM / 2.0
 		chegada.tween_method(_mover_control_round.bind(icones[i], icones[i].position,
-			destino_pos), 0.0, 1.0, DUR_FUSAO_ALINHAR) \
+			destino_pos), 0.0, 1.0, dur_alinhar) \
 			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	await chegada.finished
 	var fundir := create_tween().set_parallel()
+	var dur_convergir := _tempo_chain(DUR_FUSAO_CONVERGIR)
 	for icone: CardIcon in icones:
 		fundir.tween_method(_mover_control_round.bind(icone, icone.position,
-			FUSAO_CENTRO - FUSAO_TAM / 2.0), 0.0, 1.0, DUR_FUSAO_CONVERGIR) \
+			FUSAO_CENTRO - FUSAO_TAM / 2.0), 0.0, 1.0, dur_convergir) \
 			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	await fundir.finished
 	await _pulso_fusao(tipo_fusao)
@@ -878,6 +894,7 @@ func _anim_trio(ev: Dictionary) -> void:
 
 
 func _pulso_fusao(tipo: String) -> void:
+	var velocidade := _velocidade_chain()
 	var grupo := Control.new()
 	grupo.position = FUSAO_CENTRO
 	grupo.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -910,17 +927,19 @@ func _pulso_fusao(tipo: String) -> void:
 		var destino := Vector2(cos(angulo), sin(angulo)) * (112.0 + float(i % 3) * 6.0) - pixel.size / 2.0
 		var pt := create_tween().set_parallel()
 		pt.tween_method(_mover_control_round.bind(pixel, pixel.position, destino),
-			0.0, 1.0, 0.54).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-		pt.tween_property(pixel, "modulate:a", 0.0, 0.54)
+			0.0, 1.0, 0.42 / velocidade).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		pt.tween_property(pixel, "modulate:a", 0.0, 0.42 / velocidade)
 	var t := create_tween().set_parallel()
-	t.tween_property(nucleo, "modulate:a", 0.0, 0.20)
-	await t.finished
-	await _espera(0.34)
+	t.tween_property(nucleo, "modulate:a", 0.0, 0.16 / velocidade)
+	# O grupo so pode sair depois do rastro mais longo; caso contrario uma
+	# chain acelerada libera os pixels enquanto seus tweens ainda escrevem neles.
+	await _espera(0.46 / velocidade)
 	grupo.queue_free()
 
 
 func _anim_combo(ev: Dictionary) -> void:
 	var cadeia := int(ev.cadeia)
+	_chain_visual = maxi(_chain_visual, cadeia)
 	var txt := "COMBO" if cadeia == 0 else "COMBO x%d" % (cadeia + 1)
 	if bool(ev.critico):
 		txt = "CRITICO! " + txt
@@ -945,22 +964,26 @@ func _anim_combo(ev: Dictionary) -> void:
 			_aliados[atacante].centro_no_canvas() + Vector2(0, -74), tipo_aliado)
 	if bool(ev.cura):
 		await _anim_energia("capsule", FUSAO_CENTRO, Vector2(50, 1635))
-	await _espera(ESPERA_ENTRE_COMBOS)
+	await _espera(_tempo_chain(ESPERA_ENTRE_COMBOS))
+	# O proximo trio da cascata ja nasce mais rapido. O teto impede que a
+	# leitura visual se perca mesmo em correntes que atravessem varias maos.
+	_chain_visual = cadeia + 1
 
 
 func _anim_energia(tipo: String, de: Vector2, para: Vector2) -> void:
 	var fluxo := FusionStream.new()
 	_voos.add_child(fluxo)
-	fluxo.iniciar(tipo, de, para)
+	var velocidade := _velocidade_chain()
+	fluxo.iniciar(tipo, de, para, velocidade)
 	await fluxo.finalizado
-	await _pulso_impacto(para)
+	await _pulso_impacto(para, velocidade)
 
 
 func _mover_control_round(f: float, item: Control, de: Vector2, para: Vector2) -> void:
 	item.position = de.lerp(para, f).round()
 
 
-func _pulso_impacto(posicao: Vector2) -> void:
+func _pulso_impacto(posicao: Vector2, velocidade := 1.0) -> void:
 	var impacto := Panel.new()
 	impacto.position = posicao - Vector2(24, 24)
 	impacto.size = Vector2(48, 48)
@@ -977,28 +1000,30 @@ func _pulso_impacto(posicao: Vector2) -> void:
 	_voos.add_child(impacto)
 	impacto.scale = Vector2(0.3, 0.3)
 	var t := create_tween().set_parallel()
-	t.tween_property(impacto, "scale", Vector2(1.7, 1.7), 0.2) \
+	t.tween_property(impacto, "scale", Vector2(1.7, 1.7), 0.16 / velocidade) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	t.tween_property(impacto, "modulate:a", 0.0, 0.2).set_delay(0.07)
+	t.tween_property(impacto, "modulate:a", 0.0, 0.16 / velocidade) \
+		.set_delay(0.04 / velocidade)
 	await t.finished
 	impacto.queue_free()
 
 
 func _anim_renovacao() -> void:
 	_flutuar("RENOVACAO", Vector2(CANVAS.x / 2.0, CAMPO_LINHAS[0] - 40.0), 24)
-	await _espera(0.2)
+	await _espera(_tempo_chain(0.12))
 
 
 func _anim_nova_carta(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	var destino := _centro_casa(slot)
 	var chuva := bool(ev.get("chuva", false))
-	var duracao := DUR_QUEDA * (0.72 if chuva else 1.0)
+	var duracao := _tempo_chain(DUR_QUEDA * (0.68 if chuva else 1.0))
 	await _voar(ev.carta, _centro_next(), destino, duracao,
 		VOO_BAG_TAM, CAMPO_TAM, 36.0)
 	_casas_campo[slot].visible = true
 	_casas_campo[slot].mostrar(String(ev.carta.tipo), int(ev.carta.valor), false)
-	await _animar_fila(ev.fila, 1, DUR_BAG_DESLIZE * (0.72 if chuva else 1.0))
+	await _animar_fila(ev.fila, 1,
+		_tempo_chain(DUR_BAG_DESLIZE * (0.68 if chuva else 1.0)))
 	await _espera(DUR_CHUVA if chuva else 0.01)
 
 
@@ -1013,7 +1038,7 @@ func _anim_entra_na_mao(ev: Dictionary) -> void:
 	# A carta da entrada passa para uma das cinco casas jogaveis da fileira.
 	if tipo != "":
 		await _voar({"tipo": tipo, "valor": valor},
-			origem, destino, DUR_VOO, CAMPO_TAM, CAMPO_TAM, 24.0)
+			origem, destino, _tempo_chain(DUR_VOO), CAMPO_TAM, CAMPO_TAM, 24.0)
 		_casas_campo[para].mostrar(tipo, valor, false)
 		_casas_campo[para].visible = true
 	_entrada_origem_visual.erase(de)
@@ -1056,11 +1081,13 @@ func _anim_redistribuicao(ev: Dictionary) -> void:
 
 	if not movimentos.is_empty():
 		var t := create_tween().set_parallel()
+		var velocidade_embaralhar := maxf(_velocidade_chain(), EMBARALHAR_VELOCIDADE_MIN)
+		var duracao_embaralhar := DUR_EMBARALHAR / velocidade_embaralhar
 		for movimento: Dictionary in movimentos:
 			var altura := 22.0 + float(int(movimento.ordem) % 3) * 5.0
 			t.tween_method(_mover_control_arco.bind(movimento.icone,
-				movimento.de, movimento.para, altura), 0.0, 1.0, DUR_EMBARALHAR) \
-				.set_delay(float(int(movimento.ordem) % 5) * 0.018) \
+				movimento.de, movimento.para, altura), 0.0, 1.0, duracao_embaralhar) \
+				.set_delay(float(int(movimento.ordem) % 5) * 0.010 / velocidade_embaralhar) \
 				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		await t.finished
 	for icone: CardIcon in voando:

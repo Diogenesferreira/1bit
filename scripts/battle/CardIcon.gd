@@ -5,7 +5,7 @@ class_name CardIcon
 # exatamente 2x na mao, conforme spec/ASSETS.md.
 
 const DUR_CARD_IN := 0.18
-const DUR_SELECAO := 0.17
+const DUR_SELECAO := 0.11
 const SUBIDA_SELECAO := 10.0
 
 var tipo := ""
