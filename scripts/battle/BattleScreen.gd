@@ -73,6 +73,7 @@ var _aliados: Array[AllyUnit] = []
 var _casas_bag: Array[BagSlot] = []
 var _icone_next: CardIcon
 var _casas_campo: Array[FieldSlot] = []
+var _sfx: BattleSfx
 
 var _txt_andar: Label
 var _txt_score: Label
@@ -102,6 +103,9 @@ func _ready() -> void:
 # ---------------------------------------------------------- montagem
 
 func _montar() -> void:
+	_sfx = BattleSfx.new()
+	_sfx.name = "BattleSfx"
+	add_child(_sfx)
 	var fundo := ColorRect.new()
 	fundo.name = "BackgroundFinal"
 	fundo.color = Color("080908")
@@ -691,6 +695,10 @@ func _tempo_chain(base: float) -> float:
 	return base / _velocidade_chain()
 
 
+func _pitch_chain() -> float:
+	return minf(1.0 + float(_chain_visual) * 0.035, 1.18)
+
+
 # Carta viajando de um ponto a outro. Devolve depois de pousar.
 func _voar(carta: Dictionary, de: Vector2, para: Vector2, dur := DUR_VOO,
 		tam_de := VOO_BAG_TAM, tam_para := VOO_BAG_TAM, altura_arco := 18.0) -> void:
@@ -791,6 +799,7 @@ func _animar_fila(fila: Array, direcao := 1, duracao := DUR_BAG_DESLIZE) -> void
 func _anim_selecao(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	var casa := _casas_campo[slot]
+	_sfx.toque(_pitch_chain())
 	casa.definir_selecionada(true)
 	await _espera(0.07)
 
@@ -798,6 +807,7 @@ func _anim_selecao(ev: Dictionary) -> void:
 func _anim_deselecao(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	var casa := _casas_campo[slot]
+	_sfx.toque(_pitch_chain() * 0.88)
 	casa.definir_selecionada(false)
 	casa.position = _pos_casa(slot)
 	casa.visible = true
@@ -810,6 +820,7 @@ func _anim_desce(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	_casas_campo[slot].position = _pos_casa(slot)
 	var destino := _centro_casa(slot)
+	_sfx.descida(_pitch_chain())
 	await _voar(ev.carta, _centro_next(), destino, _tempo_chain(DUR_QUEDA),
 		VOO_BAG_TAM, CAMPO_TAM, 42.0)
 	_casas_campo[slot].visible = true
@@ -823,6 +834,7 @@ func _anim_volta(ev: Dictionary) -> void:
 		"valor": _casas_campo[slot].valor_atual()}
 	_casas_campo[slot].limpar()
 	if String(carta.tipo) != "":
+		_sfx.descida(_pitch_chain() * 0.86)
 		await _voar(carta, _centro_casa(slot), _centro_next(), _tempo_chain(DUR_QUEDA),
 			CAMPO_TAM, VOO_BAG_TAM, 42.0)
 	await _animar_fila(ev.fila, -1, _tempo_chain(DUR_BAG_DESLIZE))
@@ -880,6 +892,7 @@ func _anim_trio(ev: Dictionary) -> void:
 	await chegada.finished
 	var fundir := create_tween().set_parallel()
 	var dur_convergir := _tempo_chain(DUR_FUSAO_CONVERGIR)
+	_sfx.fusao(_pitch_chain())
 	for icone: CardIcon in icones:
 		fundir.tween_method(_mover_control_round.bind(icone, icone.position,
 			FUSAO_CENTRO - FUSAO_TAM / 2.0), 0.0, 1.0, dur_convergir) \
@@ -949,6 +962,10 @@ func _anim_combo(ev: Dictionary) -> void:
 		txt = "CURA " + txt
 	_flutuar(txt, FUSAO_CENTRO + Vector2(0, -72), 20)
 	var cargas: Array = ev.get("cargas", [])
+	if bool(ev.get("todos", false)):
+		_sfx.ataque_wild(_pitch_chain())
+	if not cargas.is_empty() or bool(ev.cura):
+		_sfx.contagem(_pitch_chain())
 	for carga: Dictionary in cargas:
 		var atacante := int(carga.atacante)
 		if atacante < 0 or atacante >= _aliados.size():
@@ -1018,6 +1035,7 @@ func _anim_nova_carta(ev: Dictionary) -> void:
 	var destino := _centro_casa(slot)
 	var chuva := bool(ev.get("chuva", false))
 	var duracao := _tempo_chain(DUR_QUEDA * (0.68 if chuva else 1.0))
+	_sfx.descida(_pitch_chain())
 	await _voar(ev.carta, _centro_next(), destino, duracao,
 		VOO_BAG_TAM, CAMPO_TAM, 36.0)
 	_casas_campo[slot].visible = true
@@ -1048,6 +1066,7 @@ func _anim_entra_na_mao(ev: Dictionary) -> void:
 func _anim_redistribuicao(ev: Dictionary) -> void:
 	var m: Array = ev.mao
 	_entrada_origem_visual.clear()
+	_sfx.embaralhar(_pitch_chain())
 	var destinos: Dictionary = {}
 	for i in mini(EstadoBatalha.TAMANHO_MAO, m.size()):
 		if m[i] == null:

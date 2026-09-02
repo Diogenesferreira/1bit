@@ -12,6 +12,10 @@ func _executar() -> void:
 	var tela := (load("res://scenes/battle/BattleScreen.tscn") as PackedScene).instantiate() as BattleScreen
 	root.add_child(tela)
 	await process_frame
+	if tela._sfx == null or tela._sfx._players.size() != BattleSfx.POOL_SIZE:
+		falhas.append("o banco polifonico de sons da batalha nao foi criado")
+	if not BattleSfx.SONS.has("touch") or not BattleSfx.SONS.has("fusion"):
+		falhas.append("os sons essenciais de carta nao foram carregados")
 	tela._chain_visual = 0
 	var velocidade_inicial := tela._velocidade_chain()
 	tela._chain_visual = 3
