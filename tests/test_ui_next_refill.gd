@@ -48,6 +48,11 @@ func _executar() -> void:
 	if tela._casas_bag[-1].tipo_atual() != next_inicial:
 		falhas.append("a ultima carta a direita da BAG nao corresponde a NEXT")
 	await tela._ao_tocar_casa(trio[0])
+	var icone_selecionado: CardIcon = tela._casas_campo[trio[0]]._icone
+	if not is_equal_approx(icone_selecionado.position.y, -CardIcon.SUBIDA_SELECAO):
+		falhas.append("a carta selecionada nao subiu para ganhar destaque")
+	if not icone_selecionado._rim.visible:
+		falhas.append("a marcacao da carta selecionada nao ficou visivel")
 	var entradas_apos_primeira := 0
 	for slot in [EstadoBatalha.ENTRADA_0, EstadoBatalha.ENTRADA_1]:
 		if tela._casas_campo[slot].cheia():

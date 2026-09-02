@@ -88,6 +88,14 @@ func centro() -> Vector2:
 	return position + size / 2.0
 
 
+func posicao_carta_no_canvas() -> Vector2:
+	return position + _icone.position
+
+
+func centro_carta_no_canvas() -> Vector2:
+	return posicao_carta_no_canvas() + size / 2.0
+
+
 func _gui_input(evento: InputEvent) -> void:
 	if not habilitado:
 		return

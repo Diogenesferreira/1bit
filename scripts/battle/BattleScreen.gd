@@ -18,10 +18,12 @@ const CANVAS := Vector2(940, 1685)
 const COR_REGUA_HAND := Color(0.79, 0.75, 0.66, 0.32)
 
 # --- tempos ----------------------------------------------------------
-const DUR_VOO := 0.22
+const DUR_VOO := 0.34
 const DUR_FUSAO_ALINHAR := 0.42
 const DUR_FUSAO_CONVERGIR := 0.40
-const DUR_QUEDA := 0.18         # NEXT descendo ate a casa consumida
+const DUR_QUEDA := 0.36         # NEXT descendo e crescendo ate a HAND
+const DUR_BAG_DESLIZE := 0.22
+const DUR_EMBARALHAR := 0.46
 const DUR_PULSO := 0.28
 const DUR_FLASH_TELA := 0.10
 const ESPERA_ENTRE_COMBOS := 0.18
@@ -676,17 +678,100 @@ func _espera(s: float) -> void:
 
 
 # Carta viajando de um ponto a outro. Devolve depois de pousar.
-func _voar(carta: Dictionary, de: Vector2, para: Vector2, dur := DUR_VOO) -> void:
+func _voar(carta: Dictionary, de: Vector2, para: Vector2, dur := DUR_VOO,
+		tam_de := VOO_BAG_TAM, tam_para := VOO_BAG_TAM, altura_arco := 18.0) -> void:
 	var icone := CardIcon.new()
 	_voos.add_child(icone)
-	icone.configurar(VOO_BAG_TAM, VOO_BAG_ICONE, 0, false, 0.3, 13)
-	icone.fixar_em(de - VOO_BAG_TAM / 2.0)
+	icone.configurar(tam_de, tam_de.x, 0, false, 0.3, 13)
+	icone.fixar_em(de - tam_de / 2.0)
 	icone.mostrar(String(carta.tipo), int(carta.valor), false)
-	var t := create_tween()
-	t.tween_property(icone, "position", para - VOO_BAG_TAM / 2.0, dur) \
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	var inicio := icone.position
+	var destino := para - tam_de / 2.0
+	var escala_final := tam_para.x / tam_de.x
+	var t := create_tween().set_parallel()
+	t.tween_method(_mover_control_arco.bind(icone, inicio, destino, altura_arco),
+		0.0, 1.0, dur).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	t.tween_property(icone, "scale", Vector2.ONE * escala_final, dur) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 	await t.finished
 	icone.queue_free()
+
+
+func _mover_control_arco(f: float, item: Control, de: Vector2, para: Vector2,
+		altura: float) -> void:
+	var controle := (de + para) / 2.0 + Vector2(0, -altura)
+	var inv := 1.0 - f
+	item.position = (de * inv * inv + controle * 2.0 * inv * f + para * f * f).round()
+
+
+func _criar_carta_overlay(tipo: String, valor: int, tamanho: Vector2,
+		posicao: Vector2) -> CardIcon:
+	var icone := CardIcon.new()
+	_voos.add_child(icone)
+	icone.configurar(tamanho, tamanho.x, 0, false, 0.3, 13)
+	icone.fixar_em(posicao)
+	icone.mostrar(tipo, valor, false)
+	return icone
+
+
+func _item_visual_bag(fila: Array, indice_visual: int) -> Dictionary:
+	var indice_fila := _casas_bag.size() - 1 - indice_visual
+	if indice_fila < 0 or indice_fila >= fila.size():
+		return {}
+	var item: Variant = fila[indice_fila]
+	return {"tipo": String(item.tipo), "valor": 0}
+
+
+# A BAG e uma esteira: ao comprar, as cartas existentes deslizam para a
+# direita e uma nova aparece pela esquerda. Ao devolver, o sentido se inverte.
+func _animar_fila(fila: Array, direcao := 1, duracao := DUR_BAG_DESLIZE) -> void:
+	var antigos: Array[Dictionary] = []
+	for casa: BagSlot in _casas_bag:
+		antigos.append({"tipo": casa.tipo_atual(), "valor": 0})
+		casa.limpar()
+
+	var voando: Array[CardIcon] = []
+	var t := create_tween().set_parallel()
+	if direcao >= 0:
+		for i in range(_casas_bag.size() - 1):
+			if String(antigos[i].tipo) == "":
+				continue
+			var icone := _criar_carta_overlay(String(antigos[i].tipo), 0,
+				VOO_BAG_TAM, _casas_bag[i].position)
+			voando.append(icone)
+			t.tween_property(icone, "position", _casas_bag[i + 1].position, duracao) \
+				.set_delay(float(i) * 0.008).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		var nova := _item_visual_bag(fila, 0)
+		if not nova.is_empty():
+			var entrada := _criar_carta_overlay(String(nova.tipo), 0, VOO_BAG_TAM,
+				_casas_bag[0].position + Vector2(-26, 0))
+			entrada.modulate.a = 0.0
+			voando.append(entrada)
+			t.tween_property(entrada, "position", _casas_bag[0].position, duracao) \
+				.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			t.tween_property(entrada, "modulate:a", 1.0, duracao * 0.72)
+	else:
+		for i in range(1, _casas_bag.size()):
+			if String(antigos[i].tipo) == "":
+				continue
+			var icone := _criar_carta_overlay(String(antigos[i].tipo), 0,
+				VOO_BAG_TAM, _casas_bag[i].position)
+			voando.append(icone)
+			t.tween_property(icone, "position", _casas_bag[i - 1].position, duracao) \
+				.set_delay(float(_casas_bag.size() - i) * 0.008) \
+				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		var nova := _item_visual_bag(fila, _casas_bag.size() - 1)
+		if not nova.is_empty():
+			var entrada := _criar_carta_overlay(String(nova.tipo), 0, VOO_BAG_TAM,
+				NEXT_CASA.position)
+			voando.append(entrada)
+			t.tween_property(entrada, "position", _casas_bag[-1].position, duracao) \
+				.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+	await t.finished
+	for icone: CardIcon in voando:
+		icone.queue_free()
+	_atualizar_fila(fila)
 
 
 func _anim_selecao(ev: Dictionary) -> void:
@@ -711,10 +796,11 @@ func _anim_desce(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	_casas_campo[slot].position = _pos_casa(slot)
 	var destino := _centro_casa(slot)
-	await _voar(ev.carta, _centro_next(), destino, DUR_QUEDA)
+	await _voar(ev.carta, _centro_next(), destino, DUR_QUEDA,
+		VOO_BAG_TAM, CAMPO_TAM, 42.0)
 	_casas_campo[slot].visible = true
-	_casas_campo[slot].mostrar(String(ev.carta.tipo), int(ev.carta.valor))
-	_atualizar_fila(ev.fila)
+	_casas_campo[slot].mostrar(String(ev.carta.tipo), int(ev.carta.valor), false)
+	await _animar_fila(ev.fila, 1)
 
 
 func _anim_volta(ev: Dictionary) -> void:
@@ -723,8 +809,9 @@ func _anim_volta(ev: Dictionary) -> void:
 		"valor": _casas_campo[slot].valor_atual()}
 	_casas_campo[slot].limpar()
 	if String(carta.tipo) != "":
-		await _voar(carta, _centro_casa(slot), _centro_next(), DUR_QUEDA)
-	_atualizar_fila(ev.fila)
+		await _voar(carta, _centro_casa(slot), _centro_next(), DUR_QUEDA,
+			CAMPO_TAM, VOO_BAG_TAM, 42.0)
+	await _animar_fila(ev.fila, -1)
 	_entrada_origem_visual.erase(slot)
 	_casas_campo[slot].visible = true
 
@@ -739,8 +826,7 @@ func _anim_abandono() -> void:
 
 # A cascata puxou a carta do topo do saco para completar o trio.
 func _anim_puxa(ev: Dictionary) -> void:
-	_atualizar_fila(ev.fila)
-	await _espera(0.05)
+	await _animar_fila(ev.fila, 1)
 
 
 # As cartas nunca saem para uma lane permanente: copias visuais se
@@ -758,7 +844,7 @@ func _anim_trio(ev: Dictionary) -> void:
 		var slot := int(slots[i])
 		var de := _centro_next()
 		if slot >= 0:
-			de = _centro_casa(slot)
+			de = _casas_campo[slot].centro_carta_no_canvas()
 			_casas_campo[slot].definir_selecionada(false)
 			_casas_campo[slot].limpar()
 			if slot >= EstadoBatalha.TAMANHO_MAO:
@@ -906,11 +992,14 @@ func _anim_renovacao() -> void:
 func _anim_nova_carta(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	var destino := _centro_casa(slot)
-	await _voar(ev.carta, _centro_next(), destino, DUR_QUEDA)
+	var chuva := bool(ev.get("chuva", false))
+	var duracao := DUR_QUEDA * (0.72 if chuva else 1.0)
+	await _voar(ev.carta, _centro_next(), destino, duracao,
+		VOO_BAG_TAM, CAMPO_TAM, 36.0)
 	_casas_campo[slot].visible = true
-	_casas_campo[slot].mostrar(String(ev.carta.tipo), int(ev.carta.valor))
-	_atualizar_fila(ev.fila)
-	await _espera(DUR_CHUVA if bool(ev.get("chuva", false)) else 0.01)
+	_casas_campo[slot].mostrar(String(ev.carta.tipo), int(ev.carta.valor), false)
+	await _animar_fila(ev.fila, 1, DUR_BAG_DESLIZE * (0.72 if chuva else 1.0))
+	await _espera(DUR_CHUVA if chuva else 0.01)
 
 
 func _anim_entra_na_mao(ev: Dictionary) -> void:
@@ -918,13 +1007,14 @@ func _anim_entra_na_mao(ev: Dictionary) -> void:
 	var para := int(ev.para)
 	var destino := _centro_casa(para)
 	var origem := _centro_casa(de)
+	var tipo := _casas_campo[de].tipo_atual()
+	var valor := _casas_campo[de].valor_atual()
 	_casas_campo[de].limpar()
 	# A carta da entrada passa para uma das cinco casas jogaveis da fileira.
-	var carta_estado: Carta = estado.mao[para]
-	if carta_estado != null:
-		await _voar({"tipo": carta_estado.tipo, "valor": carta_estado.valor},
-			origem, destino, DUR_QUEDA)
-		_casas_campo[para].mostrar(carta_estado.tipo, carta_estado.valor)
+	if tipo != "":
+		await _voar({"tipo": tipo, "valor": valor},
+			origem, destino, DUR_VOO, CAMPO_TAM, CAMPO_TAM, 24.0)
+		_casas_campo[para].mostrar(tipo, valor, false)
 		_casas_campo[para].visible = true
 	_entrada_origem_visual.erase(de)
 	_casas_campo[de].visible = true
@@ -933,17 +1023,59 @@ func _anim_entra_na_mao(ev: Dictionary) -> void:
 func _anim_redistribuicao(ev: Dictionary) -> void:
 	var m: Array = ev.mao
 	_entrada_origem_visual.clear()
+	var destinos: Dictionary = {}
+	for i in mini(EstadoBatalha.TAMANHO_MAO, m.size()):
+		if m[i] == null:
+			continue
+		var chave := "%s:%d" % [String(m[i].tipo), int(m[i].valor)]
+		if not destinos.has(chave):
+			destinos[chave] = []
+		(destinos[chave] as Array).append(i)
+
+	var voando: Array[CardIcon] = []
+	var movimentos: Array[Dictionary] = []
+	for i in _casas_campo.size():
+		var casa := _casas_campo[i]
+		var tipo := casa.tipo_atual()
+		if tipo == "":
+			continue
+		var valor := casa.valor_atual()
+		var chave := "%s:%d" % [tipo, valor]
+		if not destinos.has(chave) or (destinos[chave] as Array).is_empty():
+			continue
+		var destino_idx := int((destinos[chave] as Array).pop_front())
+		var icone := _criar_carta_overlay(tipo, valor, CAMPO_TAM,
+			casa.posicao_carta_no_canvas())
+		voando.append(icone)
+		movimentos.append({"icone": icone, "de": icone.position,
+			"para": _pos_casa(destino_idx), "ordem": i})
+
+	for casa: FieldSlot in _casas_campo:
+		casa.limpar()
+		casa.visible = true
+
+	if not movimentos.is_empty():
+		var t := create_tween().set_parallel()
+		for movimento: Dictionary in movimentos:
+			var altura := 22.0 + float(int(movimento.ordem) % 3) * 5.0
+			t.tween_method(_mover_control_arco.bind(movimento.icone,
+				movimento.de, movimento.para, altura), 0.0, 1.0, DUR_EMBARALHAR) \
+				.set_delay(float(int(movimento.ordem) % 5) * 0.018) \
+				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		await t.finished
+	for icone: CardIcon in voando:
+		icone.queue_free()
+
 	for i in EstadoBatalha.TAMANHO_MAO:
-		_casas_campo[i].visible = true
 		if i >= m.size() or m[i] == null:
 			_casas_campo[i].limpar()
 		else:
-			_casas_campo[i].mostrar(String(m[i].tipo), int(m[i].valor))
+			_casas_campo[i].mostrar(String(m[i].tipo), int(m[i].valor), false)
 	for i in range(EstadoBatalha.TAMANHO_MAO, _casas_campo.size()):
 		_casas_campo[i].visible = true
 		_casas_campo[i].position = _pos_casa(i)
 		_casas_campo[i].limpar()
-	await _espera(0.12)
+	await _espera(0.08)
 
 
 # So aqui o dano da corrente inteira aparece: um numero por inimigo

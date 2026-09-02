@@ -5,6 +5,8 @@ class_name CardIcon
 # exatamente 2x na mao, conforme spec/ASSETS.md.
 
 const DUR_CARD_IN := 0.18
+const DUR_SELECAO := 0.17
+const SUBIDA_SELECAO := 10.0
 
 var tipo := ""
 var valor := 0
@@ -17,6 +19,7 @@ var _face: TextureRect
 var _numero: TextureRect
 var _numero_atlas: AtlasTexture
 var _rim: Panel
+var _tween_selecao: Tween
 
 
 func _ready() -> void:
@@ -86,10 +89,17 @@ func mostrar(p_tipo: String, p_valor: int, animar := true) -> void:
 
 
 func limpar() -> void:
+	if _tween_selecao != null and _tween_selecao.is_valid():
+		_tween_selecao.kill()
 	tipo = ""
 	valor = 0
 	_selecionada = false
+	position = _base
+	scale = Vector2.ONE
+	modulate = Color.WHITE
+	z_index = 0
 	if _face:
+		_face.modulate = Color.WHITE
 		_face.visible = false
 		_numero.visible = false
 		_rim.visible = false
@@ -102,6 +112,14 @@ func vazio() -> bool:
 func definir_selecionada(v: bool) -> void:
 	_selecionada = v
 	_aplicar_rim()
+	if _tween_selecao != null and _tween_selecao.is_valid():
+		_tween_selecao.kill()
+	z_index = 12 if v else 0
+	_face.modulate = Color(1.05, 1.05, 1.05, 1.0) if v else Color.WHITE
+	_tween_selecao = create_tween().set_parallel()
+	_tween_selecao.tween_property(self, "position",
+		_base + Vector2(0, -SUBIDA_SELECAO) if v else _base, DUR_SELECAO) \
+		.set_trans(Tween.TRANS_BACK if v else Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	set_process(_wiggle or _selecionada)
 
 
@@ -120,14 +138,15 @@ func _aplicar_rim() -> void:
 	_rim.visible = _selecionada and not vazio()
 	var estilo := StyleBoxFlat.new()
 	estilo.bg_color = Color(0, 0, 0, 0)
-	estilo.border_color = Arte.cor_elemental(tipo)
-	estilo.set_border_width_all(2)
+	var cor := Arte.cor_elemental(tipo).lerp(Color.WHITE, 0.34)
+	estilo.border_color = cor
+	estilo.set_border_width_all(4)
 	_rim.add_theme_stylebox_override("panel", estilo)
 
 
 func _process(delta: float) -> void:
 	_tempo += delta
 	if _selecionada:
-		_rim.modulate.a = 0.72 + 0.28 * absf(sin(_tempo * 5.0))
+		_rim.modulate.a = 0.88 + 0.12 * absf(sin(_tempo * 4.5))
 	if _wiggle and not vazio():
 		position = (_base + Vector2(0, round(sin(_tempo * 2.1)))).round()
