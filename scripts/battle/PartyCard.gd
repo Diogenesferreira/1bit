@@ -8,6 +8,9 @@ signal skill_activated
 const CARD_SIZE := Vector2(152, 188)
 const GOLD := Color("c9a842")
 const DEAD_ALPHA := 0.12
+const HERO_SCALE := 1.5
+const HERO_BASE_Y := 140.0
+const SYMBOL_SIZE := Vector2(20, 20)
 const CHAR_LOGICAL := {
 	"dragon": Vector2i(57, 54),
 	"knight": Vector2i(44, 58),
@@ -61,14 +64,18 @@ func _build() -> void:
 	_border(inner, 2, ring)
 
 	var logical: Vector2i = CHAR_LOGICAL.get(element, Vector2i(52, 54))
-	var draw := Vector2(logical * 2)
+	# Os PNGs char80 foram entregues em 4x. No card eles usam 1,5x logico;
+	# os 2x anteriores faziam os bustos dominarem toda a cena.
+	var draw := Vector2(round(logical.x * HERO_SCALE), round(logical.y * HERO_SCALE))
 	_hero = _texture(Arte.party_hero(element), Rect2(
-		Vector2(round((CARD_SIZE.x - draw.x) / 2.0), 136.0 - draw.y + 4.0), draw))
+		Vector2(round((CARD_SIZE.x - draw.x) / 2.0), HERO_BASE_Y - draw.y), draw))
 
 	# Selo elemental espelhado pela placa LEADER no outro canto.
 	_rect(Rect2(-3, -3, 30, 30), Color("0d0e0c"), 20)
 	_border(Rect2(-3, -3, 30, 30), 2, ring, 21)
-	var symbol := _texture(Arte.party_symbol(element), Rect2(-1, -1, 26, 26))
+	# O atlas de simbolos e 3x (60x60). O glifo volta a 20x20, centralizado
+	# no encaixe de 30x30, enquanto a moldura permanece exatamente no lugar.
+	var symbol := _texture(Arte.party_symbol(element), Rect2(Vector2(2, 2), SYMBOL_SIZE))
 	symbol.z_index = 22
 
 	_build_skill_bar(ring)
