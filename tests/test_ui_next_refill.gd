@@ -52,10 +52,30 @@ func _executar() -> void:
 			falhas.append("o LEADER voltou a ter tamanho diferente dos aliados")
 		if BitmapFontLabel.CELL != Vector2i(12, 16):
 			falhas.append("a PARTY nao esta usando a fonte bitmap 1:1")
-		if not is_equal_approx(PartyCard.HERO_SCALE, 1.0) \
-				or PartyCard.ELEMENT_BADGE_SIZE != Vector2(20, 20) \
-				or PartyCard.SYMBOL_SIZE != Vector2(14, 14):
-			falhas.append("personagem ou simbolo da PARTY voltou a ser ampliado")
+		var draws_esperados := {
+			"dragon": Vector2(114, 108), "knight": Vector2(88, 116),
+			"nature": Vector2(112, 108), "light": Vector2(108, 112),
+			"dark": Vector2(104, 108), "heal": Vector2(96, 108),
+		}
+		if PartyCard.CHAR_DRAW != draws_esperados:
+			falhas.append("tabela literal de desenho da PARTY foi alterada")
+		for ally in tela._aliados:
+			var card: PartyCard = ally._card
+			if card.get_parent() != ally:
+				falhas.append("PartyCard perdeu o wrapper AllyUnit")
+				break
+			if card._frame == null or not card._frame.clip_contents:
+				falhas.append("FRAME da PARTY nao esta recortando o personagem")
+				break
+			if card._hero.get_parent() != card._frame:
+				falhas.append("personagem da PARTY nao esta no espaco do FRAME")
+				break
+			var draw: Vector2 = PartyCard.CHAR_DRAW[card.element]
+			var esperado := Vector2(round((PartyCard.FRAME_SIZE.x - draw.x) / 2.0),
+				PartyCard.ART_BASELINE - draw.y)
+			if card._hero.size != draw or card._hero.position != esperado:
+				falhas.append("personagem %s nao respeita tabela/baseline: pos=%s size=%s esperado=%s/%s" % [card.element, card._hero.position, card._hero.size, esperado, draw])
+				break
 		var skill_touch_state := [false]
 		tela._aliados[2]._card.skill_activated.connect(func() -> void: skill_touch_state[0] = true)
 		tela._aliados[2]._card.set_charge(8)
