@@ -12,6 +12,7 @@ const CELL := Vector2i(12, 16)
 @export var glyph_height := 16: set = _set_height
 @export var tint := Color("c9c0a8"): set = _set_tint
 @export var letter_spacing := 0: set = _set_spacing
+@export var align_right_in := 0: set = _set_align_right
 
 var _sheet: Texture2D
 
@@ -41,6 +42,11 @@ func _set_spacing(value: int) -> void:
 	_rebuild()
 
 
+func _set_align_right(value: int) -> void:
+	align_right_in = maxi(0, value)
+	_rebuild()
+
+
 func _rebuild() -> void:
 	if _sheet == null:
 		_sheet = Arte.tex("ui_v11/ui/font_1x_v1.png")
@@ -52,7 +58,8 @@ func _rebuild() -> void:
 	var scale_factor := float(glyph_height) / float(CELL.y)
 	var glyph_width := int(round(float(CELL.x) * scale_factor))
 	var advance := glyph_width + letter_spacing
-	var x := 0
+	var text_width := maxi(0, text.length() * advance - letter_spacing)
+	var x := maxi(0, align_right_in - text_width)
 	for character in text:
 		var index := ORDER.find(character)
 		if index >= 0:
@@ -70,7 +77,7 @@ func _rebuild() -> void:
 			glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			add_child(glyph)
 		x += advance
-	var final_width := maxi(0, x - letter_spacing)
+	var final_width := maxi(text_width, align_right_in)
 	custom_minimum_size = Vector2(final_width, glyph_height)
 	size = custom_minimum_size
 	mouse_filter = Control.MOUSE_FILTER_IGNORE

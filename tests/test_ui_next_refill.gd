@@ -26,6 +26,24 @@ func _executar() -> void:
 		falhas.append("a aceleracao da chain ultrapassou o limite visual")
 	if not is_equal_approx(BattleScreen.DISTRIBUICAO_FINAL_ACELERACAO, 1.5):
 		falhas.append("a distribuicao final nao esta configurada em 1.5x")
+	if tela._top_bar == null or tela._top_bar.position != Vector2(27, 19) \
+			or tela._top_bar.size != Vector2(886, TopBar.ROW_H):
+		falhas.append("a barra superior nao ocupa o contrato 886x72")
+	else:
+		if tela._top_bar._coin.size.x != TopBar.BOX_COIN \
+				or tela._top_bar._gem.size.x != TopBar.BOX_GEM \
+				or tela._top_bar._energy.size.x != TopBar.BOX_ENERGY:
+			falhas.append("os contadores superiores perderam a largura reservada")
+		if tela._top_bar._coin.align_right_in != TopBar.BOX_COIN \
+				or tela._top_bar._energy.align_right_in != TopBar.BOX_ENERGY:
+			falhas.append("os valores superiores nao estao ancorados a direita")
+	if tela._stage_plate == null or tela._stage_plate.position != Vector2(22, 504):
+		falhas.append("o STAGE nao esta no canto inferior esquerdo da arena")
+	else:
+		var stage_background := tela._stage_plate.get_child(0) as ColorRect
+		if stage_background == null or not is_equal_approx(stage_background.color.a, 1.0) \
+				or stage_background.color != StagePlate.PLATE_BG:
+			falhas.append("o fundo do STAGE nao esta opaco")
 	if tela._life_bar == null:
 		falhas.append("o novo componente LIFE nao foi criado")
 	else:

@@ -77,12 +77,12 @@ var _icone_next: CardIcon
 var _casas_campo: Array[FieldSlot] = []
 var _sfx: BattleSfx
 
-var _txt_andar: Label
 var _txt_score: Label
 var _txt_rodada: Label
 var _txt_gems: Label
 var _txt_moedas: Label
-var _txt_energia: Label
+var _top_bar: TopBar
+var _stage_plate: StagePlate
 var _life_bar: PlayerLifeBar
 var _flash: ColorRect
 var _voos: Control  # camada das cartas em transito
@@ -218,39 +218,10 @@ func _asset_altura(arquivo: String, pos: Vector2, altura: float, pai: Node,
 
 
 func _montar_progresso_palco(arena: Control) -> void:
-	var placa := Panel.new()
-	placa.position = Vector2(22, 505)
-	placa.size = Vector2(270, 35)
-	placa.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var estilo := StyleBoxFlat.new()
-	estilo.bg_color = Color(0.03, 0.035, 0.03, 0.72)
-	estilo.border_color = Color(0.79, 0.75, 0.66, 0.40)
-	estilo.set_border_width_all(1)
-	placa.add_theme_stylebox_override("panel", estilo)
-	arena.add_child(placa)
-	_asset_altura("ui_v10/ui/lbl_stage.png", Vector2(12, 12), 11, placa, 0.65)
-	_asset_altura("ui_v10/ui/val_stage.png", Vector2(78, 11), 12, placa)
-	var divisor_stage := ColorRect.new()
-	divisor_stage.position = Vector2(118, 8)
-	divisor_stage.size = Vector2(1, 18)
-	divisor_stage.color = Color(0.79, 0.75, 0.66, 0.28)
-	placa.add_child(divisor_stage)
-	for x in [143.0, 178.0]:
-		var conector := ColorRect.new()
-		conector.position = Vector2(x, 17)
-		conector.size = Vector2(20, 2)
-		conector.color = Color(0.79, 0.75, 0.66, 0.50 if x == 143.0 else 0.28)
-		placa.add_child(conector)
-	for i in 3:
-		var no := ColorRect.new()
-		var lado: float = [12.0, 15.0, 17.0][i]
-		no.position = Vector2(137 + i * 36, 18) - Vector2.ONE * lado / 2.0
-		no.size = Vector2.ONE * lado
-		no.rotation = PI / 4.0
-		no.color = [Color("e8e3d4"), Color("7d9455"), Color("6b241f")][i]
-		no.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		placa.add_child(no)
-	_asset_altura("ui_v10/ui/lbl_boss.png", Vector2(225, 13), 10, placa, 0.85)
+	_stage_plate = StagePlate.new()
+	_stage_plate.name = "StagePlate"
+	_stage_plate.position = Vector2(22, 504)
+	arena.add_child(_stage_plate)
 
 
 func _moldura_arena(logica: Rect2, pai: Control) -> void:
@@ -396,87 +367,11 @@ func _montar_campo() -> void:
 
 
 func _montar_hud_topo() -> void:
-	var avatar := Panel.new()
-	avatar.position = Vector2(27, 28)
-	avatar.size = Vector2(58, 58)
-	var ae := StyleBoxFlat.new()
-	ae.bg_color = Color("141512")
-	ae.border_color = Color("8f886f")
-	ae.set_border_width_all(2)
-	avatar.add_theme_stylebox_override("panel", ae)
-	add_child(avatar)
-	var avatar_atlas := Arte.tex_recortada("characters_v4/ally_dragon_v1.png",
-		Rect2(260, 20, 730, 730))
-	var retrato := TextureRect.new()
-	retrato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	retrato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	retrato.texture = avatar_atlas
-	retrato.position = Vector2(32, 33)
-	retrato.size = Vector2(48, 48)
-	retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	add_child(retrato)
-	_asset_altura("ui_v10/ui/val_account.png", Vector2(100, 37), 17, self)
-	_txt_andar = Arte.rotulo("", Vector2.ZERO, 1, Color(0, 0, 0, 0), 1, false, self)
-	var lv_box := Panel.new()
-	lv_box.position = Vector2(216, 35)
-	lv_box.size = Vector2(53, 19)
-	var lv_style := StyleBoxFlat.new()
-	lv_style.bg_color = Color(0, 0, 0, 0)
-	lv_style.border_color = Color(0.79, 0.75, 0.66, 0.35)
-	lv_style.set_border_width_all(1)
-	lv_box.add_theme_stylebox_override("panel", lv_style)
-	add_child(lv_box)
-	_asset_altura("ui_v10/ui/lbl_lv.png", Vector2(5, 4), 11, lv_box, 0.6)
-	_asset_altura("ui_v10/ui/val_lv.png", Vector2(29, 3), 12, lv_box)
-	_asset_altura("ui_v10/ui/lbl_xp.png", Vector2(100, 66), 11, self, 0.6)
-	var xp_trilho := Panel.new()
-	xp_trilho.position = Vector2(130, 65)
-	xp_trilho.size = Vector2(214, 13)
-	var xp_style := StyleBoxFlat.new()
-	xp_style.bg_color = Color("121211")
-	xp_style.border_color = Color(0.79, 0.75, 0.66, 0.5)
-	xp_style.set_border_width_all(1)
-	xp_trilho.add_theme_stylebox_override("panel", xp_style)
-	add_child(xp_trilho)
-	var xp_fill := ColorRect.new()
-	xp_fill.position = Vector2(3, 3)
-	xp_fill.size = Vector2(128, 7)
-	xp_fill.color = Color("c9c0a8")
-	xp_trilho.add_child(xp_fill)
-	_asset_altura("ui_v10/ui/val_xp.png", Vector2(354, 66), 11, self, 0.7)
-	var moeda := Polygon2D.new()
-	moeda.position = Vector2(516, 52)
-	moeda.polygon = PackedVector2Array([Vector2(-8, -5), Vector2(0, -9),
-		Vector2(8, -5), Vector2(8, 5), Vector2(0, 9), Vector2(-8, 5)])
-	moeda.color = Color("c9a842")
-	add_child(moeda)
-	_asset_altura("ui_v10/ui/val_coin.png", Vector2(535, 45), 14, self)
-	var gema := Polygon2D.new()
-	gema.position = Vector2(638, 52)
-	gema.polygon = PackedVector2Array([Vector2(0, -9), Vector2(8, 0),
-		Vector2(0, 9), Vector2(-8, 0)])
-	gema.color = Color("7a5f9a")
-	add_child(gema)
-	_asset_altura("ui_v10/ui/val_gem.png", Vector2(653, 45), 14, self)
-	var divisor := ColorRect.new()
-	divisor.position = Vector2(737, 35)
-	divisor.size = Vector2(1, 34)
-	divisor.color = Color(0.79, 0.75, 0.66, 0.25)
-	add_child(divisor)
-	var raio := Polygon2D.new()
-	raio.position = Vector2(764, 51)
-	raio.polygon = PackedVector2Array([Vector2(3, -13), Vector2(-7, 2),
-		Vector2(0, 2), Vector2(-3, 13), Vector2(8, -3), Vector2(1, -3)])
-	raio.color = Color("c9a842")
-	add_child(raio)
-	_asset_altura("ui_v10/ui/val_energy.png", Vector2(782, 44), 16, self)
-	_txt_energia = Arte.rotulo("", Vector2.ZERO, 1, Color(0, 0, 0, 0), 1, false, self)
-	for i in 3:
-		var barra := ColorRect.new()
-		barra.position = Vector2(879, 42 + i * 11)
-		barra.size = Vector2(34, 5)
-		barra.color = Color("c9c0a8")
-		add_child(barra)
+	_top_bar = TopBar.new()
+	_top_bar.name = "TopBar"
+	_top_bar.position = Vector2(27, 19)
+	_top_bar.row_width = 886
+	add_child(_top_bar)
 
 
 func _caveira(pos: Vector2) -> void:
@@ -575,8 +470,6 @@ func _atualizar_hud() -> void:
 	for a: AllyUnit in _aliados:
 		a.atualizar()
 
-	_txt_andar.text = ""
-	_txt_energia.text = ""
 	_life_bar.hp_max = estado.hp_max
 	_life_bar.drain_to(estado.hp)
 
