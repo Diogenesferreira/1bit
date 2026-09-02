@@ -63,9 +63,8 @@ const FUSAO_PASSO := 148.0
 
 # --- HUD --------------------------------------------------------------
 const CAVEIRA_LADO := 20.0
-const BARRA_JOGADOR := Rect2(114, 1579, 626, 22)
-const BARRA_JOGADOR_RECUO := 3.0
-const BARRA_JOGADOR_UTIL := 620.0
+const LIFE_POSITION := Vector2(31, 1577)
+const LIFE_WIDTH := 878
 
 var estado: EstadoBatalha
 
@@ -81,9 +80,8 @@ var _txt_score: Label
 var _txt_rodada: Label
 var _txt_gems: Label
 var _txt_moedas: Label
-var _txt_hp: BitmapFontLabel
 var _txt_energia: Label
-var _barra_hp_recorte: Control
+var _life_bar: PlayerLifeBar
 var _flash: ColorRect
 var _voos: Control  # camada das cartas em transito
 
@@ -490,48 +488,13 @@ func _caveira(pos: Vector2) -> void:
 
 
 func _montar_hud_rodape() -> void:
-	var coracao := Polygon2D.new()
-	coracao.position = Vector2(44, 1577)
-	coracao.polygon = PackedVector2Array([Vector2(14, 26), Vector2(0, 12), Vector2(0, 5),
-		Vector2(5, 0), Vector2(14, 5), Vector2(23, 0), Vector2(28, 5), Vector2(28, 12)])
-	coracao.color = Color("c04a3e")
-	add_child(coracao)
-	_bitmap("HP", Vector2(82, 1582), 16, Color("c9c0a8"), self)
-	_txt_hp = _bitmap("", Vector2(750, 1582), 16, Color("e8e3d4"), self)
-
-	var caixa := Panel.new()
-	caixa.position = BARRA_JOGADOR.position
-	caixa.size = BARRA_JOGADOR.size
-	caixa.clip_contents = true
-	caixa.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var caixa_estilo := StyleBoxFlat.new()
-	caixa_estilo.bg_color = Color("121211")
-	caixa_estilo.border_color = Color(0.79, 0.75, 0.66, 0.55)
-	caixa_estilo.set_border_width_all(1)
-	caixa.add_theme_stylebox_override("panel", caixa_estilo)
-	add_child(caixa)
-	_barra_hp_recorte = Control.new()
-	_barra_hp_recorte.position = Vector2(BARRA_JOGADOR_RECUO, BARRA_JOGADOR_RECUO)
-	_barra_hp_recorte.size = Vector2(BARRA_JOGADOR_UTIL,
-		BARRA_JOGADOR.size.y - BARRA_JOGADOR_RECUO * 2.0)
-	_barra_hp_recorte.clip_contents = true
-	_barra_hp_recorte.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	caixa.add_child(_barra_hp_recorte)
-	var vida := ColorRect.new()
-	vida.position = Vector2.ZERO
-	vida.size = _barra_hp_recorte.size
-	vida.color = Color("c04a3e")
-	_barra_hp_recorte.add_child(vida)
-	var brilho := ColorRect.new()
-	brilho.position = Vector2.ZERO
-	brilho.size = Vector2(_barra_hp_recorte.size.x, 2)
-	brilho.color = Color("d9695c")
-	_barra_hp_recorte.add_child(brilho)
-	var sombra := ColorRect.new()
-	sombra.position = Vector2(0, _barra_hp_recorte.size.y - 2)
-	sombra.size = Vector2(_barra_hp_recorte.size.x, 2)
-	sombra.color = Color("8f3229")
-	_barra_hp_recorte.add_child(sombra)
+	_life_bar = PlayerLifeBar.new()
+	_life_bar.name = "PlayerLifeBar"
+	_life_bar.position = LIFE_POSITION
+	_life_bar.row_width = LIFE_WIDTH
+	_life_bar.hp_max = estado.hp_max
+	_life_bar.hp_current = estado.hp
+	add_child(_life_bar)
 
 
 # ------------------------------------------------------------ posicoes
@@ -611,11 +574,9 @@ func _atualizar_hud() -> void:
 		a.atualizar()
 
 	_txt_andar.text = ""
-	_txt_hp.text = "%d/%d" % [estado.hp, estado.hp_max]
 	_txt_energia.text = ""
-
-	var fracao := clampf(float(estado.hp) / maxf(1.0, float(estado.hp_max)), 0.0, 1.0)
-	_barra_hp_recorte.size.x = BARRA_JOGADOR_UTIL * fracao
+	_life_bar.hp_max = estado.hp_max
+	_life_bar.drain_to(estado.hp)
 
 	var liberado := not _animando and not estado.fim
 	for i in _casas_campo.size():

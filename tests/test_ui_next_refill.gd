@@ -26,6 +26,21 @@ func _executar() -> void:
 		falhas.append("a aceleracao da chain ultrapassou o limite visual")
 	if not is_equal_approx(BattleScreen.DISTRIBUICAO_FINAL_ACELERACAO, 1.5):
 		falhas.append("a distribuicao final nao esta configurada em 1.5x")
+	if tela._life_bar == null:
+		falhas.append("o novo componente LIFE nao foi criado")
+	else:
+		if tela._life_bar.position != BattleScreen.LIFE_POSITION \
+				or tela._life_bar.row_width != BattleScreen.LIFE_WIDTH:
+			falhas.append("o LIFE nao ocupa a faixa inferior correta")
+		if not tela._life_bar._well.clip_contents:
+			falhas.append("a calha do LIFE nao esta recortando o fill")
+		if tela._life_bar._fill.get_parent() != tela._life_bar._well \
+				or tela._life_bar._tip.get_parent() != tela._life_bar._well:
+			falhas.append("fill ou ponta do LIFE estao fora da calha")
+		if tela._life_bar._fill.stretch_mode != TextureRect.STRETCH_TILE:
+			falhas.append("a textura do LIFE esta sendo esticada")
+		if tela._life_bar._value.text != "%d/%d" % [tela.estado.hp, tela.estado.hp_max]:
+			falhas.append("o valor do LIFE nao reflete o HP real")
 	tela._chain_visual = 0
 	if not is_equal_approx(tela._casas_bag[0].position.x, BattleScreen.BAG_X0):
 		falhas.append("a primeira carta da BAG nao respeita o recuo configurado")

@@ -561,9 +561,9 @@ func _checar_sincronia(onde: String) -> void:
 			desalinhadas += 1
 	if desalinhadas != 0:
 		_falhar("%s: mao com %d cartas fora da grade" % [onde, desalinhadas])
-	if tela._txt_hp.text != "%d/%d" % [tela.estado.hp, tela.estado.hp_max]:
+	if tela._life_bar._value.text != "%d/%d" % [tela.estado.hp, tela.estado.hp_max]:
 		_falhar("%s: HUD de HP mostra '%s' e o estado diz %d/%d" % [onde,
-			tela._txt_hp.text, tela.estado.hp, tela.estado.hp_max])
+			tela._life_bar._value.text, tela.estado.hp, tela.estado.hp_max])
 
 
 func _print(nome: String) -> void:
