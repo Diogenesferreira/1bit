@@ -110,12 +110,10 @@ func _montar() -> void:
 	var fundo := ColorRect.new()
 	fundo.name = "BackgroundFinal"
 	fundo.color = Color("080908")
-	fundo.size = CANVAS
 	fundo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(fundo)
+	fundo.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var painel := Panel.new()
-	painel.position = Vector2.ZERO
-	painel.size = CANVAS
 	var painel_estilo := StyleBoxFlat.new()
 	painel_estilo.bg_color = Color("0d0e0c")
 	painel_estilo.border_color = Color("2b2b28")
@@ -123,9 +121,8 @@ func _montar() -> void:
 	painel.add_theme_stylebox_override("panel", painel_estilo)
 	painel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(painel)
+	painel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var moldura_interna := Panel.new()
-	moldura_interna.position = Vector2(12, 12)
-	moldura_interna.size = Vector2(916, 1661)
 	var interna_estilo := StyleBoxFlat.new()
 	interna_estilo.bg_color = Color(0, 0, 0, 0)
 	interna_estilo.border_color = Color(0.79, 0.75, 0.66, 0.30)
@@ -133,6 +130,12 @@ func _montar() -> void:
 	moldura_interna.add_theme_stylebox_override("panel", interna_estilo)
 	moldura_interna.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(moldura_interna)
+	moldura_interna.anchor_right = 1.0
+	moldura_interna.anchor_bottom = 1.0
+	moldura_interna.offset_left = 12.0
+	moldura_interna.offset_top = 12.0
+	moldura_interna.offset_right = -12.0
+	moldura_interna.offset_bottom = -12.0
 	_montar_hud_topo()
 
 	var arena := Control.new()
@@ -181,7 +184,6 @@ func _montar() -> void:
 
 	_flash = ColorRect.new()
 	_flash.name = "ScreenFlash"
-	_flash.size = CANVAS
 	_flash.z_index = 200
 	_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_flash.visible = false
@@ -190,6 +192,7 @@ func _montar() -> void:
 	mat.set_shader_parameter("quantidade", 1.0)
 	_flash.material = mat
 	add_child(_flash)
+	_flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
 func _bitmap(txt: String, pos: Vector2, altura: int, cor: Color, pai: Node,

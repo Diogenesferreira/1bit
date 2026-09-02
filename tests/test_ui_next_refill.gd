@@ -38,6 +38,16 @@ func _executar() -> void:
 	if tela._voos.z_index <= tela._casas_campo[0].z_index:
 		falhas.append("a camada de fusao nao esta acima das cartas da HAND")
 
+	# Telefones 20:9 expandem a altura logica alem do canvas de referencia.
+	# Fundo, moldura e flash precisam acompanhar essa area sem deformar a UI.
+	root.size = Vector2i(940, 2094)
+	await process_frame
+	var fundo := tela.get_node("BackgroundFinal") as ColorRect
+	if fundo.size != Vector2(940, 2094):
+		falhas.append("o fundo nao preenche uma tela 20:9")
+	if tela._flash.size != Vector2(940, 2094):
+		falhas.append("o flash nao acompanha a tela expandida")
+
 	var trio: Array[int] = []
 	for i in EstadoBatalha.TAMANHO_MAO:
 		var base: Carta = tela.estado.mao[i]
