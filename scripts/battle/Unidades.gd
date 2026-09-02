@@ -80,7 +80,7 @@ const HUD_SKILL_ALIADO_TAM := Vector2(96, 96)
 # com um inimigo comum, cinco inimigos ou um boss enorme.
 const SELO_ALIADO_TAM := Vector2(165, 165)
 const SELO_ALIADO_GAP := 8.0
-const SELO_ALIADO_Y := 607.0
+const SELO_ALIADO_Y := 632.0
 
 
 static func escala() -> Vector2:

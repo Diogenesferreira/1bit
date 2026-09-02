@@ -1,0 +1,80 @@
+## Placa de life + turno de um inimigo. Todo o tamanho vem do fator inteiro k.
+class_name EnemyPlate
+extends Control
+
+const ART := "res://art/enemy/"
+
+@export var element: String = "dragon"
+@export var k: int = 4                       # 12 / 6 / 4 / 3 apenas
+@export var turn: int = 1
+@export var hp_ratio: float = 1.0
+
+var _plate: TextureRect
+var _digit: TextureRect
+var _label: TextureRect
+var _well: TextureRect
+var _fill_clip: Control
+var _fill: TextureRect
+
+func _ready() -> void:
+	var ps := BattleLayout.plate_size(k)
+	custom_minimum_size = ps
+	size = ps
+
+	_plate = _tex(ART + "enemy_turn_plate_%s_v1.png" % element, Rect2(Vector2.ZERO, ps))
+
+	var dr := BattleLayout.plate_digit_rect(k)
+	_digit = TextureRect.new()
+	_digit.texture = _digit_atlas(turn)
+	_digit.position = dr.position
+	_digit.size = dr.size
+	_digit.stretch_mode = TextureRect.STRETCH_SCALE
+	_digit.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	add_child(_digit)
+
+	var lr := BattleLayout.plate_label_rect(k)
+	_label = _tex(ART + "enemy_label_turn_v1.png", Rect2(lr.position, lr.size))
+	_well = _tex(ART + "enemy_hp_well_v1.png", Rect2(Vector2.ZERO, ps))
+
+	_fill_clip = Control.new()
+	_fill_clip.clip_contents = true
+	_fill_clip.position = Vector2.ZERO
+	_fill_clip.size = Vector2(ps.x * hp_ratio, ps.y)
+	add_child(_fill_clip)
+	_fill = TextureRect.new()
+	_fill.texture = load(ART + "enemy_hp_fill_v1.png")
+	_fill.size = ps
+	_fill.stretch_mode = TextureRect.STRETCH_SCALE
+	_fill.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_fill_clip.add_child(_fill)
+
+func _tex(path: String, r: Rect2) -> TextureRect:
+	var t := TextureRect.new()
+	t.texture = load(path)
+	t.position = r.position
+	t.size = r.size
+	t.stretch_mode = TextureRect.STRETCH_SCALE
+	t.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	add_child(t)
+	return t
+
+func _digit_atlas(n: int) -> AtlasTexture:
+	var at := AtlasTexture.new()
+	at.atlas = load(ART + "enemy_digits_sheet_v1.png")
+	at.region = Rect2(clampi(n, 0, 9) * 42, 0, 42, 48)   # celula de origem
+	return at
+
+func set_turn(n: int) -> void:
+	turn = n
+	_digit.texture = _digit_atlas(n)
+	var t := create_tween()
+	t.tween_property(_digit, "scale", Vector2(1.15, 1.15), 0.08)
+	t.tween_property(_digit, "scale", Vector2.ONE, BattleLayout.T_TURN - 0.08)\
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+## Dreno de HP — 420 ms, cubic-out.
+func set_hp(ratio: float) -> void:
+	hp_ratio = clampf(ratio, 0.0, 1.0)
+	var target := round(BattleLayout.plate_size(k).x * hp_ratio)
+	create_tween().tween_property(_fill_clip, "size:x", target, BattleLayout.T_DRAIN)\
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)

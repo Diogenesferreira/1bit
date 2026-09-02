@@ -1,0 +1,706 @@
+{
+ "_doc": "Selos de Fragmento — tela de batalha. Todas as medidas em px de design (1 px design = 1 px do viewport base 940x1685).",
+ "design": {
+  "width": 940,
+  "height": 1685,
+  "aspect": "~9:16.1",
+  "bg": "#080908",
+  "card": {
+   "x": 0,
+   "y": 0,
+   "w": 940,
+   "h": 1685,
+   "bg": "#0d0e0c",
+   "border": {
+    "w": 2,
+    "color": "#2b2b28"
+   },
+   "padding": 10
+  },
+  "inner": {
+   "x": 12,
+   "y": 12,
+   "w": 916,
+   "h": 1661,
+   "border": {
+    "w": 1,
+    "color": "rgba(201,192,168,0.30)"
+   },
+   "padding": 14,
+   "gap": 14
+  },
+  "content": {
+   "x": 25,
+   "y": 25,
+   "w": 890
+  }
+ },
+ "palette": {
+  "window": "#080908",
+  "panel": "#0d0e0c",
+  "field": "#101210",
+  "strip": "#121311",
+  "well": "#121211",
+  "slot_bg": "#0b0d0a",
+  "ink": "#201f1d",
+  "bone": "#c9c0a8",
+  "bone_light": "#e8e3d4",
+  "bone_dim": "#8f886f",
+  "empty_socket": "#3a3a35",
+  "hp": "#c04a3e",
+  "gold": "#c9a842",
+  "gem": "#7a5f9a",
+  "el": {
+   "dragon": "#a8443a",
+   "knight": "#5a86a8",
+   "nature": "#7d9455",
+   "light": "#c9a842",
+   "dark": "#7a5f9a",
+   "heal": "#b09a72",
+   "wild": "#e8e3d4"
+  }
+ },
+ "sections": [
+  {
+   "id": "header",
+   "y": 25,
+   "h": 64,
+   "desc": "barra de conta"
+  },
+  {
+   "id": "stage",
+   "y": 103,
+   "h": 560,
+   "desc": "palco / mapa de batalha"
+  },
+  {
+   "id": "party_rule",
+   "y": 679,
+   "h": 18
+  },
+  {
+   "id": "party",
+   "y": 711,
+   "h": 222,
+   "desc": "5 selos 1A"
+  },
+  {
+   "id": "bag",
+   "y": 947,
+   "h": 160
+  },
+  {
+   "id": "hand_rule",
+   "y": 1121,
+   "h": 18
+  },
+  {
+   "id": "hand",
+   "y": 1153,
+   "h": 446,
+   "desc": "grid 2x6: 5 cartas + 1 entrada por fileira, cartas 138x191"
+  },
+  {
+   "id": "footer",
+   "y": 1615,
+   "h": 41,
+   "desc": "life"
+  }
+ ],
+ "header": {
+  "h": 64,
+  "gap": 16,
+  "avatar": {
+   "w": 58,
+   "h": 58,
+   "border": {
+    "w": 2,
+    "color": "rgba(201,192,168,0.6)"
+   },
+   "bg": "#141512",
+   "inset": 3,
+   "photo_bg": "#0b0d0a",
+   "corner_blocks": [
+    {
+     "x": -2,
+     "y": -2,
+     "w": 8,
+     "h": 8,
+     "color": "#c9c0a8"
+    },
+    {
+     "x": "right -2",
+     "y": "bottom -2",
+     "w": 8,
+     "h": 8,
+     "color": "#c9c0a8"
+    }
+   ]
+  },
+  "name": {
+   "asset": "ui/val_account.png",
+   "h": 17
+  },
+  "level_box": {
+   "border": {
+    "w": 1,
+    "color": "rgba(201,192,168,0.35)"
+   },
+   "padding": [
+    2,
+    5
+   ],
+   "gap": 5,
+   "label": {
+    "asset": "ui/lbl_lv.png",
+    "h": 11,
+    "alpha": 0.6
+   },
+   "value": {
+    "asset": "ui/val_lv.png",
+    "h": 12
+   }
+  },
+  "xp": {
+   "gap": 9,
+   "label": {
+    "asset": "ui/lbl_xp.png",
+    "h": 11,
+    "alpha": 0.6
+   },
+   "bar": {
+    "w": 214,
+    "h": 13,
+    "border": {
+     "w": 1,
+     "color": "rgba(201,192,168,0.5)"
+    },
+    "bg": "#121211",
+    "padding": 2,
+    "fill": {
+     "pct": 62,
+     "pattern": "listras verticais 3px alternando #c9c0a8 / #8f886f"
+    }
+   },
+   "value": {
+    "asset": "ui/val_xp.png",
+    "h": 11,
+    "alpha": 0.7
+   }
+  },
+  "coin": {
+   "icon": {
+    "w": 17,
+    "h": 17,
+    "color": "#c9a842",
+    "shape": "hexagono"
+   },
+   "value": {
+    "asset": "ui/val_coin.png",
+    "h": 14
+   },
+   "reserved_w": 82
+  },
+  "gem": {
+   "icon": {
+    "w": 15,
+    "h": 18,
+    "color": "#7a5f9a",
+    "shape": "losango"
+   },
+   "value": {
+    "asset": "ui/val_gem.png",
+    "h": 14
+   },
+   "reserved_w": 68
+  },
+  "energy": {
+   "divider": {
+    "border_left": 1,
+    "color": "rgba(201,192,168,0.25)",
+    "padding_left": 16
+   },
+   "icon": {
+    "w": 16,
+    "h": 26,
+    "color": "#c9a842",
+    "shape": "raio"
+   },
+   "value": {
+    "asset": "ui/val_energy.png",
+    "h": 16
+   },
+   "reserved_w": 86
+  },
+  "menu": {
+   "bars": 3,
+   "w": 34,
+   "h": 5,
+   "gap": 6,
+   "color": "#c9c0a8"
+  }
+ },
+ "stage": {
+  "w": 890,
+  "h": 560,
+  "inner": {
+   "w": 888,
+   "h": 558
+  },
+  "bg": "#101210",
+  "border": {
+   "w": 1,
+   "color": "rgba(201,192,168,0.35)"
+  },
+  "clip": true,
+  "backdrop": {
+   "fit": "cover",
+   "asset": "backdrops/stage_*.png"
+  },
+  "corners": [
+   {
+    "x": 6,
+    "y": 6
+   },
+   {
+    "x": "right 6",
+    "y": 6
+   },
+   {
+    "x": 6,
+    "y": "bottom 6"
+   },
+   {
+    "x": "right 6",
+    "y": "bottom 6"
+   }
+  ],
+  "corner_style": {
+   "w": 16,
+   "h": 16,
+   "stroke": 2,
+   "color": "#c9c0a8"
+  },
+  "progress": {
+   "x": 22,
+   "anchor": "bottom",
+   "bottom": 20,
+   "bg": "rgba(8,9,8,0.72)",
+   "border": {
+    "w": 1,
+    "color": "rgba(201,192,168,0.4)"
+   },
+   "padding": [
+    8,
+    12
+   ],
+   "gap": 12,
+   "label": {
+    "asset": "ui/lbl_stage.png",
+    "h": 11,
+    "alpha": 0.65
+   },
+   "value": {
+    "asset": "ui/val_stage.png",
+    "h": 12
+   },
+   "divider": {
+    "w": 1,
+    "h": 18,
+    "color": "rgba(201,192,168,0.28)"
+   },
+   "nodes": [
+    {
+     "state": "done",
+     "w": 12,
+     "h": 12,
+     "rot": 45,
+     "fill": "#c9c0a8"
+    },
+    {
+     "connector": {
+      "w": 20,
+      "h": 2,
+      "color": "rgba(201,192,168,0.5)"
+     }
+    },
+    {
+     "state": "current",
+     "w": 15,
+     "h": 15,
+     "rot": 45,
+     "fill": "#7d9455",
+     "border": {
+      "w": 2,
+      "color": "#c9c0a8"
+     },
+     "glow": "8px #7d9455"
+    },
+    {
+     "connector": {
+      "w": 20,
+      "h": 2,
+      "color": "rgba(201,192,168,0.28)"
+     }
+    },
+    {
+     "state": "boss",
+     "w": 17,
+     "h": 17,
+     "rot": 45,
+     "fill": "#2a1512",
+     "border": {
+      "w": 2,
+      "color": "#c04a3e"
+     }
+    }
+   ],
+   "boss_label": {
+    "asset": "ui/lbl_boss.png",
+    "h": 10,
+    "alpha": 0.85
+   }
+  }
+ },
+ "enemy_plate": {
+  "source": {
+   "plate": "384x144",
+   "well": "384x144",
+   "fill": "384x144",
+   "label": "144x48",
+   "digits": "420x48 (10 celulas 42x48)"
+  },
+  "escalas_legais": {
+   "k12": "384x144",
+   "k6": "192x72",
+   "k4": "128x48",
+   "k3": "96x36"
+  },
+  "formula": {
+   "plate_w": "32*k",
+   "plate_h": "12*k",
+   "digit_x": "11.5*k",
+   "digit_y": "k",
+   "digit_w": "3.5*k",
+   "digit_h": "4*k",
+   "label_x": "15.5*k",
+   "label_w": "12*k",
+   "label_h": "4*k",
+   "sheet_w": "35*k",
+   "hp_fill_w": "plate_w * hp_ratio"
+  },
+  "ordem_de_camadas": [
+   "turn_plate_<el>",
+   "digito do turno (atlas)",
+   "label TURN",
+   "hp_well",
+   "hp_fill (recortado a hp_fill_w)"
+  ],
+  "sprite_gap": 7
+ },
+ "formations": {
+  "1": {
+   "k": 6,
+   "plate": [
+    192,
+    72
+   ],
+   "sprite": 330,
+   "note": "boss unico",
+   "enemies": [
+    {
+     "cx": 444,
+     "y": 34,
+     "el": "dragon"
+    }
+   ]
+  },
+  "2": {
+   "k": 6,
+   "plate": [
+    192,
+    72
+   ],
+   "sprite": 236,
+   "enemies": [
+    {
+     "cx": 256,
+     "y": 44,
+     "el": "nature"
+    },
+    {
+     "cx": 632,
+     "y": 44,
+     "el": "dark"
+    }
+   ]
+  },
+  "3": {
+   "k": 4,
+   "plate": [
+    128,
+    48
+   ],
+   "sprite": 190,
+   "note": "trio escalonado",
+   "enemies": [
+    {
+     "cx": 154,
+     "y": 26
+    },
+    {
+     "cx": 444,
+     "y": 214
+    },
+    {
+     "cx": 734,
+     "y": 26
+    }
+   ]
+  },
+  "5": {
+   "k": 4,
+   "plate": [
+    128,
+    48
+   ],
+   "sprite": 150,
+   "note": "fase especial",
+   "enemies": [
+    {
+     "cx": 124,
+     "y": 18
+    },
+    {
+     "cx": 444,
+     "y": 18
+    },
+    {
+     "cx": 764,
+     "y": 18
+    },
+    {
+     "cx": 278,
+     "y": 272
+    },
+    {
+     "cx": 610,
+     "y": 272
+    }
+   ]
+  }
+ },
+ "party": {
+  "strip": {
+   "bg": "#121311",
+   "border_top": "1px rgba(201,192,168,0.22)",
+   "border_bottom": "1px rgba(201,192,168,0.22)",
+   "padding": [
+    16,
+    8,
+    12
+   ],
+   "gap": 8,
+   "align": "flex-end"
+  },
+  "seal": {
+   "display": 165,
+   "source": 330,
+   "scale": 0.5,
+   "window": {
+    "x": 18,
+    "y": 15,
+    "w": 129,
+    "h": 99,
+    "source": {
+     "x": 36,
+     "y": 30,
+     "w": 258,
+     "h": 198
+    }
+   },
+   "layers": [
+    "foto do personagem (contain, fundo #0b0d0a)",
+    "seal_1a_<el>_empty.png 165x165",
+    "quadro do charge_sheet 165x1485 em y = -(n*165), n=0..8"
+   ],
+   "charge_sheet": {
+    "source": "330x2970",
+    "frames": 9
+   }
+  },
+  "marcadores": {
+   "lider": "3 blocos #c9c0a8 (5x5,5x9,5x5) gap 3, faixa de 9px acima",
+   "ativo": "2 cantos em L 16x9 na cor do elemento + drop-shadow 0 0 7px cor + triangulo 11x6 abaixo + translateY(-16)",
+   "convidado": "1 losango 9x9 vazado",
+   "comum": "faixa vazia de 9px"
+  },
+  "ordem_atual": [
+   "dragon",
+   "knight",
+   "nature (ativo)",
+   "light",
+   "dark"
+  ]
+ },
+ "bag": {
+  "panel": {
+   "border": "1px rgba(201,192,168,0.35)",
+   "bg": "#101210",
+   "padding": [
+    16,
+    16,
+    14
+   ],
+   "gap": 14,
+   "align": "flex-end"
+  },
+  "tab": {
+   "asset": "ui/lbl_bag.png",
+   "h": 16,
+   "x": 12,
+   "y": -9,
+   "bg": "#0d0e0c",
+   "padding_x": 6
+  },
+  "queue": {
+   "count": 8,
+   "card": [
+    78,
+    108
+   ],
+   "distribuicao": "space-between"
+  },
+  "divider": {
+   "border_left": "1px rgba(201,192,168,0.25)",
+   "padding_left": 14,
+   "margin_left": 8
+  },
+  "arrow": {
+   "w": 12,
+   "h": 18,
+   "color": "#c9c0a8",
+   "margin_bottom": 46
+  },
+  "next": {
+   "label": {
+    "asset": "ui/lbl_next.png",
+    "h": 14,
+    "alpha": 0.8
+   },
+   "card": [
+    78,
+    108
+   ],
+   "regra": "identica as cartas da fila — sem moldura extra, sem numeral"
+  }
+ },
+ "hand": {
+  "grid": {
+   "cols": 6,
+   "card": [
+    138,
+    191
+   ],
+   "gap": 10,
+   "justify": "center"
+  },
+  "numeral": {
+   "x": 14,
+   "y": 14,
+   "w": 21,
+   "h": 24,
+   "sheet_w": 210,
+   "cell": "21x24 (1/2 de 42x48)"
+  },
+  "selecionada": {
+   "outline": "2px cor do elemento",
+   "outline_offset": 2,
+   "raise": 9
+  },
+  "vazia": {
+   "border": "2px dashed rgba(201,192,168,0.28)",
+   "diamante": 22
+  }
+ },
+ "footer": {
+  "gap": 14,
+  "heart": {
+   "w": 28,
+   "h": 26,
+   "color": "#c04a3e"
+  },
+  "label": {
+   "asset": "ui/lbl_hp.png",
+   "h": 12,
+   "alpha": 0.6
+  },
+  "bar": {
+   "h": 22,
+   "flex": 1,
+   "border": {
+    "w": 1,
+    "color": "rgba(201,192,168,0.55)"
+   },
+   "bg": "#121211",
+   "padding": 3,
+   "fill": {
+    "color": "#c04a3e",
+    "solid": true,
+    "pct": 76
+   }
+  },
+  "value": {
+   "asset": "ui/val_hp_curr.png",
+   "h": 15,
+   "formato": "HP_atual/HP_max"
+  }
+ },
+ "cards": {
+  "faces": {
+   "dragon": "ui/card_face_dragon_v1.png",
+   "knight": "ui/card_face_knight_v1.png",
+   "nature": "ui/card_face_nature_v1.png",
+   "heal": "ui/card_face_heal_v1.png",
+   "light": "ui/card_face_light_v3.png",
+   "dark": "ui/card_face_dark_v3.png",
+   "wild": "ui/card_face_wild_v3.png"
+  },
+  "source": [
+   78,
+   108
+  ],
+  "escalas_legais": [
+   [
+    78,
+    108
+   ],
+   [
+    156,
+    216
+   ],
+   [
+    39,
+    54
+   ],
+   [
+    26,
+    36
+   ]
+  ],
+  "v3_note": "light = sol radiante; dark = eclipse (sem caveira); wild = anel com os 5 elementos + estrela central"
+ },
+ "fonte_bitmap": {
+  "asset": "ui/ui_font_sheet_v1.png",
+  "sheet": "1440x48",
+  "cell": "36x48",
+  "advance": 36,
+  "ordem": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ/-: (indices 0..38; celula 39 = espaco)",
+  "escalas_legais": [
+   "36x48",
+   "18x24",
+   "12x16",
+   "9x12"
+  ]
+ }
+}

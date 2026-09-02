@@ -1,0 +1,35 @@
+## Numeral de dano que sobe sobre o inimigo (animacao 10).
+class_name DamagePopup
+extends Node2D
+
+const ART := "res://art/enemy/enemy_digits_sheet_v1.png"
+const CELL := Vector2i(42, 48)
+@export var glyph_height: int = 24
+
+func set_value(amount: int, tint: Color) -> void:
+	for c in get_children(): c.queue_free()
+	var s := float(glyph_height) / float(CELL.y)
+	var adv := int(round(CELL.x * s))
+	var digits := str(absi(amount))
+	var x := -adv * digits.length() * 0.5
+	for ch in digits:
+		var at := AtlasTexture.new()
+		at.atlas = load(ART)
+		at.region = Rect2(int(ch) * CELL.x, 0, CELL.x, CELL.y)
+		var sp := Sprite2D.new()
+		sp.texture = at
+		sp.centered = false
+		sp.position = Vector2(x, 0)
+		sp.scale = Vector2(s, s)
+		sp.modulate = tint
+		sp.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		add_child(sp)
+		x += adv
+
+func play() -> void:
+	var t := create_tween().set_parallel()
+	t.tween_property(self, "position:y", position.y - 16.0, BattleLayout.T_DAMAGE_RISE)\
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	t.tween_property(self, "scale", Vector2.ONE, 0.12).from(Vector2(1.12, 1.12))
+	t.chain().tween_property(self, "modulate:a", 0.0, 0.16)
+	t.chain().tween_callback(queue_free)

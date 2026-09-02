@@ -8,28 +8,28 @@ class_name Arte
 # fonte passa por aqui - nenhum outro script cita caminho de asset.
 
 const PASTA := "res://assets/battle/"
-const UI_FINAL := "ui_v9/"
+const UI_FINAL := "ui_v10/"
 const MOLDURA_SELO_FRAGMENTO := "ui_v5/fragment_seal_frame_master_v1.png"
 const SELO_V6_EMPTY := {
-	"dragon": "ui_v9/seals_1a/seal_1a_dragon_empty.png",
-	"knight": "ui_v9/seals_1a/seal_1a_knight_empty.png",
-	"nature": "ui_v9/seals_1a/seal_1a_nature_empty.png",
-	"light": "ui_v9/seals_1a/seal_1a_light_empty.png",
-	"dark": "ui_v9/seals_1a/seal_1a_dark_empty.png",
+	"dragon": "ui_v10/seals_1a/seal_1a_dragon_empty.png",
+	"knight": "ui_v10/seals_1a/seal_1a_knight_empty.png",
+	"nature": "ui_v10/seals_1a/seal_1a_nature_empty.png",
+	"light": "ui_v10/seals_1a/seal_1a_light_empty.png",
+	"dark": "ui_v10/seals_1a/seal_1a_dark_empty.png",
 }
 const SELO_V6_CHARGE := {
-	"dragon": "ui_v9/seals_1a/seal_1a_dragon_charge_sheet.png",
-	"knight": "ui_v9/seals_1a/seal_1a_knight_charge_sheet.png",
-	"nature": "ui_v9/seals_1a/seal_1a_nature_charge_sheet.png",
-	"light": "ui_v9/seals_1a/seal_1a_light_charge_sheet.png",
-	"dark": "ui_v9/seals_1a/seal_1a_dark_charge_sheet.png",
+	"dragon": "ui_v10/seals_1a/seal_1a_dragon_charge_sheet.png",
+	"knight": "ui_v10/seals_1a/seal_1a_knight_charge_sheet.png",
+	"nature": "ui_v10/seals_1a/seal_1a_nature_charge_sheet.png",
+	"light": "ui_v10/seals_1a/seal_1a_light_charge_sheet.png",
+	"dark": "ui_v10/seals_1a/seal_1a_dark_charge_sheet.png",
 }
 const HUD_INIMIGO_V6_PLATE := {
-	"dragon": "ui_v9/enemy/enemy_turn_plate_dragon_v1.png",
-	"knight": "ui_v9/enemy/enemy_turn_plate_knight_v1.png",
-	"nature": "ui_v9/enemy/enemy_turn_plate_nature_v1.png",
-	"light": "ui_v9/enemy/enemy_turn_plate_light_v1.png",
-	"dark": "ui_v9/enemy/enemy_turn_plate_dark_v1.png",
+	"dragon": "ui_v10/enemy/enemy_turn_plate_dragon_v1.png",
+	"knight": "ui_v10/enemy/enemy_turn_plate_knight_v1.png",
+	"nature": "ui_v10/enemy/enemy_turn_plate_nature_v1.png",
+	"light": "ui_v10/enemy/enemy_turn_plate_light_v1.png",
+	"dark": "ui_v10/enemy/enemy_turn_plate_dark_v1.png",
 }
 
 # Paleta 1-bit (scene_data.json / palette): so dois tons.
@@ -51,13 +51,13 @@ const CORES_ELEMENTAIS := {
 }
 
 const CARD_FACE_FINAL := {
-	"dragon": "ui_v9/ui/card_face_dragon_v1.png",
-	"knight": "ui_v9/ui/card_face_knight_v1.png",
-	"nature": "ui_v9/ui/card_face_nature_v1.png",
-	"light": "ui_v9/ui/card_face_light_v3.png",
-	"dark": "ui_v9/ui/card_face_dark_v3.png",
-	"capsule": "ui_v9/ui/card_face_heal_v1.png",
-	"wild": "ui_v9/ui/card_face_wild_v3.png",
+	"dragon": "ui_v10/ui/card_face_dragon_v1.png",
+	"knight": "ui_v10/ui/card_face_knight_v1.png",
+	"nature": "ui_v10/ui/card_face_nature_v1.png",
+	"light": "ui_v10/ui/card_face_light_v3.png",
+	"dark": "ui_v10/ui/card_face_dark_v3.png",
+	"capsule": "ui_v10/ui/card_face_heal_v1.png",
+	"wild": "ui_v10/ui/card_face_wild_v3.png",
 }
 
 # Os 5 elementos de unidade.

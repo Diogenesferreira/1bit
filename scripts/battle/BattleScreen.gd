@@ -11,16 +11,17 @@ class_name BattleScreen
 # eventos em ordem - nunca consulta o estado no meio da animacao.
 # Enquanto uma corrente anima, toques sao ignorados (`_animando`).
 #
-# A grade visível segue literalmente o handoff: 2x5. As duas ENTRADAS da
-# regra são estado transitório e nunca viram uma sexta coluna na interface.
+# A grade visivel tem 2 fileiras de 6 slots: cinco cartas iniciais e a sexta
+# casa de ENTRADA vazia em cada fileira, alimentada diretamente por NEXT.
 
 const CANVAS := Vector2(940, 1685)
+const COR_REGUA_HAND := Color(0.79, 0.75, 0.66, 0.32)
 
 # --- tempos ----------------------------------------------------------
 const DUR_VOO := 0.22
 const DUR_FUSAO_ALINHAR := 0.42
 const DUR_FUSAO_CONVERGIR := 0.40
-const DUR_QUEDA := 0.32         # carta do saco descendo na ENTRADA
+const DUR_QUEDA := 0.18         # NEXT descendo ate a casa consumida
 const DUR_PULSO := 0.28
 const DUR_FLASH_TELA := 0.10
 const ESPERA_ENTRE_COMBOS := 0.18
@@ -32,28 +33,31 @@ const MOLDURAS := []
 const ROTULOS := []
 
 # --- casas ------------------------------------------------------------
-const BAG_X0 := 50.0
+const BAG_X0 := 31.0
 const BAG_Y := 978.0
 const BAG_PASSO := 88.0
 const NEXT_CASA := Rect2(819, 978, 78, 108)
 
-# campo 2x5 da arte final
-const CAMPO_TAM := Vector2(156, 216)
-const CAMPO_X0 := 52.0
-const CAMPO_PASSO := 170.0
-const CAMPO_LINHAS := [1153.0, 1383.0]
-const CAMPO_ICONE := 156.0
-
-const SELECAO_SUBIDA := 9.0
+# Grade revisada do Designer: 6 colunas de 138x191, gap real de 10 px.
+# Largura total 878 px, centralizada na coluna de conteudo de 890 px.
+const CAMPO_TAM := Vector2(138, 191)
+const CAMPO_X0 := 31.0
+const CAMPO_PASSO := 148.0
+const CAMPO_LINHAS := [1153.0, 1354.0]
+const CAMPO_ICONE := 138.0
+const ENTRADA_TAM := CAMPO_TAM
 const FUSAO_CENTRO := Vector2(470, 1376)
-const FUSAO_TAM := Vector2(78, 108)
-const FUSAO_ICONE := 78.0
+const VOO_BAG_TAM := Vector2(78, 108)
+const VOO_BAG_ICONE := 78.0
+const FUSAO_TAM := CAMPO_TAM
+const FUSAO_ICONE := CAMPO_ICONE
+const FUSAO_PASSO := 148.0
 
 # --- HUD --------------------------------------------------------------
 const CAVEIRA_LADO := 20.0
-const BARRA_JOGADOR := Rect2(104, 1624, 694, 22)
+const BARRA_JOGADOR := Rect2(114, 1579, 626, 22)
 const BARRA_JOGADOR_RECUO := 3.0
-const BARRA_JOGADOR_UTIL := 688.0
+const BARRA_JOGADOR_UTIL := 620.0
 
 var estado: EstadoBatalha
 
@@ -68,7 +72,7 @@ var _txt_score: Label
 var _txt_rodada: Label
 var _txt_gems: Label
 var _txt_moedas: Label
-var _txt_hp: Label
+var _txt_hp: BitmapFontLabel
 var _txt_energia: Label
 var _barra_hp_recorte: Control
 var _flash: ColorRect
@@ -97,8 +101,8 @@ func _montar() -> void:
 	fundo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(fundo)
 	var painel := Panel.new()
-	painel.position = Vector2(10, 10)
-	painel.size = CANVAS - Vector2(20, 20)
+	painel.position = Vector2.ZERO
+	painel.size = CANVAS
 	var painel_estilo := StyleBoxFlat.new()
 	painel_estilo.bg_color = Color("0d0e0c")
 	painel_estilo.border_color = Color("2b2b28")
@@ -106,6 +110,16 @@ func _montar() -> void:
 	painel.add_theme_stylebox_override("panel", painel_estilo)
 	painel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(painel)
+	var moldura_interna := Panel.new()
+	moldura_interna.position = Vector2(12, 12)
+	moldura_interna.size = Vector2(916, 1661)
+	var interna_estilo := StyleBoxFlat.new()
+	interna_estilo.bg_color = Color(0, 0, 0, 0)
+	interna_estilo.border_color = Color(0.79, 0.75, 0.66, 0.30)
+	interna_estilo.set_border_width_all(1)
+	moldura_interna.add_theme_stylebox_override("panel", interna_estilo)
+	moldura_interna.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(moldura_interna)
 	_montar_hud_topo()
 
 	var arena := Control.new()
@@ -138,6 +152,7 @@ func _montar() -> void:
 		_aliados.append(a)
 
 	_montar_bag()
+	_montar_area_hand()
 	_montar_campo()
 	_montar_hud_rodape()
 
@@ -146,11 +161,15 @@ func _montar() -> void:
 	_voos.name = "Voos"
 	_voos.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_voos.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Numerais das cartas da HAND usam z_index local. Esta camada inteira precisa
+	# ficar acima deles para a fusao nunca se misturar com o que ficou no grid.
+	_voos.z_index = 100
 	add_child(_voos)
 
 	_flash = ColorRect.new()
 	_flash.name = "ScreenFlash"
 	_flash.size = CANVAS
+	_flash.z_index = 200
 	_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_flash.visible = false
 	var mat := ShaderMaterial.new()
@@ -160,27 +179,62 @@ func _montar() -> void:
 	add_child(_flash)
 
 
+func _bitmap(txt: String, pos: Vector2, altura: int, cor: Color, pai: Node,
+		espaco := 0) -> BitmapFontLabel:
+	var label := BitmapFontLabel.new()
+	label.position = pos.round()
+	label.glyph_height = altura
+	label.tint = cor
+	label.letter_spacing = espaco
+	label.text = txt
+	pai.add_child(label)
+	return label
+
+
+func _asset_altura(arquivo: String, pos: Vector2, altura: float, pai: Node,
+		alpha := 1.0) -> TextureRect:
+	var textura := Arte.tex(arquivo)
+	var largura: float = roundf(float(textura.get_width()) * altura / float(textura.get_height()))
+	var imagem := Arte.imagem(arquivo, Rect2(pos.round(), Vector2(largura, altura)), pai)
+	imagem.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	imagem.modulate.a = alpha
+	return imagem
+
+
 func _montar_progresso_palco(arena: Control) -> void:
 	var placa := Panel.new()
-	placa.position = Vector2(22, 503)
-	placa.size = Vector2(278, 35)
+	placa.position = Vector2(22, 505)
+	placa.size = Vector2(270, 35)
 	placa.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var estilo := StyleBoxFlat.new()
-	estilo.bg_color = Color(0.03, 0.035, 0.03, 0.86)
-	estilo.border_color = Color("8f886f")
+	estilo.bg_color = Color(0.03, 0.035, 0.03, 0.72)
+	estilo.border_color = Color(0.79, 0.75, 0.66, 0.40)
 	estilo.set_border_width_all(1)
 	placa.add_theme_stylebox_override("panel", estilo)
 	arena.add_child(placa)
-	Arte.rotulo("STAGE  2/3", Vector2(12, 9), 11, Color("c9c0a8"), 110, false, placa)
+	_asset_altura("ui_v10/ui/lbl_stage.png", Vector2(12, 12), 11, placa, 0.65)
+	_asset_altura("ui_v10/ui/val_stage.png", Vector2(78, 11), 12, placa)
+	var divisor_stage := ColorRect.new()
+	divisor_stage.position = Vector2(118, 8)
+	divisor_stage.size = Vector2(1, 18)
+	divisor_stage.color = Color(0.79, 0.75, 0.66, 0.28)
+	placa.add_child(divisor_stage)
+	for x in [143.0, 178.0]:
+		var conector := ColorRect.new()
+		conector.position = Vector2(x, 17)
+		conector.size = Vector2(20, 2)
+		conector.color = Color(0.79, 0.75, 0.66, 0.50 if x == 143.0 else 0.28)
+		placa.add_child(conector)
 	for i in 3:
 		var no := ColorRect.new()
-		no.position = Vector2(132 + i * 31, 12)
-		no.size = Vector2(12, 12)
+		var lado: float = [12.0, 15.0, 17.0][i]
+		no.position = Vector2(137 + i * 36, 18) - Vector2.ONE * lado / 2.0
+		no.size = Vector2.ONE * lado
 		no.rotation = PI / 4.0
-		no.color = [Color("c9c0a8"), Color("7d9455"), Color("2a1512")][i]
+		no.color = [Color("e8e3d4"), Color("7d9455"), Color("6b241f")][i]
 		no.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		placa.add_child(no)
-	Arte.rotulo("BOSS", Vector2(225, 10), 10, Color("c9c0a8"), 48, false, placa)
+	_asset_altura("ui_v10/ui/lbl_boss.png", Vector2(225, 13), 10, placa, 0.85)
 
 
 func _moldura_arena(logica: Rect2, pai: Control) -> void:
@@ -229,13 +283,19 @@ func _montar_faixa_aliados(arena: Control) -> void:
 	estilo.border_width_bottom = 1
 	faixa.add_theme_stylebox_override("panel", estilo)
 	arena.add_child(faixa)
-	Arte.imagem("ui_v9/ui/lbl_party.png", Rect2(0, -31, 70, 18), faixa)
+	_asset_altura("ui_v10/ui/lbl_party.png", Vector2(-1, -35), 24, faixa)
 	var regra := ColorRect.new()
-	regra.position = Vector2(102, -22)
-	regra.size = Vector2(750, 1)
-	regra.color = Color(0.79, 0.75, 0.66, 0.28)
+	regra.position = Vector2(102, -24)
+	regra.size = Vector2(750, 2)
+	regra.color = COR_REGUA_HAND
 	regra.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	faixa.add_child(regra)
+	for i in 3:
+		var ponto := ColorRect.new()
+		ponto.position = Vector2(856 + i * 12, -26)
+		ponto.size = Vector2(7, 7)
+		ponto.color = Color(0.79, 0.75, 0.66, 0.5)
+		faixa.add_child(ponto)
 
 
 func _montar_bag() -> void:
@@ -246,10 +306,18 @@ func _montar_bag() -> void:
 	var estilo := StyleBoxFlat.new()
 	estilo.bg_color = Color("101210")
 	estilo.border_color = Color(0.79, 0.75, 0.66, 0.35)
-	estilo.set_border_width_all(1)
+	estilo.set_border_width_all(2)
 	painel.add_theme_stylebox_override("panel", estilo)
 	add_child(painel)
-	Arte.imagem("ui_v9/ui/lbl_bag.png", Rect2(38, 937, 38, 16), self)
+	# Aba BAG: o fundo opaco apaga o trecho da borda atrás das letras,
+	# reproduzindo o encaixe do mock HTML.
+	var aba_bag := ColorRect.new()
+	aba_bag.position = Vector2(37, 936)
+	aba_bag.size = Vector2(60, 22)
+	aba_bag.color = Color("0d0e0c")
+	aba_bag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(aba_bag)
+	_asset_altura("ui_v10/ui/lbl_bag.png", Vector2(43, 936), 20, self)
 	var cena := load("res://scenes/battle/BagSlot.tscn") as PackedScene
 	for i in EstadoBatalha.BAG_VISIVEL:
 		var casa := cena.instantiate() as BagSlot
@@ -260,10 +328,10 @@ func _montar_bag() -> void:
 
 	var divisor := ColorRect.new()
 	divisor.position = Vector2(781, 965)
-	divisor.size = Vector2(1, 124)
+	divisor.size = Vector2(2, 124)
 	divisor.color = Color(0.79, 0.75, 0.66, 0.25)
 	add_child(divisor)
-	Arte.imagem("ui_v9/ui/lbl_next.png", Rect2(836, 955, 44, 14), self)
+	_asset_altura("ui_v10/ui/lbl_next.png", Vector2(836, 955), 14, self, 0.8)
 	_icone_next = CardIcon.new()
 	_icone_next.name = "NextCard"
 	add_child(_icone_next)
@@ -271,12 +339,31 @@ func _montar_bag() -> void:
 	_icone_next.fixar_em(NEXT_CASA.position)
 
 
+func _montar_area_hand() -> void:
+	# HAND nao e um painel fechado: este Control serve somente de base para
+	# o divisor entre as cartas e o HP. A unica linha superior nasce no D.
+	var painel := Control.new()
+	painel.name = "HandPanel"
+	painel.position = Vector2(25, 1115)
+	painel.size = Vector2(890, 541)
+	painel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(painel)
+	var divisor_rodape := ColorRect.new()
+	divisor_rodape.position = Vector2(6, 446)
+	divisor_rodape.size = Vector2(878, 2)
+	divisor_rodape.color = COR_REGUA_HAND
+	divisor_rodape.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	painel.add_child(divisor_rodape)
+
+
 func _montar_campo() -> void:
-	Arte.imagem("ui_v9/ui/lbl_hand.png", Rect2(25, 1121, 56, 18), self)
+	_asset_altura("ui_v10/ui/lbl_hand.png", Vector2(31, 1118), 24, self)
 	var regra := ColorRect.new()
-	regra.position = Vector2(127, 1130)
-	regra.size = Vector2(788, 1)
-	regra.color = Color(0.79, 0.75, 0.66, 0.28)
+	# Regua centralizada na altura visual de HAND: 10 px apos o rotulo e
+	# terminando 10 px antes da borda direita do painel.
+	regra.position = Vector2(116, 1130)
+	regra.size = Vector2(789, 2)
+	regra.color = COR_REGUA_HAND
 	regra.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(regra)
 	var cena := load("res://scenes/battle/FieldSlot.tscn") as PackedScene
@@ -284,9 +371,10 @@ func _montar_campo() -> void:
 		var casa := cena.instantiate() as FieldSlot
 		add_child(casa)
 		var entrada := i >= EstadoBatalha.TAMANHO_MAO
-		casa.configurar(i, CAMPO_TAM, CAMPO_ICONE, entrada)
+		var tamanho := ENTRADA_TAM if entrada else CAMPO_TAM
+		casa.configurar(i, tamanho, tamanho.x, entrada)
 		casa.position = _pos_casa(i)
-		casa.visible = not entrada
+		casa.visible = true
 		casa.tocado.connect(_ao_tocar_casa)
 		_casas_campo.append(casa)
 
@@ -311,20 +399,20 @@ func _montar_hud_topo() -> void:
 	retrato.size = Vector2(48, 48)
 	retrato.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_child(retrato)
-	Arte.imagem("ui_v9/ui/val_account.png", Rect2(100, 31, 102, 17), self)
+	_asset_altura("ui_v10/ui/val_account.png", Vector2(100, 37), 17, self)
 	_txt_andar = Arte.rotulo("", Vector2.ZERO, 1, Color(0, 0, 0, 0), 1, false, self)
 	var lv_box := Panel.new()
-	lv_box.position = Vector2(216, 34)
-	lv_box.size = Vector2(53, 22)
+	lv_box.position = Vector2(216, 35)
+	lv_box.size = Vector2(53, 19)
 	var lv_style := StyleBoxFlat.new()
 	lv_style.bg_color = Color(0, 0, 0, 0)
 	lv_style.border_color = Color(0.79, 0.75, 0.66, 0.35)
 	lv_style.set_border_width_all(1)
 	lv_box.add_theme_stylebox_override("panel", lv_style)
 	add_child(lv_box)
-	Arte.imagem("ui_v9/ui/lbl_lv.png", Rect2(5, 5, 17, 11), lv_box)
-	Arte.imagem("ui_v9/ui/val_lv.png", Rect2(28, 4, 18, 12), lv_box)
-	Arte.imagem("ui_v9/ui/lbl_xp.png", Rect2(100, 62, 18, 11), self)
+	_asset_altura("ui_v10/ui/lbl_lv.png", Vector2(5, 4), 11, lv_box, 0.6)
+	_asset_altura("ui_v10/ui/val_lv.png", Vector2(29, 3), 12, lv_box)
+	_asset_altura("ui_v10/ui/lbl_xp.png", Vector2(100, 66), 11, self, 0.6)
 	var xp_trilho := Panel.new()
 	xp_trilho.position = Vector2(130, 65)
 	xp_trilho.size = Vector2(214, 13)
@@ -339,21 +427,21 @@ func _montar_hud_topo() -> void:
 	xp_fill.size = Vector2(128, 7)
 	xp_fill.color = Color("c9c0a8")
 	xp_trilho.add_child(xp_fill)
-	Arte.imagem("ui_v9/ui/val_xp.png", Rect2(354, 63, 34, 11), self)
+	_asset_altura("ui_v10/ui/val_xp.png", Vector2(354, 66), 11, self, 0.7)
 	var moeda := Polygon2D.new()
 	moeda.position = Vector2(516, 52)
 	moeda.polygon = PackedVector2Array([Vector2(-8, -5), Vector2(0, -9),
 		Vector2(8, -5), Vector2(8, 5), Vector2(0, 9), Vector2(-8, 5)])
 	moeda.color = Color("c9a842")
 	add_child(moeda)
-	Arte.imagem("ui_v9/ui/val_coin.png", Rect2(535, 45, 42, 14), self)
+	_asset_altura("ui_v10/ui/val_coin.png", Vector2(535, 45), 14, self)
 	var gema := Polygon2D.new()
 	gema.position = Vector2(638, 52)
 	gema.polygon = PackedVector2Array([Vector2(0, -9), Vector2(8, 0),
 		Vector2(0, 9), Vector2(-8, 0)])
 	gema.color = Color("7a5f9a")
 	add_child(gema)
-	Arte.imagem("ui_v9/ui/val_gem.png", Rect2(653, 45, 21, 14), self)
+	_asset_altura("ui_v10/ui/val_gem.png", Vector2(653, 45), 14, self)
 	var divisor := ColorRect.new()
 	divisor.position = Vector2(737, 35)
 	divisor.size = Vector2(1, 34)
@@ -365,7 +453,7 @@ func _montar_hud_topo() -> void:
 		Vector2(0, 2), Vector2(-3, 13), Vector2(8, -3), Vector2(1, -3)])
 	raio.color = Color("c9a842")
 	add_child(raio)
-	Arte.imagem("ui_v9/ui/val_energy.png", Rect2(782, 44, 62, 16), self)
+	_asset_altura("ui_v10/ui/val_energy.png", Vector2(782, 44), 16, self)
 	_txt_energia = Arte.rotulo("", Vector2.ZERO, 1, Color(0, 0, 0, 0), 1, false, self)
 	for i in 3:
 		var barra := ColorRect.new()
@@ -387,35 +475,47 @@ func _caveira(pos: Vector2) -> void:
 
 func _montar_hud_rodape() -> void:
 	var coracao := Polygon2D.new()
-	coracao.position = Vector2(27, 1622)
+	coracao.position = Vector2(44, 1577)
 	coracao.polygon = PackedVector2Array([Vector2(14, 26), Vector2(0, 12), Vector2(0, 5),
 		Vector2(5, 0), Vector2(14, 5), Vector2(23, 0), Vector2(28, 5), Vector2(28, 12)])
 	coracao.color = Color("c04a3e")
 	add_child(coracao)
-	Arte.imagem("ui_v9/ui/lbl_hp.png", Rect2(68, 1627, 20, 12), self)
-	_txt_hp = Arte.rotulo("", Vector2(812, 1624), 15, Color("c9c0a8"), 105.0, false, self)
+	_bitmap("HP", Vector2(82, 1582), 16, Color("c9c0a8"), self)
+	_txt_hp = _bitmap("", Vector2(750, 1582), 16, Color("e8e3d4"), self)
 
-	var caixa := Control.new()
+	var caixa := Panel.new()
 	caixa.position = BARRA_JOGADOR.position
 	caixa.size = BARRA_JOGADOR.size
 	caixa.clip_contents = true
 	caixa.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var caixa_estilo := StyleBoxFlat.new()
+	caixa_estilo.bg_color = Color("121211")
+	caixa_estilo.border_color = Color(0.79, 0.75, 0.66, 0.55)
+	caixa_estilo.set_border_width_all(1)
+	caixa.add_theme_stylebox_override("panel", caixa_estilo)
 	add_child(caixa)
-	var trilho := ColorRect.new()
-	trilho.size = BARRA_JOGADOR.size
-	trilho.color = Color("121211")
-	caixa.add_child(trilho)
 	_barra_hp_recorte = Control.new()
-	_barra_hp_recorte.position = Vector2(BARRA_JOGADOR_RECUO, 0)
-	_barra_hp_recorte.size = Vector2(BARRA_JOGADOR_UTIL, BARRA_JOGADOR.size.y)
+	_barra_hp_recorte.position = Vector2(BARRA_JOGADOR_RECUO, BARRA_JOGADOR_RECUO)
+	_barra_hp_recorte.size = Vector2(BARRA_JOGADOR_UTIL,
+		BARRA_JOGADOR.size.y - BARRA_JOGADOR_RECUO * 2.0)
 	_barra_hp_recorte.clip_contents = true
 	_barra_hp_recorte.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	caixa.add_child(_barra_hp_recorte)
 	var vida := ColorRect.new()
 	vida.position = Vector2.ZERO
-	vida.size = Vector2(BARRA_JOGADOR_UTIL, BARRA_JOGADOR.size.y)
+	vida.size = _barra_hp_recorte.size
 	vida.color = Color("c04a3e")
 	_barra_hp_recorte.add_child(vida)
+	var brilho := ColorRect.new()
+	brilho.position = Vector2.ZERO
+	brilho.size = Vector2(_barra_hp_recorte.size.x, 2)
+	brilho.color = Color("d9695c")
+	_barra_hp_recorte.add_child(brilho)
+	var sombra := ColorRect.new()
+	sombra.position = Vector2(0, _barra_hp_recorte.size.y - 2)
+	sombra.size = Vector2(_barra_hp_recorte.size.x, 2)
+	sombra.color = Color("8f3229")
+	_barra_hp_recorte.add_child(sombra)
 
 
 # ------------------------------------------------------------ posicoes
@@ -427,13 +527,13 @@ func _pos_casa(idx: int) -> Vector2:
 		linha = idx / EstadoBatalha.ROW_SIZE
 		coluna = idx % EstadoBatalha.ROW_SIZE
 	else:
-		return NEXT_CASA.position
+		linha = idx - EstadoBatalha.TAMANHO_MAO
+		coluna = EstadoBatalha.ROW_SIZE
+		return Vector2(CAMPO_X0 + float(coluna) * CAMPO_PASSO, CAMPO_LINHAS[linha])
 	return Vector2(CAMPO_X0 + float(coluna) * CAMPO_PASSO, CAMPO_LINHAS[linha])
 
 
 func _centro_casa(idx: int) -> Vector2:
-	if idx >= EstadoBatalha.TAMANHO_MAO:
-		return _entrada_origem_visual.get(idx, _centro_next())
 	return _pos_casa(idx) + _casas_campo[idx].size / 2.0
 
 
@@ -443,19 +543,18 @@ func _centro_next() -> Vector2:
 
 # -------------------------------------------------------- sincronia
 
-func _sincronizar() -> void:
-	_atualizar_fila(estado.proximas)
+func _sincronizar(sincronizar_fila := true) -> void:
+	if sincronizar_fila:
+		_atualizar_fila(estado.proximas)
 	_desenhar_campo()
 	_atualizar_hud()
 
 
 func _desenhar_campo() -> void:
 	for i in EstadoBatalha.TOTAL_SLOTS:
-		if i >= EstadoBatalha.TAMANHO_MAO:
-			_casas_campo[i].visible = false
-			_casas_campo[i].limpar()
-			continue
 		var c: Carta = estado.mao[i]
+		_casas_campo[i].visible = true
+		_casas_campo[i].position = _pos_casa(i)
 		if c == null:
 			# Cartas marcadas deixam de existir na mao da regra, mas continuam
 			# visiveis e levantadas ate o trio fechar ou o jogador desmarcar.
@@ -475,10 +574,10 @@ func _atualizar_fila(fila: Array) -> void:
 		var proxima: Variant = fila[0]
 		_icone_next.mostrar(String(proxima.tipo), 0, false)
 
-	# A fila corre da esquerda para a direita. A carta imediatamente depois
-	# do NEXT fica na casa mais proxima dele; a mais distante fica a esquerda.
+	# A fila corre da esquerda para a direita. O ultimo item visivel, na
+	# extrema direita da BAG, e o mesmo que aparece em NEXT.
 	for i in _casas_bag.size():
-		var indice_fila := _casas_bag.size() - i
+		var indice_fila := _casas_bag.size() - 1 - i
 		if indice_fila >= fila.size():
 			_casas_bag[i].limpar()
 			continue
@@ -504,7 +603,7 @@ func _atualizar_hud() -> void:
 
 	var liberado := not _animando and not estado.fim
 	for i in _casas_campo.size():
-		_casas_campo[i].habilitado = liberado and i < EstadoBatalha.TAMANHO_MAO
+		_casas_campo[i].habilitado = liberado
 
 
 # ------------------------------------------------------------- toques
@@ -578,11 +677,11 @@ func _espera(s: float) -> void:
 func _voar(carta: Dictionary, de: Vector2, para: Vector2, dur := DUR_VOO) -> void:
 	var icone := CardIcon.new()
 	_voos.add_child(icone)
-	icone.configurar(FUSAO_TAM, FUSAO_ICONE, 0, false, 0.3, 13)
-	icone.fixar_em(de - FUSAO_TAM / 2.0)
+	icone.configurar(VOO_BAG_TAM, VOO_BAG_ICONE, 0, false, 0.3, 13)
+	icone.fixar_em(de - VOO_BAG_TAM / 2.0)
 	icone.mostrar(String(carta.tipo), int(carta.valor), false)
 	var t := create_tween()
-	t.tween_property(icone, "position", para - FUSAO_TAM / 2.0, dur) \
+	t.tween_property(icone, "position", para - VOO_BAG_TAM / 2.0, dur) \
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	await t.finished
 	icone.queue_free()
@@ -592,52 +691,47 @@ func _anim_selecao(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	var casa := _casas_campo[slot]
 	casa.definir_selecionada(true)
-	var t := create_tween()
-	t.tween_property(casa, "position", _pos_casa(slot) + Vector2(0, -SELECAO_SUBIDA), 0.14) \
-		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	await t.finished
+	await _espera(0.12)
 
 
 func _anim_deselecao(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
 	var casa := _casas_campo[slot]
 	casa.definir_selecionada(false)
-	var t := create_tween()
-	t.tween_property(casa, "position", _pos_casa(slot), 0.13) \
-		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	await t.finished
+	casa.position = _pos_casa(slot)
+	casa.visible = true
+	await _espera(0.12)
 
 
-# A ENTRADA existe na regra, mas não ganha uma sexta coluna. A carta desce
-# visualmente até a carta que a puxou e é guardada até entrar na grade 5x2.
+# A primeira e a segunda selecao puxam NEXT para a sexta casa da fileira.
+# A carta que viaja e exatamente a ultima carta visivel a direita da BAG.
 func _anim_desce(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
-	_atualizar_fila(ev.fila)
-	var destino := _centro_next()
-	for pos in estado.zona_descidas.size():
-		if int(estado.zona_descidas[pos]) == slot and pos < estado.zona_slots.size():
-			var origem := int(estado.zona_slots[pos])
-			if origem >= 0 and origem < EstadoBatalha.TAMANHO_MAO:
-				destino = _casas_campo[origem].centro()
-			break
-	_entrada_origem_visual[slot] = destino
+	_casas_campo[slot].position = _pos_casa(slot)
+	var destino := _centro_casa(slot)
 	await _voar(ev.carta, _centro_next(), destino, DUR_QUEDA)
-	await _pulso_impacto(destino)
+	_casas_campo[slot].visible = true
+	_casas_campo[slot].mostrar(String(ev.carta.tipo), int(ev.carta.valor))
+	_atualizar_fila(ev.fila)
 
 
 func _anim_volta(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
+	var carta := {"tipo": _casas_campo[slot].tipo_atual(),
+		"valor": _casas_campo[slot].valor_atual()}
+	_casas_campo[slot].limpar()
+	if String(carta.tipo) != "":
+		await _voar(carta, _centro_casa(slot), _centro_next(), DUR_QUEDA)
 	_atualizar_fila(ev.fila)
 	_entrada_origem_visual.erase(slot)
-	await _espera(0.08)
+	_casas_campo[slot].visible = true
 
 
 func _anim_abandono() -> void:
 	for i in _casas_campo.size():
 		var casa := _casas_campo[i]
-		if casa.position.y < _pos_casa(i).y:
-			casa.definir_selecionada(false)
-			create_tween().tween_property(casa, "position", _pos_casa(i), 0.12)
+		casa.definir_selecionada(false)
+		casa.position = _pos_casa(i)
 	await _espera(0.13)
 
 
@@ -663,10 +757,9 @@ func _anim_trio(ev: Dictionary) -> void:
 		var de := _centro_next()
 		if slot >= 0:
 			de = _centro_casa(slot)
-			if slot < EstadoBatalha.TAMANHO_MAO:
-				_casas_campo[slot].definir_selecionada(false)
-				_casas_campo[slot].limpar()
-			else:
+			_casas_campo[slot].definir_selecionada(false)
+			_casas_campo[slot].limpar()
+			if slot >= EstadoBatalha.TAMANHO_MAO:
 				_entrada_origem_visual.erase(slot)
 		var icone := CardIcon.new()
 		_voos.add_child(icone)
@@ -676,7 +769,7 @@ func _anim_trio(ev: Dictionary) -> void:
 		icones.append(icone)
 	var chegada := create_tween().set_parallel()
 	for i in icones.size():
-		var destino := FUSAO_CENTRO + Vector2((float(i) - 1.0) * 112.0, 0)
+		var destino := FUSAO_CENTRO + Vector2((float(i) - 1.0) * FUSAO_PASSO, 0)
 		var destino_pos := destino - FUSAO_TAM / 2.0
 		chegada.tween_method(_mover_control_round.bind(icones[i], icones[i].position,
 			destino_pos), 0.0, 1.0, DUR_FUSAO_ALINHAR) \
@@ -810,36 +903,43 @@ func _anim_renovacao() -> void:
 
 func _anim_nova_carta(ev: Dictionary) -> void:
 	var slot := int(ev.slot)
-	_atualizar_fila(ev.fila)
+	var destino := _centro_casa(slot)
+	await _voar(ev.carta, _centro_next(), destino, DUR_QUEDA)
+	_casas_campo[slot].visible = true
 	_casas_campo[slot].mostrar(String(ev.carta.tipo), int(ev.carta.valor))
-	await _espera(DUR_CHUVA)
+	_atualizar_fila(ev.fila)
+	await _espera(DUR_CHUVA if bool(ev.get("chuva", false)) else 0.01)
 
 
 func _anim_entra_na_mao(ev: Dictionary) -> void:
 	var de := int(ev.de)
 	var para := int(ev.para)
 	var destino := _centro_casa(para)
-	var origem: Vector2 = _entrada_origem_visual.get(de, _centro_next())
-	_entrada_origem_visual.erase(de)
-	# O estado já contém a carta no destino; a cópia visual apenas materializa
-	# a passagem sem deixar um slot técnico preso na tela.
+	var origem := _centro_casa(de)
+	_casas_campo[de].limpar()
+	# A carta da entrada passa para uma das cinco casas jogaveis da fileira.
 	var carta_estado: Carta = estado.mao[para]
 	if carta_estado != null:
 		await _voar({"tipo": carta_estado.tipo, "valor": carta_estado.valor},
-			origem, destino, DUR_VOO)
+			origem, destino, DUR_QUEDA)
 		_casas_campo[para].mostrar(carta_estado.tipo, carta_estado.valor)
+		_casas_campo[para].visible = true
+	_entrada_origem_visual.erase(de)
+	_casas_campo[de].visible = true
 
 
 func _anim_redistribuicao(ev: Dictionary) -> void:
 	var m: Array = ev.mao
 	_entrada_origem_visual.clear()
 	for i in EstadoBatalha.TAMANHO_MAO:
+		_casas_campo[i].visible = true
 		if i >= m.size() or m[i] == null:
 			_casas_campo[i].limpar()
 		else:
 			_casas_campo[i].mostrar(String(m[i].tipo), int(m[i].valor))
 	for i in range(EstadoBatalha.TAMANHO_MAO, _casas_campo.size()):
-		_casas_campo[i].visible = false
+		_casas_campo[i].visible = true
+		_casas_campo[i].position = _pos_casa(i)
 		_casas_campo[i].limpar()
 	await _espera(0.12)
 

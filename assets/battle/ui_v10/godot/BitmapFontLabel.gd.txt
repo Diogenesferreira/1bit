@@ -1,0 +1,50 @@
+## Rotulo em pixel art montado a partir de ui/ui_font_sheet_v1.png.
+## Use no lugar de qualquer val_*.png para numeros que mudam em runtime.
+@tool
+class_name BitmapFontLabel
+extends Control
+
+const SHEET_PATH := "res://art/ui/ui_font_sheet_v1.png"
+const ORDER := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ/-:"
+const CELL := Vector2i(36, 48)   # tamanho de origem de um glifo
+
+@export var text: String = "0": set = _set_text
+## altura final em px de design; 48, 24, 16 ou 12 mantem o pixel inteiro
+@export var glyph_height: int = 24: set = _set_h
+@export var tint: Color = Color("c9c0a8"): set = _set_tint
+
+var _sheet: Texture2D
+
+func _ready() -> void:
+	_sheet = load(SHEET_PATH)
+	_rebuild()
+
+func _set_text(v: String) -> void: text = v.to_upper(); _rebuild()
+func _set_h(v: int) -> void: glyph_height = v; _rebuild()
+func _set_tint(v: Color) -> void: tint = v; _rebuild()
+
+func _rebuild() -> void:
+	if _sheet == null:
+		_sheet = load(SHEET_PATH)
+		if _sheet == null: return
+	for c in get_children(): c.queue_free()
+	var scale_f := float(glyph_height) / float(CELL.y)
+	var adv := int(round(CELL.x * scale_f))
+	var x := 0
+	for ch in text:
+		var idx := ORDER.find(ch)
+		if idx >= 0:
+			var at := AtlasTexture.new()
+			at.atlas = _sheet
+			at.region = Rect2(idx * CELL.x, 0, CELL.x, CELL.y)
+			var tr := TextureRect.new()
+			tr.texture = at
+			tr.position = Vector2(x, 0)
+			tr.size = Vector2(adv, glyph_height)
+			tr.stretch_mode = TextureRect.STRETCH_SCALE
+			tr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			tr.modulate = tint
+			add_child(tr)
+		x += adv
+	custom_minimum_size = Vector2(x, glyph_height)
+	size = custom_minimum_size

@@ -18,7 +18,8 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_frame.size = TAM
 	_frame.visible = false
-	_icone.configurar(TAM, LADO_ICONE, indice, true, 0.3, 13)
+	# A BAG e uma fila de leitura: cartas rigorosamente paradas e alinhadas.
+	_icone.configurar(TAM, LADO_ICONE, indice, false, 0.3, 13)
 	_icone.fixar_em(Vector2.ZERO)
 
 

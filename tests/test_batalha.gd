@@ -334,11 +334,11 @@ func _parte_tela() -> void:
 				_falhar("tela: ficou presa em _animando depois do toque %d" % idx)
 				break
 			if passo == 0:
-				# A carta continua na propria mao e sobe para indicar selecao.
+				# A carta continua na propria mao; a selecao usa apenas o contorno.
 				if not tela._casas_campo[idx].cheia():
 					_falhar("tela: a carta marcada desapareceu da mao")
-				if tela._casas_campo[idx].position.y >= tela._pos_casa(idx).y:
-					_falhar("tela: a carta marcada nao levantou na propria mao")
+				if tela._casas_campo[idx].position != tela._pos_casa(idx):
+					_falhar("tela: a carta marcada saiu do alinhamento da grade")
 				var entradas := 0
 				for slot: int in [EstadoBatalha.ENTRADA_0, EstadoBatalha.ENTRADA_1]:
 					if e.mao[slot] != null:
@@ -346,8 +346,10 @@ func _parte_tela() -> void:
 				if entradas == 0:
 					_falhar("tela: nenhuma carta entrou no estado transitório")
 				for slot: int in [EstadoBatalha.ENTRADA_0, EstadoBatalha.ENTRADA_1]:
-					if tela._casas_campo[slot].visible:
-						_falhar("tela: ENTRADA técnica apareceu como sexta coluna")
+					if not tela._casas_campo[slot].visible:
+						_falhar("tela: sexta casa de ENTRADA nao apareceu")
+					elif e.mao[slot] != null and not tela._casas_campo[slot].cheia():
+						_falhar("tela: carta de NEXT nao pousou na ENTRADA")
 				if turnos == 1:
 					await _print("02_marcada_e_entrada")
 		combos += 1
@@ -391,20 +393,20 @@ func _parte_toques() -> void:
 	var fila_antes := _fila_texto(e)
 	var carta_antes: String = e.mao[idx].tipo
 
-	# --- 1) clicar na carta: ela levanta na propria mao e uma carta do
+	# --- 1) clicar na carta: ela recebe contorno na propria mao e uma carta do
 	#        saco desce numa ENTRADA
 	await _clicar(tela._centro_casa(idx))
 	if not e.marcada(idx):
 		_falhar("cliques: cliquei na carta e ela nao ficou marcada")
 		return
 	if not tela._casas_campo[idx].cheia():
-		_falhar("cliques: a carta marcada sumiu em vez de levantar")
-	elif tela._casas_campo[idx].position.y >= tela._pos_casa(idx).y:
-		_falhar("cliques: a carta marcada nao levantou na mao")
+		_falhar("cliques: a carta marcada sumiu")
+	elif tela._casas_campo[idx].position != tela._pos_casa(idx):
+		_falhar("cliques: a carta marcada saiu do alinhamento da grade")
 	if e.mao[EstadoBatalha.ENTRADA_0] == null and e.mao[EstadoBatalha.ENTRADA_1] == null:
 		_falhar("cliques: nenhuma carta desceu na ENTRADA")
 
-	# --- 2) clicar de novo na carta levantada: ela baixa e a
+	# --- 2) clicar de novo na carta marcada: ela desmarca e a
 	#        que desceu volta pro topo do saco
 	await _clicar(tela._centro_casa(idx))
 	if e.marcada(idx):
@@ -419,7 +421,7 @@ func _parte_toques() -> void:
 	if _fila_texto(e) != fila_antes:
 		_falhar("cliques: a fila do BAG nao voltou ao que era antes do toque")
 
-	# --- 3) repetir o desfazer clicando na propria carta levantada
+	# --- 3) repetir o desfazer clicando na propria carta marcada
 	await _clicar(tela._centro_casa(idx))
 	if not e.marcada(idx):
 		_falhar("cliques: segunda marcacao nao pegou")
@@ -512,8 +514,8 @@ func _checar_montagem() -> void:
 		_falhar("NEXT nao mostra a primeira carta da fila")
 	elif tela._icone_next.position.x < tela._casas_bag[-1].position.x:
 		_falhar("NEXT deve ficar no extremo direito da fila")
-	if tela._casas_bag[-1].tipo_atual() != tela.estado.proximas[1].tipo:
-		_falhar("casa mais proxima do NEXT nao mostra a segunda carta da fila")
+	if tela._casas_bag[-1].tipo_atual() != tela.estado.proximas[0].tipo:
+		_falhar("ultima carta a direita da BAG deve ser a mesma de NEXT")
 	if tela._inimigos.size() != tela.estado.inimigos.size():
 		_falhar("%d inimigos na arena" % tela._inimigos.size())
 	if tela._aliados.size() != Unidades.ALIADOS.size():
@@ -524,6 +526,8 @@ func _checar_montagem() -> void:
 			_falhar("casa %d da mao nasceu vazia" % i)
 			break
 	for slot: int in [EstadoBatalha.ENTRADA_0, EstadoBatalha.ENTRADA_1]:
+		if not tela._casas_campo[slot].visible:
+			_falhar("a casa de ENTRADA %d deve nascer visivel" % slot)
 		if tela._casas_campo[slot].cheia():
 			_falhar("a casa de ENTRADA %d nasceu ocupada (deve comecar vazia)" % slot)
 	_checar_sincronia("montagem")
@@ -532,7 +536,7 @@ func _checar_montagem() -> void:
 func _checar_sincronia(onde: String) -> void:
 	for i in EstadoBatalha.TAMANHO_MAO:
 		# Uma carta selecionada sai da mao logica, mas permanece desenhada
-		# e levantada ate a fusao acontecer.
+		# e alinhada ate a fusao acontecer.
 		var no_estado: bool = tela.estado.mao[i] != null or tela.estado.marcada(i)
 		var na_tela: bool = tela._casas_campo[i].cheia()
 		if no_estado != na_tela:
@@ -544,16 +548,19 @@ func _checar_sincronia(onde: String) -> void:
 				tela._casas_campo[i].tipo_atual(), tela.estado.mao[i].tipo])
 			return
 	for slot: int in [EstadoBatalha.ENTRADA_0, EstadoBatalha.ENTRADA_1]:
-		if tela._casas_campo[slot].visible:
-			_falhar("%s: ENTRADA técnica %d apareceu como sexta coluna" % [onde, slot])
+		if not tela._casas_campo[slot].visible:
+			_falhar("%s: ENTRADA %d desapareceu" % [onde, slot])
 			return
-	var levantadas := 0
-	for i in EstadoBatalha.TAMANHO_MAO:
-		if tela._casas_campo[i].position.y < tela._pos_casa(i).y:
-			levantadas += 1
-	if levantadas != tela.estado.zona.size():
-		_falhar("%s: mao com %d cartas levantadas e zona com %d" % [
-			onde, levantadas, tela.estado.zona.size()])
+		var entrada_estado: bool = tela.estado.mao[slot] != null or tela.estado.marcada(slot)
+		if entrada_estado != tela._casas_campo[slot].cheia():
+			_falhar("%s: ENTRADA %d fora de sincronia" % [onde, slot])
+			return
+	var desalinhadas := 0
+	for i in EstadoBatalha.TOTAL_SLOTS:
+		if tela._casas_campo[i].position != tela._pos_casa(i):
+			desalinhadas += 1
+	if desalinhadas != 0:
+		_falhar("%s: mao com %d cartas fora da grade" % [onde, desalinhadas])
 	if tela._txt_hp.text != "%d/%d" % [tela.estado.hp, tela.estado.hp_max]:
 		_falhar("%s: HUD de HP mostra '%s' e o estado diz %d/%d" % [onde,
 			tela._txt_hp.text, tela.estado.hp, tela.estado.hp_max])

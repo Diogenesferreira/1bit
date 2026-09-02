@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/digital-arena-battle-ui-97378185-7888-4ade-98f4-e0c8a1b4dc22/styles.css">
+<script src="_ds/digital-arena-battle-ui-97378185-7888-4ade-98f4-e0c8a1b4dc22/_ds_bundle.js"></script>
+<style>
+  body{margin:0;background:#0b0d0c}
+  a{color:#c9a842;text-decoration:none}
+  a:hover{color:#e8e3d4}
+  img{image-rendering:pixelated}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#0b0d0c;color:#c9c0a8;padding:48px;font-family:var(--font-ui, sans-serif);max-width:1200px">
+
+  <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.14em;font-size:22px">Personagens · corpo inteiro e montagem</div>
+  <div style="font-size:14px;opacity:.65;margin:8px 0 40px;max-width:860px;text-wrap:pretty">Especificação para um elenco de gacha: cada personagem é um corpo inteiro, único, com silhueta própria. Os bonecos abaixo são <strong style="color:#e8e3d4;font-weight:600">gabaritos de proporção</strong> — não arte final. Desenhe por cima deles e a peça encaixa no selo sem ajuste.</div>
+
+  <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.14em;font-size:15px">1 · Resolução: metade do pixel da UI</div>
+  <div style="font-size:14px;opacity:.65;margin:8px 0 20px;max-width:860px;text-wrap:pretty">A moldura e a HUD têm pixel de 6 px. O personagem usa <strong style="color:#e8e3d4;font-weight:600">3 px</strong> — exatamente metade. Razão inteira: a arte fica mais detalhada que a chrome (é o que os sheets de "pixel heroes" fazem) sem nunca desalinhar a grade.</div>
+  <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:13px;opacity:.8;margin-bottom:36px">
+    <div style="border:1px solid rgba(201,192,168,.28);padding:14px 18px">
+      <div style="letter-spacing:.1em;text-transform:uppercase;font-size:11px;opacity:.6">chrome / UI</div>
+      <div style="margin-top:6px;color:#e8e3d4">pixel de 6 px</div>
+      <div style="opacity:.6;margin-top:4px">molduras, cartas, barras, fonte</div>
+    </div>
+    <div style="border:1px solid #7d9455;padding:14px 18px">
+      <div style="letter-spacing:.1em;text-transform:uppercase;font-size:11px;opacity:.6">personagem</div>
+      <div style="margin-top:6px;color:#e8e3d4">pixel de 3 px</div>
+      <div style="opacity:.6;margin-top:4px">corpo inteiro, 74 × 79 pixels de autoria</div>
+    </div>
+    <div style="border:1px solid rgba(201,192,168,.28);padding:14px 18px">
+      <div style="letter-spacing:.1em;text-transform:uppercase;font-size:11px;opacity:.6">nunca</div>
+      <div style="margin-top:6px;color:#e8e3d4">1 px, 2 px ou 4,5 px</div>
+      <div style="opacity:.6;margin-top:4px">quebra a grade e o estilo</div>
+    </div>
+  </div>
+
+  <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.14em;font-size:15px">2 · Três canvases por personagem</div>
+  <div style="font-size:14px;opacity:.65;margin:8px 0 18px;max-width:860px;text-wrap:pretty">Gacha exige mais de uma arte. Desenhe o de batalha primeiro — ele define a silhueta — e depois redesenhe (não escale) os outros dois.</div>
+  <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;margin-bottom:36px">
+    <img src="assets/char/canvases.png" style="width:660px;height:440px;display:block;border:1px solid rgba(201,192,168,.2)" alt="canvases">
+    <div style="max-width:420px;font-size:13px;line-height:1.9;opacity:.85">
+      <div><strong style="color:#e8e3d4;font-weight:600">GACHA · 110 × 140</strong> autoria → 330 × 420 px<br><span style="opacity:.6">tela de invocação, coleção e perfil. Corpo inteiro com pose de apresentação, prop e acento completo.</span></div>
+      <div style="margin-top:14px"><strong style="color:#7d9455;font-weight:600">BATALHA · 74 × 79</strong> autoria → 222 × 237 px<br><span style="opacity:.6">é o que entra no selo. Corpo inteiro, pose parada, pés na base. <strong style="color:#e8e3d4;font-weight:600">Este é o canvas mestre.</strong></span></div>
+      <div style="margin-top:14px"><strong style="color:#e8e3d4;font-weight:600">ÍCONE · 24 × 24</strong> autoria → 72 × 72 px<br><span style="opacity:.6">listas, formação compacta, resultado. Só cabeça + forma-assinatura. Se o personagem não é reconhecível aqui, o design falhou.</span></div>
+      <div style="margin-top:18px;opacity:.6">Todos em PNG RGBA com alpha binário. Sem sombra de contato embutida — a sombra é da cena.</div>
+    </div>
+  </div>
+
+  <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.14em;font-size:15px">3 · Cinco famílias de silhueta — gabaritos</div>
+  <div style="font-size:14px;opacity:.65;margin:8px 0 18px;max-width:860px;text-wrap:pretty">Grade de 8 em 8 pixels de autoria, linha verde = base dos pés. Qualquer elemento pode usar qualquer família; dois aliados da mesma família não dividem elemento.</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px">
+    <div style="width:222px">
+      <div style="background:#17140f;border:1px solid rgba(201,192,168,.2)"><img src="assets/char/fam_humanoide.png" style="width:222px;height:237px;display:block" alt=""></div>
+      <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:8px;color:#e8e3d4">humanoide</div>
+      <div style="font-size:12px;opacity:.6;margin-top:4px;line-height:1.5">3 cabeças · cabeça 22 · ombros 30 · pés 26 de vão. Guerreiro, ladino, maga, cavaleiro.</div>
+    </div>
+    <div style="width:222px">
+      <div style="background:#17140f;border:1px solid rgba(201,192,168,.2)"><img src="assets/char/fam_alado.png" style="width:222px;height:237px;display:block" alt=""></div>
+      <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:8px;color:#e8e3d4">alado / dragão</div>
+      <div style="font-size:12px;opacity:.6;margin-top:4px;line-height:1.5">Envergadura até 66 — pode invadir o arco. Focinho quebra a simetria. Cauda sempre para um lado só.</div>
+    </div>
+    <div style="width:222px">
+      <div style="background:#17140f;border:1px solid rgba(201,192,168,.2)"><img src="assets/char/fam_bestial.png" style="width:222px;height:237px;display:block" alt=""></div>
+      <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:8px;color:#e8e3d4">bestial / quadrúpede</div>
+      <div style="font-size:12px;opacity:.6;margin-top:4px;line-height:1.5">Corpo largo e baixo, 4 apoios. Cabeça na altura do dorso ou acima. Ocupa o terço inferior.</div>
+    </div>
+    <div style="width:222px">
+      <div style="background:#17140f;border:1px solid rgba(201,192,168,.2)"><img src="assets/char/fam_flutuante.png" style="width:222px;height:237px;display:block" alt=""></div>
+      <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:8px;color:#e8e3d4">flutuante / trevas</div>
+      <div style="font-size:12px;opacity:.6;margin-top:4px;line-height:1.5">Sem pernas: manto que afina e não toca a base (para 8 px antes). Rosto em vazio de tinta.</div>
+    </div>
+    <div style="width:222px">
+      <div style="background:#17140f;border:1px solid rgba(201,192,168,.2)"><img src="assets/char/fam_radiante.png" style="width:222px;height:237px;display:block" alt=""></div>
+      <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:8px;color:#e8e3d4">radiante / luz</div>
+      <div style="font-size:12px;opacity:.6;margin-top:4px;line-height:1.5">Halo ou auréola como forma-assinatura no topo, mangas largas, silhueta em ampulheta.</div>
+    </div>
+  </div>
+  <div style="font-size:13px;opacity:.6;margin-bottom:36px;max-width:860px;line-height:1.6;text-wrap:pretty">Sexta família reservada: <strong style="color:#e8e3d4;font-weight:600">colosso</strong> — ombros no limite de 66, cabeça pequena, 2 cabeças de altura. É a única exceção às proporções; use só em UR e chefes.</div>
+
+  <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.14em;font-size:15px">4 · Como monta no selo</div>
+  <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;margin:12px 0 36px">
+    <div style="width:330px;background:#17140f;border:1px solid rgba(201,192,168,.2)"><img src="assets/char/mount_humanoide.png" style="width:330px;height:330px;display:block" alt=""></div>
+    <div style="width:330px;background:#17140f;border:1px solid rgba(201,192,168,.2)"><img src="assets/char/mount_alado.png" style="width:330px;height:330px;display:block" alt=""></div>
+    <div style="max-width:400px;font-size:13px;line-height:1.85;opacity:.85">
+      <div>• Sprite colado em <strong style="color:#e8e3d4;font-weight:600">x 54, y 45</strong> do canvas 330 × 330 do selo. Nada de centralizar no olho.</div>
+      <div>• Pés / apoio na base: última linha de autoria em <strong style="color:#e8e3d4;font-weight:600">y 276</strong>.</div>
+      <div>• Pode cruzar o arco: asas, chifres, cauda, cajado, halo — a moldura passa na frente e o corte fica de propósito.</div>
+      <div>• Não pode cruzar: a base e os 8 px de cada lateral (ali fica o socket do elemento).</div>
+      <div>• A moldura já dá a cor do elemento: o corpo fica em osso/ferro/cinza e o acento colorido é pontual.</div>
+      <div>• Recorte na abertura: retângulo 222 × 237 com topo em arco de raio 111.</div>
+    </div>
+  </div>
+
+  <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.14em;font-size:15px">5 · Kit de identidade — obrigatório por personagem</div>
+  <div style="font-size:13px;line-height:1.95;opacity:.85;margin:10px 0 36px;max-width:900px">
+    <div><strong style="color:#e8e3d4;font-weight:600">1. Família de silhueta</strong> — uma das cinco (ou colosso).</div>
+    <div><strong style="color:#e8e3d4;font-weight:600">2. Forma-assinatura</strong> — UMA forma que sobrevive no ícone de 24 px: chifre torto, capuz de dois bicos, cauda em foice, halo quebrado, ombreira gigante. É isso que o jogador desenha de memória.</div>
+    <div><strong style="color:#e8e3d4;font-weight:600">3. Material</strong> — rampa osso, ferro ou cinza (3 valores).</div>
+    <div><strong style="color:#e8e3d4;font-weight:600">4. Acento</strong> — a cor do elemento em um só lugar, num dos cinco padrões (sólido, dither, rim, pontas, núcleo), até 12% dos pixels.</div>
+    <div><strong style="color:#e8e3d4;font-weight:600">5. Prop</strong> — objeto que conta a classe: arma, livro, lanterna, corrente, crânio. Sempre no lado direito do sprite (o lado sem socket).</div>
+    <div><strong style="color:#e8e3d4;font-weight:600">6. Âncoras de VFX</strong> — marque em texto onde o efeito nasce: mão, boca, peito, topo. Os VFX de impacto já usam isso.</div>
+  </div>
+
+  <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.14em;font-size:15px">6 · Raridade — o que cada tier ganha (sem sair do estilo)</div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin:12px 0 36px">
+    <div style="border:1px solid rgba(201,192,168,.28);padding:14px 18px;width:250px">
+      <div style="letter-spacing:.12em;text-transform:uppercase;color:#e8e3d4">R</div>
+      <div style="font-size:12px;opacity:.65;margin-top:6px;line-height:1.6">3 valores. Acento em um ponto. Sem prop. Só o sprite de batalha e o ícone.</div>
+    </div>
+    <div style="border:1px solid rgba(201,192,168,.35);padding:14px 18px;width:250px">
+      <div style="letter-spacing:.12em;text-transform:uppercase;color:#e8e3d4">SR</div>
+      <div style="font-size:12px;opacity:.65;margin-top:6px;line-height:1.6">+ prop e forma-assinatura mais forte. Ganha arte de gacha 110 × 140.</div>
+    </div>
+    <div style="border:1px solid #c9a842;padding:14px 18px;width:250px">
+      <div style="letter-spacing:.12em;text-transform:uppercase;color:#c9a842">SSR</div>
+      <div style="font-size:12px;opacity:.65;margin-top:6px;line-height:1.6">+ um quarto valor liberado (só brilho), segundo padrão de acento e 3 quadros de ataque.</div>
+    </div>
+    <div style="border:1px solid #7d9455;padding:14px 18px;width:250px">
+      <div style="letter-spacing:.12em;text-transform:uppercase;color:#7d9455">UR</div>
+      <div style="font-size:12px;opacity:.65;margin-top:6px;line-height:1.6">+ elemento que invade o arco, prop animado, 2 âncoras de VFX e pose própria na tela de invocação.</div>
+    </div>
+  </div>
+
+  <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.14em;font-size:15px">7 · Entrega e nomes</div>
+  <div style="font-size:13px;line-height:1.9;opacity:.85;margin-top:10px;max-width:900px">
+    <div><code style="color:#e8e3d4">char_&lt;id&gt;_&lt;elemento&gt;_battle_v1.png</code> — 222 × 237</div>
+    <div><code style="color:#e8e3d4">char_&lt;id&gt;_&lt;elemento&gt;_gacha_v1.png</code> — 330 × 420</div>
+    <div><code style="color:#e8e3d4">char_&lt;id&gt;_&lt;elemento&gt;_icon_v1.png</code> — 72 × 72</div>
+    <div><code style="color:#e8e3d4">char_&lt;id&gt;_&lt;elemento&gt;_idle_v1.png</code> — 444 × 237 (2 quadros lado a lado, sobe/desce 3 px)</div>
+    <div style="margin-top:14px;opacity:.7">Exemplo: <code style="color:#e8e3d4">char_0007_dark_battle_v1.png</code>. O id nunca muda, mesmo se a arte for refeita — só o <code>v</code>.</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

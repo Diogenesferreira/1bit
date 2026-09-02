@@ -1,13 +1,8 @@
 extends Control
 class_name FieldSlot
 
-# Uma das 12 casas do CAMPO: 2 fileiras de 5 (a mao) + a coluna 6 de
-# cada fileira, que e a casa de ENTRADA.
-#
-# A ENTRADA nasce vazia e so recebe carta quando o jogador marca a 1a e
-# a 2a carta de um trio: e ali que a carta do topo do saco DESCE, ja
-# pronta pra fechar o trio. Ela e desenhada com a moldura mais apagada
-# pra ficar claro que e casa de passagem, nao de mao.
+# Uma casa do campo. Cada fileira possui seis slots permanentes: cinco cartas
+# iniciais e uma ENTRADA alimentada por NEXT.
 
 signal tocado(indice: int)
 
@@ -24,16 +19,20 @@ var habilitado := true
 func configurar(p_indice: int, tam: Vector2, lado_icone: float, p_entrada: bool) -> void:
 	indice = p_indice
 	entrada = p_entrada
+	custom_minimum_size = tam
 	size = tam
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_frame.size = tam
 	_frame.visible = false
-	_icone.configurar(tam, lado_icone, p_indice, true, 0.25, 16)
+	# Cartas da mao ficam rigorosamente paradas na grade; selecao usa apenas rim.
+	_icone.configurar(tam, lado_icone, p_indice, false, 0.25, 16)
 	_icone.fixar_em(Vector2.ZERO)
+	queue_redraw()
 
 
 func mostrar(tipo: String, valor: int, animar := true) -> void:
 	_icone.mostrar(tipo, valor, animar)
+	queue_redraw()
 
 
 func definir_selecionada(valor: bool) -> void:
@@ -42,6 +41,7 @@ func definir_selecionada(valor: bool) -> void:
 
 func limpar() -> void:
 	_icone.limpar()
+	queue_redraw()
 
 
 func cheia() -> bool:
@@ -54,6 +54,32 @@ func tipo_atual() -> String:
 
 func valor_atual() -> int:
 	return _icone.valor
+
+
+func _draw() -> void:
+	# O berco pontilhado existe nos 12 slots e fica atras da face da carta.
+	draw_rect(Rect2(Vector2.ONE, size - Vector2.ONE * 2.0), Color("0b0d0a"), true)
+	var cor := Color(0.79, 0.75, 0.66, 0.34)
+	var passo := 12.0
+	var traco := 7.0
+	var x := 2.0
+	while x < size.x - 2.0:
+		var fim := minf(x + traco, size.x - 2.0)
+		draw_line(Vector2(x, 2), Vector2(fim, 2), cor, 2.0)
+		draw_line(Vector2(x, size.y - 2), Vector2(fim, size.y - 2), cor, 2.0)
+		x += passo
+	var y := 2.0
+	while y < size.y - 2.0:
+		var fim := minf(y + traco, size.y - 2.0)
+		draw_line(Vector2(2, y), Vector2(2, fim), cor, 2.0)
+		draw_line(Vector2(size.x - 2, y), Vector2(size.x - 2, fim), cor, 2.0)
+		y += passo
+	var centro := size / 2.0
+	var diamante := PackedVector2Array([
+		centro + Vector2(0, -9), centro + Vector2(9, 0),
+		centro + Vector2(0, 9), centro + Vector2(-9, 0), centro + Vector2(0, -9),
+	])
+	draw_polyline(diamante, cor, 2.0, false)
 
 
 # Centro da casa, em coordenadas do canvas - de onde as cartas saem e

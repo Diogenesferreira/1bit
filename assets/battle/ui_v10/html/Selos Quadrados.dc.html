@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/digital-arena-battle-ui-97378185-7888-4ade-98f4-e0c8a1b4dc22/styles.css">
+<script src="_ds/digital-arena-battle-ui-97378185-7888-4ade-98f4-e0c8a1b4dc22/_ds_bundle.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+@keyframes sq-ready{0%,100%{filter:drop-shadow(0 0 3px var(--halo))}50%{filter:drop-shadow(0 0 12px var(--halo)) drop-shadow(0 0 24px var(--halo)) brightness(1.1)}}
+@keyframes sq-shine{0%{opacity:0}45%{opacity:.8}100%{opacity:0}}
+@keyframes sq-scan{0%{transform:translateY(0)}100%{transform:translateY(6px)}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#0b0d0c;padding:48px;font-family:var(--font-ui, sans-serif);color:#c9c0a8;display:flex;flex-direction:column;gap:20px">
+
+<section style="display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.14em;font-size:20px">Selo de Fragmento quadrado · 1-bit adventure</div>
+    <div style="font-size:14px;opacity:.6;max-width:900px;text-wrap:pretty">Mesma lógica do selo redondo: 330×330 RGBA, pixel de 6 px (grade lógica 55×55), abertura central transparente, personagem por trás, moldura na frente. Duas leituras da barra de skill — escolha uma e eu faço o resto do kit (fusão, impacto, UI de batalha) só nela.</div>
+  </div>
+
+  <div style="display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start">
+
+    <div id="1a" style="display:flex;flex-direction:column;gap:14px;padding:20px;border:1px solid rgba(201,192,168,.2);background:#101210">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="font-family:var(--font-numeral, monospace);font-size:12px;letter-spacing:.14em;padding:3px 8px;border:1px solid rgba(201,192,168,.5);color:#c9c0a8">1A</div>
+        <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.12em;font-size:14px">Barra na base · console</div>
+      </div>
+      <div style="font-size:13px;opacity:.6;max-width:420px;line-height:1.6;text-wrap:pretty">Painel de 8 encaixes na calha inferior com o socket do elemento à esquerda. Lê da esquerda para a direita, igual barra de vida clássica. Abertura 258×198 (43×33 lógicos).</div>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <sc-for list="{{ cast }}" as="u" hint-placeholder-count="5">
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+            <div style="position:relative;width:220px;height:220px;background:#17140f">
+              <div style="position:absolute;left:24px;top:20px;width:172px;height:132px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center">
+                <img src="{{ u.sprite }}" style="height:126px;image-rendering:pixelated;display:block" alt="{{ u.id }}">
+              </div>
+              <img src="{{ u.aFull }}" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none" alt="frame">
+            </div>
+            <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.7">{{ u.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-top:6px">
+        <div style="position:relative;width:330px;height:330px;background:#17140f;cursor:pointer" onClick="{{ addCharge }}">
+          <div style="position:absolute;left:36px;top:30px;width:258px;height:198px;overflow:hidden">
+            <image-slot id="sq-a-demo" shape="rect" fit="cover" placeholder="Sprite do personagem"></image-slot>
+          </div>
+          <div style="position:absolute;inset:0;{{ haloA }}">
+            <div style="position:absolute;inset:0;background-image:{{ aEmpty }};background-size:330px 330px;image-rendering:pixelated"></div>
+            <div style="position:absolute;inset:0;background-image:{{ aSheet }};background-size:330px 2970px;background-position:{{ sheetPos }};image-rendering:pixelated"></div>
+          </div>
+          <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;inset:0;background-image:{{ aSheet }};background-size:330px 2970px;background-position:0 -2640px;image-rendering:pixelated;filter:brightness(2.1) saturate(.6);mix-blend-mode:screen;animation:sq-shine 1.3s ease-in-out infinite;pointer-events:none"></div>
+          </sc-if>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;opacity:.65;line-height:1.7;max-width:230px">
+          <div style="font-family:var(--font-numeral, monospace);font-size:22px;letter-spacing:.12em;color:{{ readoutColor }};opacity:1">{{ readout }}</div>
+          <div>abertura x36 y30 · 258×198</div>
+          <div>calha y240–294 · encaixe 18×24</div>
+          <div>socket 30×30 em x42 y246</div>
+          <div style="opacity:.8">Clique no selo para carregar.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="1b" style="display:flex;flex-direction:column;gap:14px;padding:20px;border:1px solid rgba(201,192,168,.2);background:#101210">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="font-family:var(--font-numeral, monospace);font-size:12px;letter-spacing:.14em;padding:3px 8px;border:1px solid rgba(201,192,168,.5);color:#c9c0a8">1B</div>
+        <div style="font-family:var(--font-display, sans-serif);text-transform:uppercase;letter-spacing:.12em;font-size:14px">Coluna lateral · totem</div>
+      </div>
+      <div style="font-size:13px;opacity:.6;max-width:420px;line-height:1.6;text-wrap:pretty">Rail vertical de 8 encaixes na direita, socket no topo, carga sobe de baixo para cima. Retrato mais alto (216×264) — melhor para corpo inteiro; ocupa mais largura na formação.</div>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <sc-for list="{{ cast }}" as="u" hint-placeholder-count="5">
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+            <div style="position:relative;width:220px;height:220px;background:#17140f">
+              <div style="position:absolute;left:20px;top:20px;width:144px;height:176px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center">
+                <img src="{{ u.sprite }}" style="height:168px;image-rendering:pixelated;display:block" alt="{{ u.id }}">
+              </div>
+              <img src="{{ u.bFull }}" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none" alt="frame">
+            </div>
+            <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.7">{{ u.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-top:6px">
+        <div style="position:relative;width:330px;height:330px;background:#17140f;cursor:pointer" onClick="{{ addCharge }}">
+          <div style="position:absolute;left:30px;top:30px;width:216px;height:264px;overflow:hidden">
+            <image-slot id="sq-b-demo" shape="rect" fit="cover" placeholder="Sprite do personagem"></image-slot>
+          </div>
+          <div style="position:absolute;inset:0;{{ haloB }}">
+            <div style="position:absolute;inset:0;background-image:{{ bEmpty }};background-size:330px 330px;image-rendering:pixelated"></div>
+            <div style="position:absolute;inset:0;background-image:{{ bSheet }};background-size:330px 2970px;background-position:{{ sheetPos }};image-rendering:pixelated"></div>
+          </div>
+          <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;inset:0;background-image:{{ bSheet }};background-size:330px 2970px;background-position:0 -2640px;image-rendering:pixelated;filter:brightness(2.1) saturate(.6);mix-blend-mode:screen;animation:sq-shine 1.3s ease-in-out infinite;pointer-events:none"></div>
+          </sc-if>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;opacity:.65;line-height:1.7;max-width:230px">
+          <div style="font-family:var(--font-numeral, monospace);font-size:22px;letter-spacing:.12em;color:{{ readoutColor }};opacity:1">{{ readout }}</div>
+          <div>abertura x30 y30 · 216×264</div>
+          <div>rail x258–306 · encaixe 30×18</div>
+          <div>socket 30×30 em x264 y36</div>
+          <div style="opacity:.8">Clique no selo para carregar.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px">
+    <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.5;margin-right:6px">elemento do demo</div>
+    <sc-for list="{{ seals }}" as="s" hint-placeholder-count="5">
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid {{ s.border }};cursor:pointer;font-size:11px;letter-spacing:.1em;text-transform:uppercase" onClick="{{ s.pickThis }}" style-hover="border-color:rgba(201,192,168,.7)">
+        <div style="width:10px;height:10px;background:{{ s.color }}"></div>
+        <div>{{ s.label }}</div>
+      </div>
+    </sc-for>
+    <div style="padding:6px 12px;border:1px solid rgba(201,192,168,.35);font-size:11px;letter-spacing:.12em;cursor:pointer" onClick="{{ toggleAuto }}" style-hover="border-color:rgba(201,192,168,.7)">{{ autoLabel }}</div>
+  </div>
+
+  <div style="display:flex;gap:36px;flex-wrap:wrap;margin-top:20px">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.5">área útil · 1a</div>
+      <div style="position:relative;width:264px;height:264px;background:#17140f">
+        <div style="position:absolute;left:28.8px;top:24px;width:206.4px;height:158.4px;background:rgba(125,148,85,.28);border:1px dashed rgba(201,192,168,.45);box-sizing:border-box"></div>
+        <img src="assets/seal_sq_a_nature_empty_v1.png" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none" alt="safe a">
+      </div>
+      <div style="font-size:11px;opacity:.6">258 × 198 px · 43 × 33 lógicos</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.5">área útil · 1b</div>
+      <div style="position:relative;width:264px;height:264px;background:#17140f">
+        <div style="position:absolute;left:24px;top:24px;width:172.8px;height:211.2px;background:rgba(125,148,85,.28);border:1px dashed rgba(201,192,168,.45);box-sizing:border-box"></div>
+        <img src="assets/seal_sq_b_nature_empty_v1.png" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none" alt="safe b">
+      </div>
+      <div style="font-size:11px;opacity:.6">216 × 264 px · 36 × 44 lógicos</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:420px">
+      <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.5">no godot</div>
+      <div style="font-size:13px;opacity:.65;line-height:1.7;text-wrap:pretty">Mesmo nó do selo redondo: <em>Sprite2D</em> do personagem, por cima <em>Sprite2D</em> do frame vazio, por cima um <em>Sprite2D</em> com a folha de carga (region_rect y = encaixes × 330). Ready = pulse de 1.3 s no shader/modulate + o quadro 8 em <em>add</em>. Sem escala fracionária: 330 → 1×, 0.5× ou 2×.</div>
+      <div style="font-size:13px;opacity:.65;line-height:1.7">Arquivos: <em>seal_sq_{a|b}_{elemento}_empty_v1.png</em>, <em>_full_v1.png</em>, <em>_charge_sheet_v1.png</em> (330×2970, 9 quadros).</div>
+    </div>
+  </div>
+
+  <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.5;margin-top:16px">8/8 nas cinco cores · <a href="#1a">1a</a> em cima, <a href="#1b">1b</a> embaixo</div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap">
+    <sc-for list="{{ cast }}" as="u" hint-placeholder-count="5">
+      <div style="width:150px;height:150px;--halo:{{ u.color }};animation:sq-ready 1.3s ease-in-out infinite"><img src="{{ u.aFull }}" style="width:100%;height:100%;image-rendering:pixelated;display:block" alt="a full"></div>
+    </sc-for>
+  </div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap">
+    <sc-for list="{{ cast }}" as="u" hint-placeholder-count="5">
+      <div style="width:150px;height:150px;--halo:{{ u.color }};animation:sq-ready 1.3s ease-in-out infinite"><img src="{{ u.bFull }}" style="width:100%;height:100%;image-rendering:pixelated;display:block" alt="b full"></div>
+    </sc-for>
+  </div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const SEALS=[
+ {id:'dragon',label:'Dragão',color:'#a8443a',sprite:'export_godot/char/char_0001_dragon_battle_v1.png'},
+ {id:'knight',label:'Cavaleiro',color:'#5a86a8',sprite:'export_godot/char/char_0002_knight_battle_v1.png'},
+ {id:'nature',label:'Natureza',color:'#7d9455',sprite:'export_godot/char/char_0003_nature_battle_v1.png'},
+ {id:'light',label:'Luz',color:'#c9a842',sprite:'export_godot/char/char_0004_light_battle_v1.png'},
+ {id:'dark',label:'Trevas',color:'#7a5f9a',sprite:'export_godot/char/char_0005_dark_battle_v1.png'}
+];
+class Component extends DCLogic {
+  state={el:'nature',charge:0,hold:0,auto:true};
+  componentDidMount(){
+    this.t=setInterval(()=>{
+      if(!this.state.auto)return;
+      this.setState(s=>{
+        if(s.charge>=8){const h=s.hold+1;return h>4?{charge:0,hold:0}:{hold:h};}
+        return {charge:s.charge+1};
+      });
+    },420);
+  }
+  componentWillUnmount(){clearInterval(this.t);}
+  renderVals(){
+    const s=SEALS.find(x=>x.id===this.state.el)||SEALS[2];
+    const c=this.state.charge, ready=c>=8;
+    return {
+      cast:SEALS.map(x=>({...x,
+        aFull:`assets/seal_sq_a_${x.id}_full_v1.png`,
+        bFull:`assets/seal_sq_b_${x.id}_full_v1.png`})),
+      seals:SEALS.map(x=>({...x,
+        border:x.id===this.state.el?x.color:'rgba(201,192,168,.25)',
+        pickThis:()=>this.setState({el:x.id,charge:0,hold:0})})),
+      color:s.color, ready,
+      readout:ready?'SKILL READY':`CARGA ${c}/8`,
+      readoutColor:ready?s.color:'rgba(201,192,168,.7)',
+      sheetPos:`0 -${c*330}px`,
+      aEmpty:`url(assets/seal_sq_a_${s.id}_empty_v1.png)`,
+      aSheet:`url(assets/seal_sq_a_${s.id}_charge_sheet_v1.png)`,
+      bEmpty:`url(assets/seal_sq_b_${s.id}_empty_v1.png)`,
+      bSheet:`url(assets/seal_sq_b_${s.id}_charge_sheet_v1.png)`,
+      haloA:ready?`--halo:${s.color};animation:sq-ready 1.3s ease-in-out infinite`:`--halo:${s.color}`,
+      haloB:ready?`--halo:${s.color};animation:sq-ready 1.3s ease-in-out infinite`:`--halo:${s.color}`,
+      addCharge:()=>this.setState(st=>({auto:false,hold:0,charge:st.charge>=8?0:st.charge+1})),
+      toggleAuto:()=>this.setState(st=>({auto:!st.auto})),
+      autoLabel:this.state.auto?'AUTO ON':'AUTO OFF'
+    };
+  }
+}
+</script>
+</body>
+</html>

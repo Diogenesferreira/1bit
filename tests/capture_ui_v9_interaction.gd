@@ -1,6 +1,6 @@
 extends SceneTree
 
-const SAIDA := "res://novos modelos refeitos/alpha_jogavel/16_ui_v9_duas_cartas_bag.png"
+const SAIDA := "res://novos modelos refeitos/alpha_jogavel/18_ui_v10_duas_entradas.png"
 
 func _initialize() -> void:
 	call_deferred("_capturar")

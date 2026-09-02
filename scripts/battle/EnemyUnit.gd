@@ -90,14 +90,14 @@ func montar(p_dados: Dictionary, p_indice := -1, total := 1) -> void:
 		Vector2.ZERO, hud_tam, _hud_painel)
 
 	_turno_atlas = AtlasTexture.new()
-	_turno_atlas.atlas = Arte.tex("ui_v9/enemy/enemy_digits_sheet_v1.png")
+	_turno_atlas.atlas = Arte.tex("ui_v10/enemy/enemy_digits_sheet_v1.png")
 	_turno_atlas.region = Rect2(0, 0, 42, 48)
 	var escala_hud := hud_tam / Vector2(384, 144)
 	_turno_arte = _adicionar_arte_hud(_turno_atlas,
 		Vector2(138, 12) * escala_hud, Vector2(42, 48) * escala_hud, _hud_painel)
-	_adicionar_arte_hud(Arte.tex("ui_v9/enemy/enemy_label_turn_v1.png"),
+	_adicionar_arte_hud(Arte.tex("ui_v10/enemy/enemy_label_turn_v1.png"),
 		Vector2(186, 12) * escala_hud, Vector2(144, 48) * escala_hud, _hud_painel)
-	_adicionar_arte_hud(Arte.tex("ui_v9/enemy/enemy_hp_well_v1.png"),
+	_adicionar_arte_hud(Arte.tex("ui_v10/enemy/enemy_hp_well_v1.png"),
 		Vector2.ZERO, hud_tam, _hud_painel)
 
 	# A barra conserva o tamanho do canvas e e revelada por recorte horizontal.
@@ -107,7 +107,7 @@ func montar(p_dados: Dictionary, p_indice := -1, total := 1) -> void:
 	_life_clip.clip_contents = true
 	_life_clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hud_painel.add_child(_life_clip)
-	_life_arte = _adicionar_arte_hud(Arte.tex("ui_v9/enemy/enemy_hp_fill_v1.png"),
+	_life_arte = _adicionar_arte_hud(Arte.tex("ui_v10/enemy/enemy_hp_fill_v1.png"),
 		Vector2.ZERO, hud_tam, _life_clip)
 	_life_inicio = hud_tam.x * 12.0 / 384.0
 	_life_largura = hud_tam.x * 360.0 / 384.0

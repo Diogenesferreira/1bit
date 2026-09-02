@@ -14,7 +14,8 @@ var _selecionada := false
 var _base := Vector2.ZERO
 var _tempo := 0.0
 var _face: TextureRect
-var _numero: Label
+var _numero: TextureRect
+var _numero_atlas: AtlasTexture
 var _rim: Panel
 
 
@@ -29,7 +30,16 @@ func _ready() -> void:
 	_rim = Panel.new()
 	_rim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_rim)
-	_numero = Arte.rotulo("", Vector2.ZERO, 16, Color("c9c0a8"), 0.0, false, self)
+	_numero_atlas = AtlasTexture.new()
+	_numero_atlas.atlas = Arte.tex("ui_v10/enemy/enemy_digits_sheet_v1.png")
+	_numero_atlas.region = Rect2(0, 0, 42, 48)
+	_numero = TextureRect.new()
+	_numero.texture = _numero_atlas
+	_numero.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_numero.stretch_mode = TextureRect.STRETCH_SCALE
+	_numero.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_numero.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_numero)
 	_numero.z_index = 3
 	configurar(_caixa, 78.0)
 	limpar()
@@ -45,8 +55,12 @@ func configurar(caixa: Vector2, _lado: float, _indice := 0, wiggle := false,
 		_face.size = caixa
 		_rim.position = Vector2(-2, -2)
 		_rim.size = caixa + Vector2(4, 4)
-		_numero.position = Vector2(12, 8) if caixa.x >= 150 else Vector2(6, 4)
-		_numero.add_theme_font_size_override("font_size", tam_num)
+		if caixa.x >= 120:
+			_numero.position = Vector2(12, 12)
+			_numero.size = Vector2(19, 21)
+		else:
+			_numero.position = Vector2(7, 7)
+			_numero.size = Vector2(10.5, 12)
 		_aplicar_rim()
 	set_process(_wiggle or _selecionada)
 
@@ -56,7 +70,7 @@ func mostrar(p_tipo: String, p_valor: int, animar := true) -> void:
 	valor = p_valor
 	_face.texture = Arte.card_face(tipo)
 	_face.visible = true
-	_numero.text = str(valor) if valor > 0 else ""
+	_numero_atlas.region = Rect2(clampi(valor, 0, 9) * 42, 0, 42, 48)
 	_numero.visible = valor > 0
 	_aplicar_rim()
 	if animar:

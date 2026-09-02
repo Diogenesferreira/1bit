@@ -1,0 +1,81 @@
+## Constantes de layout da tela de batalha — geradas de spec/layout_batalha.json
+## NUNCA digite um numero magico nas cenas: leia daqui.
+class_name BattleLayout
+extends RefCounted
+
+const DESIGN := Vector2i(940, 1685)
+
+# --- cores -------------------------------------------------------------
+const C_WINDOW      := Color("080908")
+const C_PANEL       := Color("0d0e0c")
+const C_FIELD       := Color("101210")
+const C_STRIP       := Color("121311")
+const C_WELL        := Color("121211")
+const C_SLOT_BG     := Color("0b0d0a")
+const C_INK         := Color("201f1d")
+const C_BONE        := Color("c9c0a8")
+const C_BONE_LIGHT  := Color("e8e3d4")
+const C_BONE_DIM    := Color("8f886f")
+const C_HP          := Color("c04a3e")
+const C_GOLD        := Color("c9a842")
+const C_GEM         := Color("7a5f9a")
+const EL_COLOR := {
+	"dragon": Color("a8443a"), "knight": Color("5a86a8"), "nature": Color("7d9455"),
+	"light": Color("c9a842"), "dark": Color("7a5f9a"), "heal": Color("b09a72"),
+	"wild": Color("e8e3d4"),
+}
+
+# --- pilha vertical (y, altura) ----------------------------------------
+const SEC := {
+	"header":     {"y": 25,   "h": 64},
+	"stage":      {"y": 103,  "h": 560},
+	"party_rule": {"y": 679,  "h": 18},
+	"party":      {"y": 711,  "h": 222},
+	"bag":        {"y": 947,  "h": 160},
+	"hand_rule":  {"y": 1121, "h": 18},
+	"hand":       {"y": 1153, "h": 446},
+	"footer":     {"y": 1615, "h": 41},
+}
+const CONTENT_X := 25
+const CONTENT_W := 890
+const STAGE_SIZE := Vector2i(888, 558)
+
+# --- selo do personagem ------------------------------------------------
+const SEAL_DISPLAY := 165          # asset 330 exibido a 1/2
+const SEAL_WINDOW  := Rect2i(18, 15, 129, 99)
+const SEAL_FRAMES  := 9            # charge sheet 330x2970
+
+# --- carta -------------------------------------------------------------
+const CARD_BAG  := Vector2i(78, 108)
+const CARD_HAND := Vector2i(138, 191)
+const HAND_COLS := 6
+const HAND_GAP  := 10
+
+# --- placa de inimigo: tudo derivado do fator inteiro k -----------------
+const PLATE_K_LEGAL := [12, 6, 4, 3]
+static func plate_size(k: int) -> Vector2i:      return Vector2i(32 * k, 12 * k)
+static func plate_digit_rect(k: int) -> Rect2i:  return Rect2i(int(11.5 * k), k, int(3.5 * k), 4 * k)
+static func plate_label_rect(k: int) -> Rect2i:  return Rect2i(int(15.5 * k), k, 12 * k, 4 * k)
+static func plate_digit_sheet_w(k: int) -> int:  return 35 * k
+const PLATE_SPRITE_GAP := 7
+
+# --- formacoes (cx = centro da placa, y = topo, dentro do palco) --------
+const FORMATIONS := {
+	1: {"k": 6, "sprite": 330, "list": [{"cx": 444, "y": 34}]},
+	2: {"k": 6, "sprite": 236, "list": [{"cx": 256, "y": 44}, {"cx": 632, "y": 44}]},
+	3: {"k": 4, "sprite": 190, "list": [{"cx": 154, "y": 26}, {"cx": 444, "y": 214}, {"cx": 734, "y": 26}]},
+	5: {"k": 4, "sprite": 150, "list": [
+			{"cx": 124, "y": 18}, {"cx": 444, "y": 18}, {"cx": 764, "y": 18},
+			{"cx": 278, "y": 272}, {"cx": 610, "y": 272}]},
+}
+
+# --- tempos (segundos) -------------------------------------------------
+const T_PRESS := 0.12
+const T_SELECT := 0.12
+const T_DEAL := 0.18
+const T_GAUGE := 0.20
+const T_CHARGE_STEP := 0.20
+const T_DRAIN := 0.42
+const T_TURN := 0.42
+const T_DAMAGE_RISE := 0.52
+const T_IMPACT := 0.90
