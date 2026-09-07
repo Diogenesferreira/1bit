@@ -165,6 +165,25 @@ pelos 3 backdrops novos por stage (B11).
 - Captura `12c_fusao_estouro`: cartas convergidas + glow + brilho branco + flash
   quente — bate com o render `04_fusao_estouro.png` do Designer.
 
+### 2026-09-07 — rodada 7 (branch `layout-do-designer`)
+
+Checkpoint `checkpoint-animacoes` commitado e no GitHub. Reconstrução do layout
+contra `spec/layout_batalha.json` numa branch própria:
+
+- **`scripts/battle/LayoutBatalha.gd`** — o JSON inteiro em constantes (pilha
+  vertical de 8 seções com Y/alturas, formações, party card, grade da mão,
+  paleta). Fonte única de layout.
+- **Palco encorpado:** `Unidades.ENEMY_PRESETS` com sprites ~40% maiores (trio
+  270, dupla 320, boss 430) e ancorados mais abaixo; `_montar_scrim` (gradiente
+  do JSON, topo −15% / base −55%). Resolve "inimigos pequenos e altos" + "campo
+  vazio".
+- **Alinhamento à coluna de 888:** grade da mão x0 27 / passo 150 (gap 12) /
+  linhas [1152,1355]; party cards gap 16 centrados; barra de HP em y 1574.
+
+Ainda na branch: herói do party card lê pequeno (dimensões batem com o spec —
+pode ser a arte `char80` com padding); número da carta na mão ainda pouco
+legível; botão de skill do líder na linha do rótulo HAND (é a mecânica B19).
+
 ## Falta
 
 - **B19 / B20 — skills.** Precisa de decisão de regra antes: `REGRAS_CANONICAS_ALPHA.md`
