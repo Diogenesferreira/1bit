@@ -84,6 +84,43 @@ ataque/defesa/HP). Decidir se entra.
 | energia da top bar = meta (entrar em fase) | "fase custa 4–5, regen 1/3min" |
 | batalha em 3 estágios | "3–5 rounds por fase" |
 
+## 7. Estatísticas da coleção (varredura dos 987 cards do CSV)
+
+As páginas `/Collection/Dragon|Knight|Nature|Dark|Holy` do Fandom = o
+`colecao_cartas.csv` desta pasta. Nada novo pra baixar. O que ele mostra:
+
+### Escada de geração (stats médios atk/def/hp/support · max_lv)
+| geração | n | atk | def | hp | sup | max_lv |
+|---|---:|---:|---:|---:|---:|---:|
+| Child | 92 | 79 | 72 | 85 | 74 | ~22 |
+| Adult | 153 | 120 | 105 | 114 | 93 | ~36 |
+| Perfect | 228 | 145 | 134 | 139 | 117 | ~51 |
+| Ultimate | 410 | 163 | 148 | 163 | 129 | ~58 |
+| Armor / Hybrid | 61 | ~135 | ~137 | ~144 | ~123 | ~50 |
+
+Cada degrau ≈ **+20–40%** nos stats. É uma curva de progressão limpa pra copiar
+a forma (não os números).
+
+### Raridade → poder total (soma dos 4 stats)
+`Common ~209 · Uncommon ~277 · Rare ~370` → tiers evoluídos
+`Queen ~471 · King ~523 · God ~601 · SP+ ~683 · Legendary Rare ~794`.
+Há **dois sistemas de raridade** na base: palavra (Common…Rare) e o tier de topo
+(Queen/King/God/SP/Legendary).
+
+### Os elementos NÃO são diferenciados por stat
+Proporção média atk/def/hp/sup, por elemento:
+`Dragon 29/24/27/21 · Dark 28/24/27/21 · Knight 27/26/25/21 · Nature 25/25/28/22 · Holy 25/25/26/24`.
+Praticamente iguais. **A diferença entre elementos é a skill e a afinidade, não
+o espalhamento de stats.** (Holy pende levemente pra support; Dragon/Dark pra
+atk.) → nossos aliados com `ataque` 7/5/6/4/6 é escolha nossa, não exigência.
+
+### Outros
+- `main_skill` ≠ `leader_skill` em **99%** dos cards — cada unidade tem duas
+  skills genuinamente distintas.
+- `cost` (energia de fase): 1–53, mediana **5**.
+- Contagem por elemento: Dragon 233 · Nature 207 · Knight 204 · Dark 197 ·
+  **Holy 146** (o mais raro).
+
 ## Diferenças / lacunas a decidir
 
 1. **Stat de Support** — a referência tem 4 stats; nós temos 3. Cura/skill sem
