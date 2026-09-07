@@ -83,7 +83,8 @@ const HUD_SKILL_ALIADO_TAM := Vector2(96, 96)
 # Os aliados nao disputam espaco fisico com os inimigos. Cada um ocupa um card
 # fixo na faixa PARTY; o terceiro slot e o lider, mas preserva o mesmo tamanho.
 const PARTY_CARD_TAM := Vector2(152, 188)
-const PARTY_CARD_XS := [16.0, 192.0, 368.0, 544.0, 720.0]
+# 5 cards de 152, gap 16 -> 824, centrados na coluna de 888 (spec/PARTY_CARD.md).
+const PARTY_CARD_XS := [32.0, 200.0, 368.0, 536.0, 704.0]
 const PARTY_CARD_Y := 629.0
 
 

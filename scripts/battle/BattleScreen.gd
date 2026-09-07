@@ -41,15 +41,15 @@ const BAG_Y := 978.0
 const BAG_PASSO := 88.0
 const NEXT_CASA := Rect2(819, 978, 78, 108)
 
-# Grade revisada do Designer: 6 colunas de 138x191, gap real de 10 px.
-# Largura total 878 px, centralizada na coluna de conteudo de 890 px.
+# Grade do Designer (spec/layout_batalha.json): 6 col x 138, gap 12, 2 lin x
+# 191, gap 12 -> 888 x 394 exatos, centrada na coluna de conteudo.
 const CAMPO_TAM := Vector2(138, 191)
-const CAMPO_X0 := 31.0
-const CAMPO_PASSO := 148.0
-const CAMPO_LINHAS := [1153.0, 1354.0]
+const CAMPO_X0 := 27.0
+const CAMPO_PASSO := 150.0
+const CAMPO_LINHAS := [1152.0, 1355.0]
 const CAMPO_ICONE := 138.0
 const ENTRADA_TAM := CAMPO_TAM
-const FUSAO_CENTRO := Vector2(470, 1376)
+const FUSAO_CENTRO := Vector2(471, 1349)
 const VOO_BAG_TAM := Vector2(78, 108)
 const VOO_BAG_ICONE := 78.0
 const FUSAO_TAM := CAMPO_TAM
@@ -59,8 +59,9 @@ const FUSAO_PASSO := 148.0
 # --- HUD --------------------------------------------------------------
 # Centro vertical do espaco entre o divisor da HAND (y=1561) e a moldura
 # interna inferior (y=1673): 44 px de respiro em cima e embaixo.
-const LIFE_POSITION := Vector2(31, 1605)
-const LIFE_WIDTH := 878
+# hp_row do JSON: y 19 + 1541, pad-top 14 -> barra em 1574; largura = conteudo.
+const LIFE_POSITION := Vector2(27, 1574)
+const LIFE_WIDTH := 888
 
 var estado: EstadoBatalha
 
