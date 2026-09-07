@@ -151,6 +151,7 @@ func _montar() -> void:
 	_arena = arena
 	_cenario = _criar_cenario(estado.estagio)
 	arena.add_child(_cenario)
+	_montar_scrim(arena)
 	_moldura_arena(Rect2(0, 0, 888, 558 + _vertical_extra), arena)
 	_montar_progresso_palco(arena)
 	_montar_faixa_aliados(arena)
@@ -276,6 +277,31 @@ func _anim_troca_estagio(ev: Dictionary) -> void:
 	_atualizar_hud()
 	await t.finished
 	fl.queue_free()
+
+
+# Scrim do palco (spec/layout_batalha.json): escurece de leve o topo e mais
+# o rodape, pra assentar as unidades sobre qualquer backdrop.
+func _montar_scrim(arena: Control) -> void:
+	var grad := Gradient.new()
+	grad.offsets = PackedFloat32Array([0.0, 0.4, 1.0])
+	grad.colors = PackedColorArray([
+		Color(0.031, 0.035, 0.031, 0.15),
+		Color(0.031, 0.035, 0.031, 0.05),
+		Color(0.031, 0.035, 0.031, 0.55)])
+	var gtex := GradientTexture2D.new()
+	gtex.gradient = grad
+	gtex.fill_from = Vector2(0, 0)
+	gtex.fill_to = Vector2(0, 1)
+	gtex.width = 8
+	gtex.height = 96
+	var tr := TextureRect.new()
+	tr.name = "StageScrim"
+	tr.texture = gtex
+	tr.position = Vector2.ZERO
+	tr.size = Vector2(888, 558 + _vertical_extra)
+	tr.stretch_mode = TextureRect.STRETCH_SCALE
+	tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	arena.add_child(tr)
 
 
 func _moldura_arena(logica: Rect2, pai: Control) -> void:
