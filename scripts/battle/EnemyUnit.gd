@@ -28,6 +28,13 @@ var _alvo_painel: Panel
 var _seta: Control
 var _tween_seta: Tween
 var _seta_base := Vector2.ZERO
+var _total_chip: Panel
+var _total_label: BitmapFontLabel
+var _morto := false
+var _hit_ms := -100000
+var _shake_amp := 7.0
+var _base_pos := Vector2.ZERO
+var _tem_base := false
 
 
 func montar(p_dados: Dictionary, p_indice := -1, total := 1) -> void:
@@ -92,6 +99,7 @@ func montar(p_dados: Dictionary, p_indice := -1, total := 1) -> void:
 	_turno_atlas = AtlasTexture.new()
 	_turno_atlas.atlas = Arte.tex("ui_v10/enemy/enemy_digits_sheet_v1.png")
 	_turno_atlas.region = Rect2(0, 0, 42, 48)
+	_turno_atlas.filter_clip = true
 	var escala_hud := hud_tam / Vector2(384, 144)
 	_turno_arte = _adicionar_arte_hud(_turno_atlas,
 		Vector2(138, 12) * escala_hud, Vector2(42, 48) * escala_hud, _hud_painel)
@@ -203,10 +211,18 @@ func atualizar() -> void:
 		_life_tween.tween_property(_life_clip, "size:x", largura_alvo, 0.42) \
 			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	_hp_anterior = fracao
-	_sprite.modulate.a = 0.12 if int(dados.hp) <= 0 else 1.0
-	_hud_painel.modulate = Color(0.45, 0.45, 0.45, 1.0) \
-		if int(dados.hp) <= 0 else Color.WHITE
-	if int(dados.hp) <= 0:
+	var morto := int(dados.hp) <= 0
+	if morto and not _morto:
+		_morto = true
+		# Cinza de morte na placa e no corpo, nunca no wrapper (ANIMACOES.md 4).
+		_sprite.material = Arte.material_dessaturar(1.0)
+		_sprite.modulate = Color.WHITE
+	elif not morto and _morto:
+		_morto = false
+		_sprite.material = null
+		_sprite.modulate = Color.WHITE
+	_hud_painel.modulate = Color(0.45, 0.45, 0.45, 1.0) if morto else Color.WHITE
+	if morto:
 		_seta.visible = false
 		_alvo_painel.visible = false
 		_selecao.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -225,7 +241,57 @@ func definir_turno(atual: int, maximo: int) -> void:
 		t.tween_property(_plate_arte, "modulate", Color.WHITE, 0.06)
 
 
+# Chip "TOTAL n" abaixo do HUD: o dano que a corrente vai somar neste alvo.
+# So aparece durante a corrente; some ao zerar (spec/ENEMY_HUD.md).
+func definir_total(n: int) -> void:
+	if n <= 0:
+		if _total_chip != null:
+			_total_chip.visible = false
+		return
+	if _total_chip == null:
+		_total_chip = Panel.new()
+		_total_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_total_chip.z_index = 21
+		_total_chip.position = Vector2(_hud_painel.position.x,
+			_hud_painel.position.y + _hud_painel.size.y + 4.0)
+		var est := StyleBoxFlat.new()
+		est.bg_color = Color(0.035, 0.037, 0.047, 0.92)
+		est.border_color = Color("c9c0a8")
+		est.set_border_width_all(1)
+		_total_chip.add_theme_stylebox_override("panel", est)
+		add_child(_total_chip)
+		_total_label = BitmapFontLabel.new()
+		_total_label.glyph_height = 12
+		_total_label.letter_spacing = 1
+		_total_label.position = Vector2(5, 3)
+		_total_chip.add_child(_total_label)
+	_total_label.text = "TOTAL %d" % n
+	_total_chip.size = _total_label.size + Vector2(10, 6)
+	_total_chip.visible = true
+
+
+func tremer(vivo := true) -> void:
+	if not _tem_base:
+		_base_pos = position
+		_tem_base = true
+	_hit_ms = Time.get_ticks_msec()
+	_shake_amp = 6.0 if vivo else 2.0
+
+
 func _process(delta: float) -> void:
+	# Tremor por leitura de relogio, nao por tween: um golpe novo na cascata
+	# nao reinicia animacao nenhuma (ANIMACOES.md secao 3).
+	if _tem_base:
+		var dt_ms := Time.get_ticks_msec() - _hit_ms
+		if dt_ms < 300:
+			var decay := 1.0 - float(dt_ms) / 300.0
+			var p := float(dt_ms) / 34.0
+			position = (_base_pos + Vector2(
+				sin(p * 3.1) * _shake_amp * decay,
+				cos(p * 4.7) * _shake_amp * 0.45 * decay)).round()
+		elif position != _base_pos:
+			position = _base_pos
+
 	if _life_arte == null:
 		return
 	if _hp_anterior <= 0.0 or _hp_anterior > 0.25:

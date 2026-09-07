@@ -56,9 +56,9 @@ const ALIADOS := [
 ]
 
 const ENEMY_PRESETS := {
-	1: {"xs": [279], "slot_w": 330, "centros": [444], "bases": [443], "sprites": [330], "sprite": 330},
-	2: {"xs": [138, 514], "slot_w": 236, "centros": [256, 632], "bases": [359, 359], "sprites": [236, 236], "sprite": 236},
-	3: {"xs": [59, 349, 639], "slot_w": 190, "centros": [154, 444, 734], "bases": [271, 459, 271], "sprites": [190, 190, 190], "sprite": 190},
+	1: {"xs": [279], "slot_w": 330, "centros": [444], "bases": [516], "sprites": [430], "sprite": 430},
+	2: {"xs": [138, 514], "slot_w": 236, "centros": [256, 632], "bases": [486, 486], "sprites": [320, 320], "sprite": 320},
+	3: {"xs": [59, 349, 639], "slot_w": 190, "centros": [154, 444, 734], "bases": [438, 512, 438], "sprites": [270, 270, 270], "sprite": 270},
 	4: {"xs": [34, 247, 460, 673], "slot_w": 180, "centros": [124, 337, 550, 763], "bases": [260, 415, 260, 415], "sprites": [180, 180, 180, 180], "sprite": 180},
 	# Formação em profundidade para a arte real. O primeiro é o boss
 	# central ao fundo; os demais ocupam laterais e linha avançada.
@@ -83,7 +83,8 @@ const HUD_SKILL_ALIADO_TAM := Vector2(96, 96)
 # Os aliados nao disputam espaco fisico com os inimigos. Cada um ocupa um card
 # fixo na faixa PARTY; o terceiro slot e o lider, mas preserva o mesmo tamanho.
 const PARTY_CARD_TAM := Vector2(152, 188)
-const PARTY_CARD_XS := [16.0, 192.0, 368.0, 544.0, 720.0]
+# 5 cards de 152, gap 16 -> 824, centrados na coluna de 888 (spec/PARTY_CARD.md).
+const PARTY_CARD_XS := [32.0, 200.0, 368.0, 536.0, 704.0]
 const PARTY_CARD_Y := 629.0
 
 
@@ -120,7 +121,8 @@ static func slot_aliado(indice: int) -> Rect2:
 static func hud_inimigo(sprite_rect: Rect2) -> Rect2:
 	# O HUD acompanha o inimigo sem dominar sua silhueta. Bosses ainda ganham
 	# mais presença, mas a formação de cinco permanece arejada.
-	var largura := 128.0 if sprite_rect.size.x <= 190.0 else 192.0
+	# k=4 (placa 128x48) para trio/quinteto, k=6 (192x72) para dupla/boss.
+	var largura := 128.0 if sprite_rect.size.x <= 300.0 else 192.0
 	var tamanho := Vector2(largura, largura * 144.0 / 384.0)
 	return Rect2(Vector2(round(sprite_rect.get_center().x - tamanho.x / 2.0),
 		round(sprite_rect.position.y - tamanho.y - HUD_INIMIGO_GAP)), tamanho)

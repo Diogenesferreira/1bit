@@ -1,0 +1,644 @@
+{
+  "canvas": {
+    "design_width": 940,
+    "design_height": "auto (pilha vertical)",
+    "content_width": 888,
+    "frame": {
+      "outer_border": 2,
+      "outer_padding": 10,
+      "inner_border": 1,
+      "inner_padding": 14
+    },
+    "note": "940 = 2 (borda) + 10 (padding) + 916; conteudo util = 888 px"
+  },
+  "coordinate_spaces": {
+    "CONTENT": "coluna de 888 px; origem no canto sup-esq do conteudo. Todas as secoes empilham aqui, gap 14",
+    "STAGE": "888x560, origem no canto sup-esq do palco; inimigos posicionados aqui",
+    "PARTY_CARD": "152x188, origem no canto sup-esq do card",
+    "HAND_GRID": "888x394, 6 colunas x 138 (gap 12), 2 linhas x 191 (gap 12)",
+    "ENEMY_PLATE": "32k x 12k (k = escala da formacao)"
+  },
+  "vertical_stack": [
+    {
+      "id": "top_bar",
+      "h": 72
+    },
+    {
+      "gap": 14
+    },
+    {
+      "id": "stage",
+      "h": 560,
+      "border": 1
+    },
+    {
+      "gap": 14
+    },
+    {
+      "id": "party_label",
+      "h": 18
+    },
+    {
+      "gap": 14
+    },
+    {
+      "id": "party_strip",
+      "h": 226,
+      "pad_top": 22,
+      "card_h": 188,
+      "pad_bottom": 16,
+      "border_top": 1,
+      "border_bottom": 1
+    },
+    {
+      "gap": 14
+    },
+    {
+      "id": "bag_box",
+      "h": 138,
+      "pad_top": 16,
+      "card_h": 108,
+      "pad_bottom": 14,
+      "border": 1
+    },
+    {
+      "gap": 14
+    },
+    {
+      "id": "hand_label",
+      "h": 34
+    },
+    {
+      "gap": 14
+    },
+    {
+      "id": "hand_grid",
+      "h": 394
+    },
+    {
+      "gap": 14
+    },
+    {
+      "id": "hp_row",
+      "h": 38,
+      "pad_top": 14,
+      "bar_h": 24,
+      "border_top": 1
+    }
+  ],
+  "top_bar": {
+    "height": 72,
+    "emblem": [
+      68,
+      68
+    ],
+    "emblem_border": 2,
+    "pips": 9,
+    "name_at": [
+      84,
+      20
+    ],
+    "lv_chip": {
+      "h": 22,
+      "pad_x": 7,
+      "box_lv": 38
+    },
+    "xp": {
+      "label_at": [
+        84,
+        47
+      ],
+      "well": [
+        214,
+        13
+      ],
+      "well_at": [
+        118,
+        47
+      ],
+      "fill_inset": 2,
+      "box_xp": 51
+    },
+    "counters": {
+      "gap": 8,
+      "box_h": 30,
+      "cell_pad_x": 10,
+      "icon_cell": 20,
+      "gap_icon_text": 7,
+      "box_coin": 90,
+      "box_gem": 64,
+      "box_energy": 90
+    },
+    "energy_max": 999,
+    "menu": {
+      "bars": 3,
+      "size": [
+        34,
+        5
+      ],
+      "step": 11,
+      "anchor": "direita"
+    }
+  },
+  "stage": {
+    "size": [
+      888,
+      560
+    ],
+    "backdrop_native": [
+      222,
+      140
+    ],
+    "backdrop_scale": 4,
+    "backdrop_draw": [
+      888,
+      560
+    ],
+    "scrim": "linear-gradient(180deg, rgba(8,9,8,.15), rgba(8,9,8,.05) 40%, rgba(8,9,8,.55))",
+    "corner_ticks": {
+      "size": 16,
+      "thickness": 2,
+      "inset": 6
+    },
+    "stage_plate": {
+      "at": [
+        22,
+        "bottom:20"
+      ],
+      "pad": [
+        13,
+        9
+      ],
+      "h": 34,
+      "gap": 12,
+      "opaque_bg": "#0b0d0a",
+      "border": 1,
+      "trail": {
+        "node_done": 12,
+        "node_current": 15,
+        "node_boss": 17,
+        "connector": [
+          20,
+          2
+        ],
+        "border": 2
+      }
+    }
+  },
+  "enemy_formations": {
+    "1": {
+      "scale": 6,
+      "sprite": 330,
+      "list": [
+        {
+          "cx": 444,
+          "y": 34,
+          "el": "dragon",
+          "turn": 1
+        }
+      ]
+    },
+    "2": {
+      "scale": 6,
+      "sprite": 236,
+      "list": [
+        {
+          "cx": 256,
+          "y": 44,
+          "el": "nature",
+          "turn": 2
+        },
+        {
+          "cx": 632,
+          "y": 44,
+          "el": "dark",
+          "turn": 1
+        }
+      ]
+    },
+    "3": {
+      "scale": 4,
+      "sprite": 190,
+      "list": [
+        {
+          "cx": 154,
+          "y": 26,
+          "el": "nature",
+          "turn": 2
+        },
+        {
+          "cx": 444,
+          "y": 214,
+          "el": "dark",
+          "turn": 3
+        },
+        {
+          "cx": 734,
+          "y": 26,
+          "el": "knight",
+          "turn": 1
+        }
+      ]
+    },
+    "5": {
+      "scale": 4,
+      "sprite": 150,
+      "list": [
+        {
+          "cx": 124,
+          "y": 18,
+          "el": "nature",
+          "turn": 2
+        },
+        {
+          "cx": 444,
+          "y": 18,
+          "el": "dark",
+          "turn": 1
+        },
+        {
+          "cx": 764,
+          "y": 18,
+          "el": "light",
+          "turn": 3
+        },
+        {
+          "cx": 278,
+          "y": 272,
+          "el": "knight",
+          "turn": 2
+        },
+        {
+          "cx": 610,
+          "y": 272,
+          "el": "dragon",
+          "turn": 1
+        }
+      ]
+    }
+  },
+  "enemy_plate_by_scale": {
+    "4": {
+      "scale": 4,
+      "plate": [
+        128,
+        48
+      ],
+      "digit": [
+        14,
+        16
+      ],
+      "digit_at": [
+        46,
+        4
+      ],
+      "label_at": [
+        62,
+        4
+      ],
+      "label_w": 48
+    },
+    "6": {
+      "scale": 6,
+      "plate": [
+        192,
+        72
+      ],
+      "digit": [
+        21,
+        24
+      ],
+      "digit_at": [
+        69,
+        6
+      ],
+      "label_at": [
+        93,
+        6
+      ],
+      "label_w": 72
+    }
+  },
+  "stage_sequence": [
+    {
+      "stage": "1/3",
+      "form": 3,
+      "backdrop": "backdrops/stage_plains_v1.png"
+    },
+    {
+      "stage": "2/3",
+      "form": 2,
+      "backdrop": "backdrops/stage_forest_v1.png"
+    },
+    {
+      "stage": "3/3",
+      "form": 1,
+      "boss": true,
+      "backdrop": "backdrops/stage_sea_v1.png"
+    }
+  ],
+  "party_card": {
+    "size": [
+      152,
+      188
+    ],
+    "outer_border": 2,
+    "frame_inset": 2,
+    "frame_border": 2,
+    "scene": [
+      150,
+      138
+    ],
+    "field_tile": 24,
+    "art_baseline": 136,
+    "char_draw": {
+      "dragon": [
+        114,
+        108
+      ],
+      "knight": [
+        88,
+        116
+      ],
+      "nature": [
+        112,
+        108
+      ],
+      "light": [
+        108,
+        112
+      ],
+      "dark": [
+        104,
+        108
+      ]
+    },
+    "seal": {
+      "at": [
+        -3,
+        -3
+      ],
+      "size": [
+        30,
+        30
+      ],
+      "border": 2,
+      "sym": [
+        26,
+        26
+      ]
+    },
+    "skill_bar": {
+      "at": [
+        "left:9",
+        "right:9",
+        "bottom:31"
+      ],
+      "h": 10,
+      "border": 1,
+      "pips": 8,
+      "pip": [
+        14,
+        6
+      ],
+      "pip_gap": 2
+    },
+    "charge_strip": {
+      "at": [
+        "left:2",
+        "right:2",
+        "bottom:41"
+      ],
+      "h": 2,
+      "anim": "b1Charge 900ms loop"
+    },
+    "skill_button": {
+      "at": [
+        "right:5",
+        "bottom:45"
+      ],
+      "size": [
+        22,
+        22
+      ],
+      "border": 2,
+      "glyph": [
+        9,
+        9
+      ],
+      "anim": "b1Pulse 1100ms"
+    },
+    "name_plate": {
+      "at": [
+        "left:2",
+        "right:2",
+        "bottom:2"
+      ],
+      "h": 24,
+      "border_top": 1,
+      "gap": 7,
+      "pad_x": 6,
+      "lv_chip": [
+        30,
+        18
+      ]
+    },
+    "leader_mark": {
+      "at": [
+        -4,
+        -4
+      ],
+      "size": [
+        14,
+        14
+      ],
+      "border": 2,
+      "rotate": 45,
+      "color": "#c9a842"
+    }
+  },
+  "hand": {
+    "grid": [
+      6,
+      2
+    ],
+    "cell": [
+      138,
+      191
+    ],
+    "gap": 12,
+    "slots": 12,
+    "real_slots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "entrada_slots": [
+      10,
+      11
+    ],
+    "grid_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      10,
+      5,
+      6,
+      7,
+      8,
+      9,
+      11
+    ],
+    "card_native": [
+      78,
+      108
+    ],
+    "card_draw": [
+      138,
+      191
+    ],
+    "select": {
+      "lift": 14,
+      "rim_inset": -3,
+      "rim_border": 2
+    },
+    "value_digit": {
+      "at": [
+        12,
+        12
+      ],
+      "size": [
+        19,
+        21
+      ],
+      "sheet": [
+        190,
+        21
+      ]
+    }
+  },
+  "life_bar": {
+    "row_h": 24,
+    "border": 3,
+    "style": "dither repetido (repeating-linear-gradient 3px/3px)",
+    "fill_transition_ms": 420,
+    "heart": [
+      27,
+      24
+    ],
+    "label_glyph": 12,
+    "value_glyph": 16
+  },
+  "fusion": {
+    "anchor": "centro do HAND_GRID",
+    "card_draw": [
+      138,
+      191
+    ],
+    "spread_side_by_side": 88,
+    "spread_merged": 0,
+    "glow": [
+      190,
+      220
+    ],
+    "burst": 230,
+    "shock": 120,
+    "beam": [
+      28,
+      300
+    ],
+    "sparks": 12
+  },
+  "damage_popup": {
+    "font_px": {
+      "normal": 26,
+      "big": 32
+    },
+    "plate_pad": [
+      3,
+      10
+    ],
+    "border": 2,
+    "bottom_base": "sprite*0.42",
+    "scatter": [
+      {
+        "x": 0,
+        "y": 14
+      },
+      {
+        "x": -19,
+        "y": 40
+      },
+      {
+        "x": 17,
+        "y": 26
+      },
+      {
+        "x": -12,
+        "y": 58
+      },
+      {
+        "x": 21,
+        "y": 52
+      },
+      {
+        "x": -24,
+        "y": 8
+      },
+      {
+        "x": 9,
+        "y": 66
+      },
+      {
+        "x": -8,
+        "y": 82
+      }
+    ],
+    "scatter_x_unit": "% do centro do inimigo",
+    "scatter_y_unit": "px acima da base"
+  },
+  "bitmap_font": {
+    "sheet": "ui/font_1x_v1.png",
+    "sheet_size": [
+      480,
+      16
+    ],
+    "cell": [
+      12,
+      16
+    ],
+    "order": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ/-:",
+    "tracking_default": 1,
+    "digits_hud": {
+      "sheet": "ui/digits_1x_v1.png",
+      "size": [
+        120,
+        14
+      ],
+      "cell": [
+        12,
+        14
+      ]
+    },
+    "digits_card": {
+      "sheet": "ui/digits_card_1x_v1.png",
+      "size": [
+        190,
+        21
+      ],
+      "cell": [
+        19,
+        21
+      ]
+    }
+  }
+}

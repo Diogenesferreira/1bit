@@ -181,6 +181,18 @@ static func hud_inimigo_v6_plate(tipo: String) -> Texture2D:
 	return tex(String(HUD_INIMIGO_V6_PLATE.get(tipo, HUD_INIMIGO_V6_PLATE["dragon"])))
 
 
+# Backdrop do palco por estagio: 1/3 plains, 2/3 forest, boss sea.
+# Nativo 222x140, desenhar 888x560 (x4, nearest, sem cover).
+const BACKDROPS := [
+	"backdrops/stage_plains_v1.png",
+	"backdrops/stage_forest_v1.png",
+	"backdrops/stage_sea_v1.png",
+]
+
+static func backdrop(estagio: int) -> Texture2D:
+	return tex(BACKDROPS[clampi(estagio - 1, 0, BACKDROPS.size() - 1)])
+
+
 static func nativo_carta_alpha(tipo: String) -> Vector2:
 	return icone_carta_alpha(tipo).get_size()
 
@@ -313,6 +325,14 @@ static func material_inversor(quantidade := 1.0) -> ShaderMaterial:
 static func material_hud_inimigo_neutro() -> ShaderMaterial:
 	var m := ShaderMaterial.new()
 	m.shader = load("res://shaders/hud_inimigo_neutro.gdshader")
+	return m
+
+
+# Cinza de morte: grayscale + brilho .45, preservando a silhueta pelo alpha.
+static func material_dessaturar(quantidade := 1.0) -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = load("res://shaders/dessaturar.gdshader")
+	m.set_shader_parameter("quantidade", quantidade)
 	return m
 
 

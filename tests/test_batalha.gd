@@ -362,7 +362,8 @@ func _parte_tela() -> void:
 	for u: Dictionary in e.inimigos:
 		sobrou += int(u.hp)
 		hp_max_total += int(u.hp_max)
-	if sobrou >= hp_max_total:
+	# Com stages, ter avancado de estagio ja prova que um conjunto inteiro caiu.
+	if sobrou >= hp_max_total and int(e.estagio) == 1:
 		_falhar("tela: nenhum inimigo tomou dano (soma de HP ainda em %d)" % sobrou)
 
 	print("turnos jogados ............ %d" % turnos)

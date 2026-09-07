@@ -66,6 +66,9 @@ func _rebuild() -> void:
 			var atlas := AtlasTexture.new()
 			atlas.atlas = _sheet
 			atlas.region = Rect2(index * CELL.x, 0, CELL.x, CELL.y)
+			# Sem isto, em zoom fracionario o nearest amostra o glifo vizinho
+			# e "1240" chega a virar ": 240" na barra da conta.
+			atlas.filter_clip = true
 			var glyph := TextureRect.new()
 			glyph.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			glyph.stretch_mode = TextureRect.STRETCH_SCALE

@@ -21,6 +21,15 @@ func _ready() -> void:
 	_build()
 
 
+func set_stage(n: int, total := -1) -> void:
+	stage = n
+	if total > 0:
+		stage_total = total
+	for c in get_children():
+		c.free()
+	_build()
+
+
 func _build() -> void:
 	var label := _label("STAGE", 16, 2, Color(1, 1, 1, 0.6))
 	var value := _label("%d/%d" % [stage, stage_total], 16, 1, Color.WHITE)
