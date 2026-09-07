@@ -61,3 +61,48 @@ Segue o mesmo contrato do resto do jogo: **lista de eventos já resolvida**.
 
 Números de dano/percentual ficam em constantes no topo de `EstadoBatalha`, como
 o resto do balanceamento — ajustáveis pelas 30 partidas simuladas.
+
+## Cooldown / "peso" de cada família (dado real da referência)
+
+O `Module:.../Skills` do Fandom **só tem as descrições** — nenhum número. Os
+turnos de recarga estão em `referencia_digimon_heroes/colecao_cartas.csv`
+(colunas `main_skill_turns` / `leader_skill_turns`). Faixa global: **3 a 23**
+turnos (média ~10). Por família:
+
+| skill de referência | turnos (min/méd/máx) | leitura |
+|---|---|---|
+| Evolution 1 (+1 no valor) | 4 / 5 / 6 | mais barata |
+| Small Absorption | 4 / 5 / 6 | barata |
+| Evolution 2 (+2) | 6 / 7 / 8 | barata |
+| Medium Recovery (cura 50%) | 6 / 7 / 8 | barata |
+| All Nine | 8 / 9 / 10 | média |
+| 25% Defense | 8 / 9 / 10 | média |
+| Small Enemy Attack Delay | 8 / 9 / 10 | média |
+| Large Recovery | 9 / 9 / 10 | média |
+| Large Damage Return | 9 / 10 / 10 | média |
+| Big Enemy Attack Delay | 14 / 14 / 15 | cara |
+| Large Damage to All | 14 / 15 / 16 | cara |
+| Damage Enemy (dano máx. 1 alvo) | 15 / 15 / 16 | cara |
+| 75% Defense | 15 / 16 / 16 | cara |
+| Large Skill Boost | 18 / 19 / 19 | muito cara |
+| Damage All Enemies (dano máx. em todos) | 20 / 21 / 21 | a mais cara |
+
+**Padrão:** barato = manipulação de carta / cura pequena / delay pequeno;
+caro = AoE forte / escudo forte. As 5 da alpha, na régua da referência:
+
+| alpha | equivalente | peso relativo |
+|---|---|---|
+| Crescimento | Evolution 1 | ~5 (barata) |
+| Luz Restauradora | Medium/Large Recovery | ~7–9 |
+| Eclipse | Small Enemy Attack Delay | ~9 |
+| Bastião | 25% Defense (leve) / 75% (forte) | ~9 a ~15 |
+| Impacto de Brasa | Damage Enemy | ~15 (cara) |
+
+Na alpha tudo carrega em **8 pips** (simples, pra testar). O tiering acima é a
+intenção pra quando as skills forem canonizadas — não precisa entrar já.
+
+## Stat de Support
+
+O CSV tem 4 stats, não 3: `atk`, `defense`, `hp`, **`support`** (média ~110–134
+por elemento, mesma ordem de grandeza dos outros). É o multiplicador de cura e
+força de skill. Não temos. Decisão em `gameplay_digimon_heroes.md` §"Diferenças".

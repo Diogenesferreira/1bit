@@ -231,3 +231,5 @@ return {
  ["#default"] = "Unknown Skill: {{{1|}}}",
 
 }
+
+--[[Category:Lua modules]]
