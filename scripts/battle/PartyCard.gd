@@ -130,20 +130,34 @@ func _build_name_plate(ring: Color) -> void:
 
 
 func _build_leader_plaque() -> void:
-	const WIDTH := 117.0
-	var x := CARD_SIZE.x + 3.0 - WIDTH
-	var plaque := Rect2(x, -14, WIDTH, 22)
-	_rect(self, plaque, Color("0d0e0c"), 40)
-	_border(self, plaque, 1, GOLD, 41)
-	_rect(self, Rect2(x + 8, -5, 4, 4), GOLD, 42)
-	_rect(self, Rect2(x + WIDTH - 12, -5, 4, 4), GOLD, 42)
-	var label := BitmapFontLabel.new()
-	label.text = "LEADER"
-	label.glyph_height = 16
-	label.letter_spacing = 3
-	label.position = Vector2(x + 16, -11)
-	label.z_index = 42
-	add_child(label)
+	# Marca de lider: losango dourado 14x14 no canto sup-dir do card + halo
+	# suave na cor lit. Sem placa "LEADER" e sem coroa (spec/PARTY_CARD.md 3).
+	var halo := Panel.new()
+	halo.position = Vector2(-6, -6)
+	halo.size = CARD_SIZE + Vector2(12, 12)
+	halo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	halo.z_index = -1
+	var halo_estilo := StyleBoxFlat.new()
+	halo_estilo.bg_color = Color(0, 0, 0, 0)
+	halo_estilo.shadow_color = Arte.cor_elemental_clara(element)
+	halo_estilo.shadow_color.a = 0.45
+	halo_estilo.shadow_size = 8
+	halo.add_theme_stylebox_override("panel", halo_estilo)
+	add_child(halo)
+
+	var losango := Panel.new()
+	losango.position = Vector2(CARD_SIZE.x - 7, -7)
+	losango.size = Vector2(14, 14)
+	losango.pivot_offset = Vector2(7, 7)
+	losango.rotation = deg_to_rad(45)
+	losango.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	losango.z_index = 42
+	var l_estilo := StyleBoxFlat.new()
+	l_estilo.bg_color = GOLD
+	l_estilo.border_color = Color("0d0e0c")
+	l_estilo.set_border_width_all(2)
+	losango.add_theme_stylebox_override("panel", l_estilo)
+	add_child(losango)
 
 
 func _build_guest_marker() -> void:
@@ -188,6 +202,7 @@ func set_level(value: int) -> void:
 		var atlas := AtlasTexture.new()
 		atlas.atlas = Arte.party_digits()
 		atlas.region = Rect2(int(character) * 12, 0, 12, 14)
+		atlas.filter_clip = true
 		var digit := TextureRect.new()
 		digit.texture = atlas
 		digit.position = Vector2(x, 2)

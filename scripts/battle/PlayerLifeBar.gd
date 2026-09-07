@@ -64,10 +64,10 @@ func _build() -> void:
 	_well.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_well)
 
-	_texture(_well, Arte.tex("ui_v11/ui/hp_tile_field.png"),
-		Rect2(0, 0, well_width, ROW_H), true)
+	# Dither procedural: faixas de 3 px, sem textura (spec/LIFE_BAR_V2.md).
+	_rect(_well, Rect2(0, 0, well_width, ROW_H), Color("14140f"))
 	_well_inner = well_width - 2 * WELL_BORDER
-	_fill = _texture(_well, Arte.tex("ui_v11/ui/hp_tile_fill.png"),
+	_fill = _texture(_well, _tile_dither(Color("a8443a"), Color("d9705f")),
 		Rect2(WELL_BORDER, WELL_BORDER, _well_inner, ROW_H - 2 * WELL_BORDER), true)
 	_tip = _rect(_well, Rect2(WELL_BORDER, WELL_BORDER,
 		WELL_BORDER, ROW_H - 2 * WELL_BORDER), EDGE)
@@ -110,6 +110,15 @@ func _apply(value: float) -> void:
 		_value.position = Vector2(row_width - _text_width(
 			text_value, VALUE_GLYPH, TEXT_SPACING),
 			(ROW_H - VALUE_GLYPH) / 2.0)
+
+
+# Tile 6x1: 3 px cor base, 3 px cor lit. Repetido no eixo x pelo STRETCH_TILE,
+# dá as faixas de 3 px em qualquer largura de calha.
+func _tile_dither(base: Color, lit: Color) -> ImageTexture:
+	var img := Image.create(6, 1, false, Image.FORMAT_RGBA8)
+	for x in 6:
+		img.set_pixel(x, 0, base if x < 3 else lit)
+	return ImageTexture.create_from_image(img)
 
 
 func _text_width(value: String, glyph_height: int, spacing: int) -> int:

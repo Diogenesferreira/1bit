@@ -1,0 +1,7 @@
+A cópia de "UI Batalha 1bit.dc.html" referencia os assets por caminho relativo
+(assets/... e _ds/...). Para abrir a referência viva com tudo carregado, use o arquivo
+na RAIZ do projeto de design, não esta cópia.
+
+Esta cópia serve como código-fonte legível: é dela que sai spec/layout_batalha.json.
+A classe Component no fim do arquivo contém as formações de inimigo (FORMS) — os mesmos
+números que estão em godot/battle_layout.gd.

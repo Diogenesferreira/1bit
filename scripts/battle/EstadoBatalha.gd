@@ -49,6 +49,14 @@ const QTD_PROXIMAS := 12
 const BAG_VISIVEL := 8
 const INIMIGOS_FASE_PADRAO := 3
 
+# Batalha em estagios: trio -> dupla -> boss (indices em Unidades.INIMIGOS).
+# Formato curto para testar rapido; a curva final vem do balanceamento.
+const ESTAGIOS := [[0, 1, 2], [3, 4], [0]]
+const BOSS_MULT := 3.0
+# Cada inimigo entra com seu proprio contador de TURN (spec/FORMACOES.md); o
+# global `contador_inimigo` vira o menor deles. Ao agir, reseta para o maximo.
+const FORMACAO_TURNOS := {1: [1], 2: [2, 1], 3: [2, 3, 1]}
+
 # --- dano ------------------------------------------------------------
 # Numeros pequenos porque os inimigos do handoff tem 8 a 16 de HP (46
 # somados). Uma corrente media faz ~3 combos, entao ~4 de dano; a
@@ -94,6 +102,8 @@ var contador_inimigo_max := CONTADOR_INIMIGO_MAX
 
 var rodada := 1
 var rodadas_totais := 3
+var estagio := 1
+var estagios_totais := ESTAGIOS.size()
 var andar := 7
 var score := 1250
 var gems := 1250
@@ -119,11 +129,7 @@ func _init(semente: int = 0) -> void:
 		rng.seed = semente
 	saco = Saco.new(rng)
 
-	for i in mini(INIMIGOS_FASE_PADRAO, Unidades.INIMIGOS.size()):
-		var d: Dictionary = Unidades.INIMIGOS[i]
-		inimigos.append({"def": d, "hp": int(d.hp_max), "hp_max": int(d.hp_max)})
-	if not inimigos.is_empty():
-		alvo_selecionado = 0
+	_montar_estagio(1)
 	for d: Dictionary in Unidades.ALIADOS:
 		aliados.append({"def": d, "hp": int(d.hp_max), "hp_max": int(d.hp_max),
 			"skill": 0, "skill_max": 8})
@@ -141,6 +147,26 @@ func _init(semente: int = 0) -> void:
 		mao.append(null)  # as ENTRADAS comecam vazias
 	for i in QTD_PROXIMAS:
 		proximas.append(saco.comprar())
+
+
+# Refaz `inimigos` para o estagio n (1..estagios_totais). O ultimo estagio
+# multiplica o HP para dar peso de boss.
+func _montar_estagio(n: int) -> void:
+	estagio = clampi(n, 1, estagios_totais)
+	inimigos.clear()
+	var indices: Array = ESTAGIOS[estagio - 1]
+	var eh_boss := estagio >= estagios_totais
+	var turnos: Array = FORMACAO_TURNOS.get(indices.size(), [])
+	for i in indices.size():
+		var d: Dictionary = Unidades.INIMIGOS[int(indices[i]) % Unidades.INIMIGOS.size()]
+		var hpm := int(d.hp_max)
+		if eh_boss:
+			hpm = int(round(float(hpm) * BOSS_MULT))
+		var t: int = int(turnos[i]) if i < turnos.size() else CONTADOR_INIMIGO_MAX
+		inimigos.append({"def": d, "hp": hpm, "hp_max": hpm,
+			"turno": t, "turno_max": CONTADOR_INIMIGO_MAX})
+	alvo_selecionado = 0 if not inimigos.is_empty() else -1
+	contador_inimigo = contador_inimigo_max
 
 
 # ------------------------------------------------------------ consultas
@@ -742,16 +768,21 @@ func _resolver_ataque_final(resultado: Dictionary, acumulado: Array) -> void:
 
 	var por_alvo: Dictionary = {}
 	var dominante_por_alvo: Dictionary = {}
+	var bruto_por_elemento: Dictionary = {}   # alvo -> {tipo -> soma bruta}
 	var cura_f := 0.0
 	for g: Dictionary in acumulado:
 		if bool(g.cura):
 			cura_f += float(g.valor)
 		else:
-			por_alvo[int(g.alvo)] = float(por_alvo.get(g.alvo, 0.0)) + float(g.valor)
-			var dominante: Dictionary = dominante_por_alvo.get(int(g.alvo), {})
+			var a := int(g.alvo)
+			var tp := String(g.get("tipo", "light"))
+			por_alvo[a] = float(por_alvo.get(a, 0.0)) + float(g.valor)
+			var por_el: Dictionary = bruto_por_elemento.get(a, {})
+			por_el[tp] = float(por_el.get(tp, 0.0)) + float(g.valor)
+			bruto_por_elemento[a] = por_el
+			var dominante: Dictionary = dominante_por_alvo.get(a, {})
 			if dominante.is_empty() or float(g.valor) > float(dominante.valor):
-				dominante_por_alvo[int(g.alvo)] = {"valor": float(g.valor),
-					"tipo": String(g.get("tipo", "light"))}
+				dominante_por_alvo[a] = {"valor": float(g.valor), "tipo": tp}
 
 	var golpes: Array = []
 	var dano_total := 0
@@ -763,9 +794,26 @@ func _resolver_ataque_final(resultado: Dictionary, acumulado: Array) -> void:
 		inimigos[alvo].hp = maxi(0, int(inimigos[alvo].hp) - dano)
 		dano_total += dano
 		var dominante: Dictionary = dominante_por_alvo.get(alvo, {"tipo": "light"})
+		# Parcelas por elemento: reparte o dano do alvo entre os elementos que
+		# bateram, proporcional a contribuicao bruta. A ultima fecha a conta
+		# para a soma casar com `dano` exatamente.
+		var parcelas: Array = []
+		var por_el: Dictionary = bruto_por_elemento.get(alvo, {})
+		var tipos: Array = por_el.keys()
+		var soma_parc := 0
+		for i in tipos.size():
+			var tp := String(tipos[i])
+			var d_el := dano - soma_parc if i == tipos.size() - 1 \
+				else int(round(dano * float(por_el[tp]) / maxf(1.0, bruto)))
+			d_el = clampi(d_el, 0, dano - soma_parc)
+			soma_parc += d_el
+			if d_el > 0:
+				parcelas.append({"tipo": tp, "dano": d_el})
+		if parcelas.is_empty():
+			parcelas.append({"tipo": String(dominante.tipo), "dano": dano})
 		golpes.append({"alvo": alvo, "dano": dano, "bruto": bruto,
 			"tipo": String(dominante.tipo), "reducao": reducao,
-			"hp": int(inimigos[alvo].hp)})
+			"parcelas": parcelas, "hp": int(inimigos[alvo].hp)})
 
 	# Quando o alvo cai, deixa o proximo inimigo vivo selecionado.
 	if alvo_selecionado >= 0 and int(inimigos[alvo_selecionado].hp) <= 0:
@@ -788,8 +836,15 @@ func _resolver_ataque_final(resultado: Dictionary, acumulado: Array) -> void:
 	})
 
 	if vivos().is_empty():
-		fim = true
-		vitoria = true
+		if estagio < estagios_totais:
+			_montar_estagio(estagio + 1)
+			resultado.eventos.append({
+				"tipo": "troca_estagio", "estagio": estagio,
+				"estagios_totais": estagios_totais, "total": inimigos.size(),
+			})
+		else:
+			fim = true
+			vitoria = true
 
 
 # A tabela original vinha do servidor e se perdeu. Para a alpha usamos
@@ -812,13 +867,18 @@ func _turno_inimigo(resultado: Dictionary) -> void:
 			break
 	if int(resultado.n_combos) == 0 and not abandonou:
 		return
+
+	# Cadencia canonica: UM contador global (comeca em 3). Os `turno` por
+	# inimigo sao so leitura de HUD e descem junto, mas nunca disparam sozinhos.
 	contador_inimigo -= 1
+	for i in vivos():
+		inimigos[i].turno = maxi(1, int(inimigos[i].get("turno", contador_inimigo_max)) - 1)
 	if contador_inimigo > 0:
 		return
+
 	var inimigos_vivos := vivos()
-	var ataque := 10.0
-	if not inimigos_vivos.is_empty():
-		ataque = float(inimigos[inimigos_vivos[0]].def.get("ataque", 10))
+	var atacante := inimigos_vivos[0] if not inimigos_vivos.is_empty() else -1
+	var ataque := float(inimigos[atacante].def.get("ataque", 10)) if atacante >= 0 else 10.0
 	var defesa_media := 0.0
 	var defensores := 0
 	for a: Dictionary in aliados:
@@ -831,6 +891,8 @@ func _turno_inimigo(resultado: Dictionary) -> void:
 		+ float(rng.randi_range(-1, 1)))))
 	hp = maxi(0, hp - dano_inimigo)
 	contador_inimigo = contador_inimigo_max
+	for i in vivos():
+		inimigos[i].turno = int(inimigos[i].get("turno_max", contador_inimigo_max))
 	resultado["ataque_inimigo"] = dano_inimigo
 	if hp <= 0:
 		fim = true
@@ -842,13 +904,15 @@ func _turno_inimigo(resultado: Dictionary) -> void:
 
 func _tirar_snapshot() -> Dictionary:
 	var hps: Array[int] = []
+	var turnos: Array[int] = []
 	for u: Dictionary in inimigos:
 		hps.append(int(u.hp))
+		turnos.append(int(u.get("turno", contador_inimigo_max)))
 	return {
 		"mao": mao.duplicate(), "proximas": proximas.duplicate(),
 		"zona": zona.duplicate(), "zona_slots": zona_slots.duplicate(),
 		"zona_descidas": zona_descidas.duplicate(),
-		"contador": contador_inimigo, "hp": hp, "hps": hps,
+		"contador": contador_inimigo, "hp": hp, "hps": hps, "turnos": turnos,
 	}
 
 
@@ -866,7 +930,10 @@ func desfazer() -> bool:
 	zona_descidas = (s.zona_descidas as Array[int]).duplicate()
 	contador_inimigo = int(s.contador)
 	hp = int(s.hp)
+	var turnos_s: Array = s.get("turnos", [])
 	for i in inimigos.size():
 		inimigos[i].hp = int((s.hps as Array)[i])
+		if i < turnos_s.size():
+			inimigos[i].turno = int(turnos_s[i])
 	pode_desfazer = not _snapshots.is_empty()
 	return true

@@ -5,8 +5,9 @@ class_name CardIcon
 # exatamente 2x na mao, conforme spec/ASSETS.md.
 
 const DUR_CARD_IN := 0.18
-const DUR_SELECAO := 0.11
-const SUBIDA_SELECAO := 10.0
+const DUR_SELECAO := 0.12
+const SUBIDA_SELECAO := 14.0
+const DUR_PULSO_SELECAO := 0.34
 
 var tipo := ""
 var valor := 0
@@ -36,6 +37,7 @@ func _ready() -> void:
 	_numero_atlas = AtlasTexture.new()
 	_numero_atlas.atlas = Arte.tex("ui_v10/enemy/enemy_digits_sheet_v1.png")
 	_numero_atlas.region = Rect2(0, 0, 42, 48)
+	_numero_atlas.filter_clip = true
 	_numero = TextureRect.new()
 	_numero.texture = _numero_atlas
 	_numero.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -110,17 +112,44 @@ func vazio() -> bool:
 
 
 func definir_selecionada(v: bool) -> void:
+	var virou := v and not _selecionada
 	_selecionada = v
 	_aplicar_rim()
 	if _tween_selecao != null and _tween_selecao.is_valid():
 		_tween_selecao.kill()
 	z_index = 12 if v else 0
-	_face.modulate = Color(1.05, 1.05, 1.05, 1.0) if v else Color.WHITE
+	_face.modulate = Color(1.14, 1.14, 1.14, 1.0) if v else Color.WHITE
 	_tween_selecao = create_tween().set_parallel()
 	_tween_selecao.tween_property(self, "position",
 		_base + Vector2(0, -SUBIDA_SELECAO) if v else _base, DUR_SELECAO) \
-		.set_trans(Tween.TRANS_BACK if v else Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	if virou:
+		_pulso_selecao()
 	set_process(_wiggle or _selecionada)
+
+
+# Anel unico que abre e some no instante da selecao (ANIMACOES.md secao 5).
+func _pulso_selecao() -> void:
+	var anel := Panel.new()
+	anel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	anel.position = Vector2(-2, -2)
+	anel.size = _caixa + Vector2(4, 4)
+	anel.pivot_offset = anel.size / 2.0
+	anel.z_index = 2
+	var estilo := StyleBoxFlat.new()
+	estilo.bg_color = Color(0, 0, 0, 0)
+	estilo.border_color = Arte.cor_elemental_clara(tipo)
+	estilo.set_border_width_all(2)
+	anel.add_theme_stylebox_override("panel", estilo)
+	add_child(anel)
+	anel.modulate.a = 0.95
+	var t := create_tween().set_parallel()
+	t.tween_property(anel, "scale", Vector2(1.22, 1.22), DUR_PULSO_SELECAO) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	t.tween_property(anel, "modulate:a", 0.0, DUR_PULSO_SELECAO) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	await t.finished
+	anel.queue_free()
 
 
 func inverter_quantidade(v: float) -> void:
