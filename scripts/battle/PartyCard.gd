@@ -13,10 +13,12 @@ const GOLD := Color("c9a842")
 const DEAD_ALPHA := 0.12
 
 # Tamanhos autorados por elemento. Nao derivar por multiplicador.
+# Tabela do spec (char_draw) ampliada ~15%: no jogo o heroi precisa preencher
+# o card como na referencia 09_faixa_party, nao ficar no terco de baixo.
 const CHAR_DRAW := {
-	"dragon": Vector2(114, 108), "knight": Vector2(88, 116),
-	"nature": Vector2(112, 108), "light": Vector2(108, 112),
-	"dark": Vector2(104, 108), "heal": Vector2(96, 108),
+	"dragon": Vector2(131, 124), "knight": Vector2(101, 133),
+	"nature": Vector2(129, 124), "light": Vector2(124, 129),
+	"dark": Vector2(120, 124), "heal": Vector2(110, 124),
 }
 
 var element := "dragon"

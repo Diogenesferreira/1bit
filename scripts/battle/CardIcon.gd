@@ -18,6 +18,7 @@ var _base := Vector2.ZERO
 var _tempo := 0.0
 var _face: TextureRect
 var _numero: TextureRect
+var _numero_bg: ColorRect
 var _numero_atlas: AtlasTexture
 var _rim: Panel
 var _tween_selecao: Tween
@@ -34,10 +35,18 @@ func _ready() -> void:
 	_rim = Panel.new()
 	_rim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_rim)
+	# Folha dedicada do valor da carta (spec: digits_card_1x_v1, celula 19x21),
+	# desenhada 1:1 na mao -> nitida. A antiga (enemy digits 42x48) reduzia e borrava.
 	_numero_atlas = AtlasTexture.new()
-	_numero_atlas.atlas = Arte.tex("ui_v10/enemy/enemy_digits_sheet_v1.png")
-	_numero_atlas.region = Rect2(0, 0, 42, 48)
+	_numero_atlas.atlas = Arte.tex("ui_v11/ui/digits_card_1x_v1.png")
+	_numero_atlas.region = Rect2(0, 0, 19, 21)
 	_numero_atlas.filter_clip = true
+	# Chapinha escura atras do numero: garante leitura em qualquer face de carta.
+	_numero_bg = ColorRect.new()
+	_numero_bg.color = Color(0.043, 0.047, 0.039, 0.62)
+	_numero_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_numero_bg.z_index = 2
+	add_child(_numero_bg)
 	_numero = TextureRect.new()
 	_numero.texture = _numero_atlas
 	_numero.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -64,8 +73,11 @@ func configurar(caixa: Vector2, _lado: float, _indice := 0, wiggle := false,
 			_numero.position = Vector2(12, 12)
 			_numero.size = Vector2(19, 21)
 		else:
-			_numero.position = Vector2(7, 7)
-			_numero.size = Vector2(10.5, 12)
+			_numero.position = Vector2(6, 6)
+			_numero.size = Vector2(11, 12)
+		if _numero_bg != null:
+			_numero_bg.position = _numero.position - Vector2(3, 2)
+			_numero_bg.size = _numero.size + Vector2(6, 4)
 		_aplicar_rim()
 	set_process(_wiggle or _selecionada)
 
@@ -75,8 +87,10 @@ func mostrar(p_tipo: String, p_valor: int, animar := true) -> void:
 	valor = p_valor
 	_face.texture = Arte.card_face(tipo)
 	_face.visible = true
-	_numero_atlas.region = Rect2(clampi(valor, 0, 9) * 42, 0, 42, 48)
+	_numero_atlas.region = Rect2(clampi(valor, 0, 9) * 19, 0, 19, 21)
 	_numero.visible = valor > 0
+	if _numero_bg != null:
+		_numero_bg.visible = valor > 0
 	_aplicar_rim()
 	if animar:
 		scale = Vector2(0.82, 0.82)
@@ -104,6 +118,8 @@ func limpar() -> void:
 		_face.modulate = Color.WHITE
 		_face.visible = false
 		_numero.visible = false
+		if _numero_bg != null:
+			_numero_bg.visible = false
 		_rim.visible = false
 
 
