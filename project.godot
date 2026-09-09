@@ -8,32 +8,33 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
-config/name="1 Bit Heroes"
-run/main_scene="res://scenes/battle/BattleScreen.tscn"
-config/features=PackedStringArray("4.7", "Forward Plus")
-config/icon="res://icon.svg"
+config/name="Ilha Digital"
+config/description="Combate de cartas com a arte original aprovada."
+run/main_scene="res://app/main.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[autoload]
+
+PlayerProfile="*res://autoload/player_profile.gd"
+SaveService="*res://autoload/save_service.gd"
 
 [display]
 
-window/size/viewport_width=940
-window/size/viewport_height=1685
-window/size/window_width_override=558
-window/size/window_height_override=1000
+window/size/viewport_width=1024
+window/size/viewport_height=1536
+window/size/window_width_override=512
+window/size/window_height_override=768
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
 window/handheld/orientation=1
-
-[physics]
-
-3d/physics_engine="Jolt Physics"
 
 [rendering]
 
-textures/canvas_textures/default_texture_filter=0
-rendering_device/driver.windows="d3d12"
-textures/vram_compression/import_etc2_astc=true
-environment/defaults/default_clear_color=Color(0.0313726, 0.0352941, 0.0313726, 1)
-2d/snap/snap_2d_transforms_to_pixel=true
-2d/snap/snap_2d_vertices_to_pixel=true
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.008, 0.025, 0.05, 1)

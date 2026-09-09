@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://data/definitions/character_definition.gd" id="script"]
+[resource]
+script = ExtResource("script")
+display_name = "Anfíbio"
+element = 2
+level = 36
+max_hp = 900
+is_boss = false
+atlas_region = Rect2(602, 501, 193, 212)

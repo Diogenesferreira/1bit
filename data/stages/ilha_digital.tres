@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="StageDefinition" load_steps=12 format=3]
+[ext_resource type="Script" path="res://data/definitions/stage_definition.gd" id="script"]
+[ext_resource type="Resource" path="res://data/biomes/ilha_digital.tres" id="biome"]
+[ext_resource type="Script" path="res://data/definitions/character_definition.gd" id="character"]
+[ext_resource type="Resource" path="res://data/characters/dragon.tres" id="dragon"]
+[ext_resource type="Resource" path="res://data/characters/knight.tres" id="knight"]
+[ext_resource type="Resource" path="res://data/characters/nature.tres" id="nature"]
+[ext_resource type="Resource" path="res://data/characters/light.tres" id="light"]
+[ext_resource type="Resource" path="res://data/characters/dark.tres" id="dark"]
+[ext_resource type="Resource" path="res://data/characters/boss.tres" id="boss"]
+[ext_resource type="Resource" path="res://data/characters/amphibian.tres" id="amphibian"]
+[ext_resource type="Resource" path="res://data/characters/golem.tres" id="golem"]
+
+[resource]
+script = ExtResource("script")
+biome = ExtResource("biome")
+allies = Array[ExtResource("character")]([ExtResource("dragon"), ExtResource("knight"), ExtResource("nature"), ExtResource("light"), ExtResource("dark")])
+enemies = Array[ExtResource("character")]([ExtResource("boss"), ExtResource("amphibian"), ExtResource("golem")])

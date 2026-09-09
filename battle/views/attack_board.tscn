@@ -1,0 +1,196 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://battle/views/attack_board.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/reference/ilha_digital_approved.png" id="atlas"]
+[ext_resource type="PackedScene" path="res://battle/views/card_view.tscn" id="card"]
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[sub_resource type="AtlasTexture" id="panel"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 920, 1024, 430)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_0"]
+atlas = ExtResource("atlas")
+region = Rect2(28, 982, 150, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_1"]
+atlas = ExtResource("atlas")
+region = Rect2(190, 982, 153, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_2"]
+atlas = ExtResource("atlas")
+region = Rect2(356, 982, 154, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_3"]
+atlas = ExtResource("atlas")
+region = Rect2(522, 982, 154, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_4"]
+atlas = ExtResource("atlas")
+region = Rect2(686, 982, 154, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_5"]
+atlas = ExtResource("atlas")
+region = Rect2(850, 982, 147, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_6"]
+atlas = ExtResource("atlas")
+region = Rect2(28, 1154, 150, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_7"]
+atlas = ExtResource("atlas")
+region = Rect2(190, 1154, 153, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_8"]
+atlas = ExtResource("atlas")
+region = Rect2(356, 1154, 154, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_9"]
+atlas = ExtResource("atlas")
+region = Rect2(522, 1154, 154, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_10"]
+atlas = ExtResource("atlas")
+region = Rect2(686, 1154, 154, 160)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="card_11"]
+atlas = ExtResource("atlas")
+region = Rect2(850, 1154, 147, 160)
+filter_clip = true
+
+[node name="AttackBoard" type="Control"]
+offset_right = 1024.0
+offset_bottom = 430.0
+mouse_filter = 2
+script = ExtResource("script")
+
+[node name="Artwork" type="TextureRect" parent="."]
+offset_right = 1024.0
+offset_bottom = 430.0
+mouse_filter = 2
+texture = SubResource("panel")
+expand_mode = 1
+show_behind_parent = true
+
+[node name="Slots" type="Control" parent="."]
+mouse_filter = 2
+
+[node name="CardSlot01" parent="Slots" instance=ExtResource("card")]
+offset_left = 28.0
+offset_top = 62.0
+offset_right = 178.0
+offset_bottom = 222.0
+slot_index = 0
+initial_kind = 0
+original_art = SubResource("card_0")
+
+[node name="CardSlot02" parent="Slots" instance=ExtResource("card")]
+offset_left = 190.0
+offset_top = 62.0
+offset_right = 343.0
+offset_bottom = 222.0
+slot_index = 1
+initial_kind = 1
+original_art = SubResource("card_1")
+
+[node name="CardSlot03" parent="Slots" instance=ExtResource("card")]
+offset_left = 356.0
+offset_top = 62.0
+offset_right = 510.0
+offset_bottom = 222.0
+slot_index = 2
+initial_kind = 2
+original_art = SubResource("card_2")
+
+[node name="CardSlot04" parent="Slots" instance=ExtResource("card")]
+offset_left = 522.0
+offset_top = 62.0
+offset_right = 676.0
+offset_bottom = 222.0
+slot_index = 3
+initial_kind = 3
+original_art = SubResource("card_3")
+
+[node name="CardSlot05" parent="Slots" instance=ExtResource("card")]
+offset_left = 686.0
+offset_top = 62.0
+offset_right = 840.0
+offset_bottom = 222.0
+slot_index = 4
+initial_kind = 4
+original_art = SubResource("card_4")
+
+[node name="CardSlot06" parent="Slots" instance=ExtResource("card")]
+offset_left = 850.0
+offset_top = 62.0
+offset_right = 997.0
+offset_bottom = 222.0
+slot_index = 5
+initial_kind = 6
+original_art = SubResource("card_5")
+
+[node name="CardSlot07" parent="Slots" instance=ExtResource("card")]
+offset_left = 28.0
+offset_top = 234.0
+offset_right = 178.0
+offset_bottom = 394.0
+slot_index = 6
+initial_kind = 5
+original_art = SubResource("card_6")
+
+[node name="CardSlot08" parent="Slots" instance=ExtResource("card")]
+offset_left = 190.0
+offset_top = 234.0
+offset_right = 343.0
+offset_bottom = 394.0
+slot_index = 7
+initial_kind = 0
+original_art = SubResource("card_7")
+
+[node name="CardSlot09" parent="Slots" instance=ExtResource("card")]
+offset_left = 356.0
+offset_top = 234.0
+offset_right = 510.0
+offset_bottom = 394.0
+slot_index = 8
+initial_kind = 1
+original_art = SubResource("card_8")
+
+[node name="CardSlot10" parent="Slots" instance=ExtResource("card")]
+offset_left = 522.0
+offset_top = 234.0
+offset_right = 676.0
+offset_bottom = 394.0
+slot_index = 9
+initial_kind = 2
+original_art = SubResource("card_9")
+
+[node name="CardSlot11" parent="Slots" instance=ExtResource("card")]
+offset_left = 686.0
+offset_top = 234.0
+offset_right = 840.0
+offset_bottom = 394.0
+slot_index = 10
+initial_kind = 6
+original_art = SubResource("card_10")
+
+[node name="CardSlot12" parent="Slots" instance=ExtResource("card")]
+offset_left = 850.0
+offset_top = 234.0
+offset_right = 997.0
+offset_bottom = 394.0
+slot_index = 11
+initial_kind = 3
+original_art = SubResource("card_11")

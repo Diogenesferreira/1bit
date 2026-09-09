@@ -1,0 +1,111 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://battle/views/bag_preview.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/reference/ilha_digital_approved.png" id="atlas"]
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[sub_resource type="AtlasTexture" id="panel"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 804, 1024, 116)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="preview_0"]
+atlas = ExtResource("atlas")
+region = Rect2(228, 817, 81, 85)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="preview_1"]
+atlas = ExtResource("atlas")
+region = Rect2(329, 817, 81, 85)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="preview_2"]
+atlas = ExtResource("atlas")
+region = Rect2(430, 817, 81, 85)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="preview_3"]
+atlas = ExtResource("atlas")
+region = Rect2(531, 817, 81, 85)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="preview_4"]
+atlas = ExtResource("atlas")
+region = Rect2(632, 817, 81, 85)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="preview_5"]
+atlas = ExtResource("atlas")
+region = Rect2(735, 817, 84, 85)
+filter_clip = true
+
+[node name="BagPreview" type="Control"]
+offset_right = 1024.0
+offset_bottom = 116.0
+mouse_filter = 2
+script = ExtResource("script")
+
+[node name="Artwork" type="TextureRect" parent="."]
+offset_right = 1024.0
+offset_bottom = 116.0
+mouse_filter = 2
+texture = SubResource("panel")
+expand_mode = 1
+show_behind_parent = true
+
+[node name="Cards" type="Control" parent="."]
+mouse_filter = 2
+
+[node name="Next01" type="TextureRect" parent="Cards"]
+offset_left = 228.0
+offset_top = 13.0
+offset_right = 309.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = SubResource("preview_0")
+expand_mode = 1
+
+[node name="Next02" type="TextureRect" parent="Cards"]
+offset_left = 329.0
+offset_top = 13.0
+offset_right = 410.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = SubResource("preview_1")
+expand_mode = 1
+
+[node name="Next03" type="TextureRect" parent="Cards"]
+offset_left = 430.0
+offset_top = 13.0
+offset_right = 511.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = SubResource("preview_2")
+expand_mode = 1
+
+[node name="Next04" type="TextureRect" parent="Cards"]
+offset_left = 531.0
+offset_top = 13.0
+offset_right = 612.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = SubResource("preview_3")
+expand_mode = 1
+
+[node name="Next05" type="TextureRect" parent="Cards"]
+offset_left = 632.0
+offset_top = 13.0
+offset_right = 713.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = SubResource("preview_4")
+expand_mode = 1
+
+[node name="Next06" type="TextureRect" parent="Cards"]
+offset_left = 735.0
+offset_top = 13.0
+offset_right = 819.0
+offset_bottom = 98.0
+mouse_filter = 2
+texture = SubResource("preview_5")
+expand_mode = 1

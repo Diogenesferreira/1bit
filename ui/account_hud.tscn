@@ -1,0 +1,24 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://ui/account_hud.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/reference/ilha_digital_approved.png" id="atlas"]
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[sub_resource type="AtlasTexture" id="panel"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 0, 1024, 112)
+filter_clip = true
+
+[node name="AccountHUD" type="Control"]
+offset_right = 1024.0
+offset_bottom = 112.0
+mouse_filter = 2
+script = ExtResource("script")
+
+[node name="Artwork" type="TextureRect" parent="."]
+offset_right = 1024.0
+offset_bottom = 112.0
+mouse_filter = 2
+texture = SubResource("panel")
+expand_mode = 1
+show_behind_parent = true

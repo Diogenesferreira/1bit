@@ -1,0 +1,24 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://battle/views/combat_hud.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/reference/ilha_digital_approved.png" id="atlas"]
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[sub_resource type="AtlasTexture" id="panel"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 717, 1024, 87)
+filter_clip = true
+
+[node name="CombatHUD" type="Control"]
+offset_right = 1024.0
+offset_bottom = 87.0
+mouse_filter = 2
+script = ExtResource("script")
+
+[node name="Artwork" type="TextureRect" parent="."]
+offset_right = 1024.0
+offset_bottom = 87.0
+mouse_filter = 2
+texture = SubResource("panel")
+expand_mode = 1
+show_behind_parent = true

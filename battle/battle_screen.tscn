@@ -1,0 +1,57 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://battle/battle_screen.gd" id="screen"]
+[ext_resource type="Script" path="res://battle/battle_controller.gd" id="controller"]
+[ext_resource type="PackedScene" path="res://ui/account_hud.tscn" id="AccountHUD"]
+[ext_resource type="PackedScene" path="res://battle/views/battlefield.tscn" id="Battlefield"]
+[ext_resource type="PackedScene" path="res://battle/views/combat_hud.tscn" id="CombatHUD"]
+[ext_resource type="PackedScene" path="res://battle/views/bag_preview.tscn" id="BagPreview"]
+[ext_resource type="PackedScene" path="res://battle/views/attack_board.tscn" id="AttackBoard"]
+[ext_resource type="PackedScene" path="res://ui/bottom_navigation.tscn" id="BottomNavigation"]
+
+[node name="BattleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("screen")
+
+[node name="BattleController" type="Node" parent="."]
+script = ExtResource("controller")
+
+[node name="AccountHUD" parent="." instance=ExtResource("AccountHUD")]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1024.0
+offset_bottom = 112.0
+
+[node name="Battlefield" parent="." instance=ExtResource("Battlefield")]
+offset_left = 0.0
+offset_top = 112.0
+offset_right = 1024.0
+offset_bottom = 717.0
+
+[node name="CombatHUD" parent="." instance=ExtResource("CombatHUD")]
+offset_left = 0.0
+offset_top = 717.0
+offset_right = 1024.0
+offset_bottom = 804.0
+
+[node name="BagPreview" parent="." instance=ExtResource("BagPreview")]
+offset_left = 0.0
+offset_top = 804.0
+offset_right = 1024.0
+offset_bottom = 920.0
+
+[node name="AttackBoard" parent="." instance=ExtResource("AttackBoard")]
+offset_left = 0.0
+offset_top = 920.0
+offset_right = 1024.0
+offset_bottom = 1350.0
+
+[node name="BottomNavigation" parent="." instance=ExtResource("BottomNavigation")]
+offset_left = 0.0
+offset_top = 1350.0
+offset_right = 1024.0
+offset_bottom = 1536.0

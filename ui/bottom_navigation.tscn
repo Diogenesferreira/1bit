@@ -1,0 +1,87 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://ui/bottom_navigation.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/reference/ilha_digital_approved.png" id="atlas"]
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[sub_resource type="AtlasTexture" id="panel"]
+atlas = ExtResource("atlas")
+region = Rect2(0, 1350, 1024, 186)
+filter_clip = true
+
+[node name="BottomNavigation" type="Control"]
+offset_right = 1024.0
+offset_bottom = 186.0
+mouse_filter = 2
+script = ExtResource("script")
+
+[node name="Artwork" type="TextureRect" parent="."]
+offset_right = 1024.0
+offset_bottom = 186.0
+mouse_filter = 2
+texture = SubResource("panel")
+expand_mode = 1
+show_behind_parent = true
+
+[node name="Buttons" type="Control" parent="."]
+mouse_filter = 2
+
+[node name="Equipe" type="Button" parent="Buttons"]
+offset_left = 6.0
+offset_top = 9.0
+offset_right = 252.0
+offset_bottom = 175.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+tooltip_text = ""
+theme_override_styles/normal = SubResource("empty")
+theme_override_styles/hover = SubResource("empty")
+theme_override_styles/pressed = SubResource("empty")
+theme_override_styles/disabled = SubResource("empty")
+theme_override_styles/focus = SubResource("empty")
+flat = true
+
+[node name="Invocacao" type="Button" parent="Buttons"]
+offset_left = 262.0
+offset_top = 9.0
+offset_right = 508.0
+offset_bottom = 175.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+tooltip_text = ""
+theme_override_styles/normal = SubResource("empty")
+theme_override_styles/hover = SubResource("empty")
+theme_override_styles/pressed = SubResource("empty")
+theme_override_styles/disabled = SubResource("empty")
+theme_override_styles/focus = SubResource("empty")
+flat = true
+
+[node name="Loja" type="Button" parent="Buttons"]
+offset_left = 518.0
+offset_top = 9.0
+offset_right = 764.0
+offset_bottom = 175.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+tooltip_text = ""
+theme_override_styles/normal = SubResource("empty")
+theme_override_styles/hover = SubResource("empty")
+theme_override_styles/pressed = SubResource("empty")
+theme_override_styles/disabled = SubResource("empty")
+theme_override_styles/focus = SubResource("empty")
+flat = true
+
+[node name="Fases" type="Button" parent="Buttons"]
+offset_left = 774.0
+offset_top = 9.0
+offset_right = 1020.0
+offset_bottom = 175.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+tooltip_text = ""
+theme_override_styles/normal = SubResource("empty")
+theme_override_styles/hover = SubResource("empty")
+theme_override_styles/pressed = SubResource("empty")
+theme_override_styles/disabled = SubResource("empty")
+theme_override_styles/focus = SubResource("empty")
+flat = true
