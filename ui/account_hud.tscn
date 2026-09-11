@@ -1,12 +1,35 @@
 [gd_scene format=3]
 [ext_resource type="Script" path="res://ui/account_hud.gd" id="script"]
 [ext_resource type="Texture2D" path="res://assets/reference/ilha_digital_approved.png" id="atlas"]
+[ext_resource type="Script" path="res://ui/atlas_panel.gd" id="panel_script"]
+[ext_resource type="PackedScene" path="res://ui/atlas_value.tscn" id="value"]
+[ext_resource type="PackedScene" path="res://ui/atlas_gauge.tscn" id="gauge"]
 
 [sub_resource type="StyleBoxEmpty" id="empty"]
 
 [sub_resource type="AtlasTexture" id="panel"]
 atlas = ExtResource("atlas")
 region = Rect2(0, 0, 1024, 112)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="part_Avatar"]
+atlas = ExtResource("atlas")
+region = Rect2(8, 2, 111, 102)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="part_CoinIcon"]
+atlas = ExtResource("atlas")
+region = Rect2(555, 31, 36, 41)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="part_TicketIcon"]
+atlas = ExtResource("atlas")
+region = Rect2(731, 28, 47, 47)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="part_EnergyIcon"]
+atlas = ExtResource("atlas")
+region = Rect2(852, 29, 34, 34)
 filter_clip = true
 
 [node name="AccountHUD" type="Control"]
@@ -22,3 +45,120 @@ mouse_filter = 2
 texture = SubResource("panel")
 expand_mode = 1
 show_behind_parent = true
+script = ExtResource("panel_script")
+clear_regions = Array[Rect2]([Rect2(136, 13, 110, 36), Rect2(181, 51, 63, 36), Rect2(323, 73, 174, 24), Rect2(597, 28, 102, 41), Rect2(778, 29, 42, 42), Rect2(896, 29, 100, 28), Rect2(251, 57, 227, 10), Rect2(855, 65, 140, 10), Rect2(8, 2, 111, 102), Rect2(555, 31, 36, 41), Rect2(731, 28, 47, 47), Rect2(852, 29, 34, 34)])
+
+[node name="Fields" type="Control" parent="."]
+mouse_filter = 2
+
+[node name="PlayerName" parent="Fields" instance=ExtResource("value")]
+offset_left = 136.0
+offset_top = 13.0
+offset_right = 246.0
+offset_bottom = 49.0
+source_region = Rect2(136, 13, 110, 36)
+reference_text = "JINSA"
+font_size = 28
+font_color = Color(1, 1, 1, 1)
+
+[node name="Level" parent="Fields" instance=ExtResource("value")]
+offset_left = 181.0
+offset_top = 51.0
+offset_right = 244.0
+offset_bottom = 87.0
+source_region = Rect2(181, 51, 63, 36)
+reference_text = "38"
+font_size = 27
+font_color = Color(1, 0.89, 0.38, 1)
+
+[node name="XPValue" parent="Fields" instance=ExtResource("value")]
+offset_left = 323.0
+offset_top = 73.0
+offset_right = 497.0
+offset_bottom = 97.0
+source_region = Rect2(323, 73, 174, 24)
+reference_text = "6120 / 12000"
+font_size = 19
+font_color = Color(0.3, 0.8, 1, 1)
+
+[node name="Money" parent="Fields" instance=ExtResource("value")]
+offset_left = 597.0
+offset_top = 28.0
+offset_right = 699.0
+offset_bottom = 69.0
+source_region = Rect2(597, 28, 102, 41)
+reference_text = "154200"
+font_size = 24
+font_color = Color(1, 0.89, 0.38, 1)
+
+[node name="Tickets" parent="Fields" instance=ExtResource("value")]
+offset_left = 778.0
+offset_top = 29.0
+offset_right = 820.0
+offset_bottom = 71.0
+source_region = Rect2(778, 29, 42, 42)
+reference_text = "50"
+font_size = 27
+font_color = Color(0.3, 0.8, 1, 1)
+
+[node name="Energy" parent="Fields" instance=ExtResource("value")]
+offset_left = 896.0
+offset_top = 29.0
+offset_right = 996.0
+offset_bottom = 57.0
+source_region = Rect2(896, 29, 100, 28)
+reference_text = "92/100"
+font_size = 24
+font_color = Color(0.3, 0.8, 1, 1)
+
+[node name="XPBar" parent="Fields" instance=ExtResource("gauge")]
+offset_left = 251.0
+offset_top = 57.0
+offset_right = 478.0
+offset_bottom = 67.0
+source_region = Rect2(251, 57, 227, 10)
+reference_value = 6120.0
+reference_max = 12000.0
+fill_color = Color(0.3, 0.8, 1, 1)
+
+[node name="EnergyBar" parent="Fields" instance=ExtResource("gauge")]
+offset_left = 855.0
+offset_top = 65.0
+offset_right = 995.0
+offset_bottom = 75.0
+source_region = Rect2(855, 65, 140, 10)
+reference_value = 92.0
+reference_max = 100.0
+fill_color = Color(0.13, 0.84, 0.2, 1)
+
+[node name="Avatar" type="TextureRect" parent="Fields"]
+offset_left = 8.0
+offset_top = 2.0
+offset_right = 119.0
+offset_bottom = 104.0
+mouse_filter = 2
+texture = SubResource("part_Avatar")
+
+[node name="CoinIcon" type="TextureRect" parent="Fields"]
+offset_left = 555.0
+offset_top = 31.0
+offset_right = 591.0
+offset_bottom = 72.0
+mouse_filter = 2
+texture = SubResource("part_CoinIcon")
+
+[node name="TicketIcon" type="TextureRect" parent="Fields"]
+offset_left = 731.0
+offset_top = 28.0
+offset_right = 778.0
+offset_bottom = 75.0
+mouse_filter = 2
+texture = SubResource("part_TicketIcon")
+
+[node name="EnergyIcon" type="TextureRect" parent="Fields"]
+offset_left = 852.0
+offset_top = 29.0
+offset_right = 886.0
+offset_bottom = 63.0
+mouse_filter = 2
+texture = SubResource("part_EnergyIcon")

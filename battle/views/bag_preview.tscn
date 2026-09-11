@@ -1,6 +1,10 @@
 [gd_scene format=3]
 [ext_resource type="Script" path="res://battle/views/bag_preview.gd" id="script"]
 [ext_resource type="Texture2D" path="res://assets/reference/ilha_digital_approved.png" id="atlas"]
+[ext_resource type="PackedScene" path="res://battle/views/card_view.tscn" id="card"]
+[ext_resource type="Script" path="res://ui/atlas_panel.gd" id="panel_script"]
+[ext_resource type="PackedScene" path="res://ui/atlas_value.tscn" id="value"]
+[ext_resource type="PackedScene" path="res://ui/atlas_gauge.tscn" id="gauge"]
 
 [sub_resource type="StyleBoxEmpty" id="empty"]
 
@@ -52,60 +56,77 @@ mouse_filter = 2
 texture = SubResource("panel")
 expand_mode = 1
 show_behind_parent = true
+script = ExtResource("panel_script")
+clear_regions = Array[Rect2]([Rect2(228, 817, 81, 85), Rect2(329, 817, 81, 85), Rect2(430, 817, 81, 85), Rect2(531, 817, 81, 85), Rect2(632, 817, 81, 85), Rect2(735, 817, 84, 85)])
+
+[node name="Fields" type="Control" parent="."]
+mouse_filter = 2
 
 [node name="Cards" type="Control" parent="."]
 mouse_filter = 2
 
-[node name="Next01" type="TextureRect" parent="Cards"]
+[node name="Next01" parent="Cards" instance=ExtResource("card")]
 offset_left = 228.0
 offset_top = 13.0
 offset_right = 309.0
 offset_bottom = 98.0
 mouse_filter = 2
-texture = SubResource("preview_0")
-expand_mode = 1
+original_art = SubResource("preview_0")
+initial_kind = 0
+is_preview = true
+disabled = true
 
-[node name="Next02" type="TextureRect" parent="Cards"]
+[node name="Next02" parent="Cards" instance=ExtResource("card")]
 offset_left = 329.0
 offset_top = 13.0
 offset_right = 410.0
 offset_bottom = 98.0
 mouse_filter = 2
-texture = SubResource("preview_1")
-expand_mode = 1
+original_art = SubResource("preview_1")
+initial_kind = 1
+is_preview = true
+disabled = true
 
-[node name="Next03" type="TextureRect" parent="Cards"]
+[node name="Next03" parent="Cards" instance=ExtResource("card")]
 offset_left = 430.0
 offset_top = 13.0
 offset_right = 511.0
 offset_bottom = 98.0
 mouse_filter = 2
-texture = SubResource("preview_2")
-expand_mode = 1
+original_art = SubResource("preview_2")
+initial_kind = 2
+is_preview = true
+disabled = true
 
-[node name="Next04" type="TextureRect" parent="Cards"]
+[node name="Next04" parent="Cards" instance=ExtResource("card")]
 offset_left = 531.0
 offset_top = 13.0
 offset_right = 612.0
 offset_bottom = 98.0
 mouse_filter = 2
-texture = SubResource("preview_3")
-expand_mode = 1
+original_art = SubResource("preview_3")
+initial_kind = 3
+is_preview = true
+disabled = true
 
-[node name="Next05" type="TextureRect" parent="Cards"]
+[node name="Next05" parent="Cards" instance=ExtResource("card")]
 offset_left = 632.0
 offset_top = 13.0
 offset_right = 713.0
 offset_bottom = 98.0
 mouse_filter = 2
-texture = SubResource("preview_4")
-expand_mode = 1
+original_art = SubResource("preview_4")
+initial_kind = 4
+is_preview = true
+disabled = true
 
-[node name="Next06" type="TextureRect" parent="Cards"]
+[node name="Next06" parent="Cards" instance=ExtResource("card")]
 offset_left = 735.0
 offset_top = 13.0
 offset_right = 819.0
 offset_bottom = 98.0
 mouse_filter = 2
-texture = SubResource("preview_5")
-expand_mode = 1
+original_art = SubResource("preview_5")
+initial_kind = 6
+is_preview = true
+disabled = true

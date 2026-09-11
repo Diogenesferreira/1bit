@@ -1,0 +1,690 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@300;400;500;600&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; }
+    a { color: #F2A33C; } a:hover { color: #FFC97A; }
+    .mono { font-family: 'Martian Mono', ui-monospace, 'Consolas', monospace; font-variant-numeric: tabular-nums; }
+    .tick { font-size: 7px; font-weight: 400; letter-spacing: .5px; text-transform: uppercase; }
+    .track { position: relative; background: rgba(6,10,14,.72); overflow: hidden; border-radius: 1px; }
+    .mask { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 5px, rgba(6,10,14,.85) 5px 7px); }
+    .maskui { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 5px, #16130D 5px 7px); }
+    .vrule { width: 1px; background: repeating-linear-gradient(180deg, rgba(242,163,60,.3) 0 3px, transparent 3px 6px); }
+    .plate { position: absolute; border-radius: 4px; background: linear-gradient(180deg, #1B2833, #0A1119); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 0 0 1px rgba(0,0,0,.7), 0 2px 4px rgba(0,0,0,.55); padding: 2px 3px 3px; }
+    .r1 { display: flex; align-items: center; gap: 4px; height: 14px; }
+    .r2 { display: flex; align-items: center; gap: 3px; margin-top: 2px; }
+    .badge { width: 14px; height: 14px; border-radius: 50%; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1.5px rgba(255,255,255,.6); }
+    .lv { font-size: 9px; font-weight: 700; color: #fff; text-shadow: 0 1px 0 #000, 0 0 3px rgba(0,0,0,.9); letter-spacing: -.2px; }
+    .lv em { font-style: normal; font-size: 6.5px; opacity: .7; margin-right: 1px; }
+    .sk { font-size: 5.5px; font-weight: 700; letter-spacing: .4px; text-shadow: 0 1px 0 #000; }
+    .bar { position: relative; flex: 1 1 auto; height: 6px; background: #060A0E; border-radius: 2px; box-shadow: inset 0 1px 2px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.24); overflow: hidden; }
+    .bar i { display: block; height: 100%; }
+    .bar u { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 8px, rgba(6,10,14,.95) 8px 10px); }
+    .card { position: relative; border-radius: 9px; overflow: hidden; border: 0; padding: 0; cursor: pointer; aspect-ratio: 76 / 88; transition: transform .12s, box-shadow .12s; }
+    .tex { position: absolute; inset: 0; background-image: radial-gradient(circle at 82% 14%, rgba(255,255,255,.14) 0 1.1px, transparent 1.2px), repeating-linear-gradient(52deg, rgba(255,255,255,.05) 0 1px, transparent 1px 7px); background-size: 9px 9px, auto; }
+    .emb { position: absolute; left: 50%; top: 47%; transform: translate(-50%,-50%); filter: drop-shadow(0 2px 2px rgba(0,0,0,.55)); }
+    @keyframes fast { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+    @keyframes ret { 0%,100% { opacity: .6; } 50% { opacity: 1; } }
+    @keyframes pop { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</helmet>
+
+<div style="width: 512px; height: 800px; position: relative; overflow: hidden; background: #16130D; color: #F5EFE2;">
+
+  <svg width="0" height="0" style="position: absolute;" aria-hidden="true"><defs>
+    <linearGradient id="gDragon" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FF9E88"/></linearGradient>
+    <linearGradient id="gKnight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#9CCBF5"/></linearGradient>
+    <linearGradient id="gNature" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#9BE79B"/></linearGradient>
+    <linearGradient id="gLight"  x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFDE7A"/></linearGradient>
+    <linearGradient id="gDark"   x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#C9A3F5"/></linearGradient>
+    <linearGradient id="gCaps"   x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFBF0"/><stop offset="1" stop-color="#E3C58C"/></linearGradient>
+    <linearGradient id="gWild"   x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#CFCFE4"/></linearGradient>
+    <linearGradient id="pSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F6C96"/><stop offset=".45" stop-color="#4FA3C4"/><stop offset="1" stop-color="#A6DCE2"/></linearGradient>
+    <linearGradient id="pSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B7FA6"/><stop offset="1" stop-color="#39B2C4"/></linearGradient>
+    <linearGradient id="pGnd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7C9448"/><stop offset="1" stop-color="#4E6634"/></linearGradient>
+  </defs></svg>
+
+  <!-- ============ CABEÇALHO ============ -->
+  <div style="height: 66px; display: flex; align-items: center; gap: 12px; padding: 0 16px;">
+    <div style="position: relative; width: 42px; height: 42px; flex: 0 0 auto;">
+      <img src="avatar.png" style="width: 42px; height: 42px; border-radius: 12px; object-fit: cover; display: block;">
+      <span style="position: absolute; inset: 0; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(242,163,60,.55);"></span>
+      <span style="position: absolute; left: -3px; top: -3px; width: 9px; height: 9px; border-left: 1.5px solid #F2A33C; border-top: 1.5px solid #F2A33C;"></span>
+      <span style="position: absolute; right: -3px; bottom: -3px; width: 9px; height: 9px; border-right: 1.5px solid #F2A33C; border-bottom: 1.5px solid #F2A33C;"></span>
+    </div>
+    <div style="flex: 1 1 auto; min-width: 0;">
+      <div style="display: flex; align-items: baseline; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 700; letter-spacing: -.2px;">Jinsa</span>
+        <span class="mono tick" style="color: #F2A33C;">TAMER · LV38</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 7px; margin-top: 5px;">
+        <div class="track" style="width: 148px; height: 4px; background: rgba(245,239,226,.1);"><div style="width: 51%; height: 100%; background: #F2A33C;"></div><span class="maskui"></span></div>
+        <span class="mono" style="font-size: 8px; color: rgba(245,239,226,.45);">6120/12000</span>
+      </div>
+    </div>
+    <div style="flex: 0 0 auto; display: flex; align-items: center; gap: 9px;">
+      <span style="width: 6px; height: 6px; border-radius: 50%; background: #6FE3B8; box-shadow: 0 0 8px rgba(111,227,184,.8);"></span>
+      <span class="mono tick" style="color: rgba(245,239,226,.4);">SYNC</span>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="rgba(245,239,226,.55)" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14"/><path d="M5 12h14"/><path d="M5 17h14"/></svg>
+    </div>
+  </div>
+
+  <!-- ============ FAIXA DE INSTRUMENTOS ============ -->
+  <div style="height: 46px; background: #201C13; border-top: 1px solid rgba(242,163,60,.2); border-bottom: 1px solid rgba(242,163,60,.2); display: flex; align-items: center;">
+    <div style="flex: 1 1 0; padding: 0 14px;">
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="#F2A33C" stroke-width="2.6"><circle cx="12" cy="12" r="9"/></svg>
+        <span class="mono tick" style="color: rgba(245,239,226,.45);">BITS</span>
+      </div>
+      <div class="mono" style="font-size: 12.5px; font-weight: 600; margin-top: 3px; letter-spacing: -.6px;">12.845.900</div>
+    </div>
+    <div class="vrule" style="height: 30px;"></div>
+    <div style="flex: 1 1 0; padding: 0 14px;">
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <svg viewBox="0 0 24 24" width="9" height="9" fill="#B78BFF" stroke="none"><path d="M12 2l8 7-8 13-8-13z"/></svg>
+        <span class="mono tick" style="color: rgba(245,239,226,.45);">GEMAS</span>
+      </div>
+      <div class="mono" style="font-size: 12.5px; font-weight: 600; margin-top: 3px; letter-spacing: -.6px;">128.400</div>
+    </div>
+    <div class="vrule" style="height: 30px;"></div>
+    <div style="flex: 1 1 0; padding: 0 14px;">
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <svg viewBox="0 0 24 24" width="9" height="9" fill="#6FE3B8" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>
+        <span class="mono tick" style="color: rgba(245,239,226,.45);">ENERGIA</span>
+        <span class="mono tick" style="color: rgba(111,227,184,.7); margin-left: auto;">+04:12</span>
+      </div>
+      <div class="mono" style="font-size: 12.5px; font-weight: 600; margin-top: 3px; letter-spacing: -.6px;">092<span style="color: rgba(245,239,226,.35);">/100</span></div>
+    </div>
+  </div>
+
+  <!-- ============ VISOR ============ -->
+  <div style="position: absolute; left: 12px; top: 116px; width: 488px; height: 368px; border-radius: 16px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(242,163,60,.28), 0 10px 28px rgba(0,0,0,.55);">
+
+    <!-- CAMADA 1 · CENÁRIO — recorte x24–1000 / y232–968 da arte 1024×1600 (2×) -->
+    <sc-if value="{{bgTropical}}" hint-placeholder-val="{{ true }}"><img src="bg-tropical.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover;"></sc-if>
+    <sc-if value="{{bgDeserto}}" hint-placeholder-val="{{ false }}"><img src="bg-deserto.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover;"></sc-if>
+    <sc-if value="{{bgVetor}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 488 368" preserveAspectRatio="xMidYMid slice" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block;">
+      <rect width="488" height="368" fill="url(#pSky)"/>
+      <g fill="#17546B" opacity=".9">
+        <path d="M0 206 L38 158 L66 180 L102 138 L138 174 L168 156 L204 204 Z"/>
+        <path d="M286 204 L318 152 L346 174 L382 132 L414 168 L442 150 L488 192 L488 204 Z"/>
+      </g>
+      <g fill="#0F4053">
+        <path d="M0 210 L34 184 L74 204 L112 182 L154 208 L186 194 L214 212 L0 216 Z"/>
+        <path d="M262 212 L300 190 L336 208 L372 186 L410 206 L444 190 L488 210 L488 216 Z"/>
+      </g>
+      <g fill="#CFEFF2" opacity=".55">
+        <path d="M104 142 L110 142 L112 200 L102 200 Z"/><path d="M382 136 L388 136 L390 196 L380 196 Z"/>
+      </g>
+      <rect y="208" width="488" height="42" fill="url(#pSea)"/>
+      <g fill="#BEF0F4" opacity=".45">
+        <path d="M12 224 h58 v2.5 h-58 Z"/><path d="M120 232 h44 v2.5 h-44 Z"/><path d="M226 220 h70 v2.5 h-70 Z"/>
+        <path d="M330 236 h52 v2.5 h-52 Z"/><path d="M408 226 h62 v2.5 h-62 Z"/><path d="M60 240 h40 v2.5 h-40 Z"/>
+      </g>
+      <path d="M0 246 L488 240 L488 268 L0 276 Z" fill="#D3BE82"/>
+      <path d="M0 268 L488 262 L488 368 L0 368 Z" fill="url(#pGnd)"/>
+      <g fill="#425A2C" opacity=".45">
+        <ellipse cx="96" cy="300" rx="52" ry="10"/><ellipse cx="330" cy="288" rx="44" ry="9"/><ellipse cx="220" cy="344" rx="66" ry="12"/>
+      </g>
+      <g stroke="#8CEBF2" stroke-width=".7" opacity=".16" fill="none">
+        <path d="M244 262 L-40 368"/><path d="M244 262 L58 368"/><path d="M244 262 L152 368"/><path d="M244 262 L244 368"/>
+        <path d="M244 262 L336 368"/><path d="M244 262 L430 368"/><path d="M244 262 L528 368"/>
+        <path d="M0 288 L488 284"/><path d="M0 312 L488 306"/><path d="M0 344 L488 336"/>
+      </g>
+      <g fill="#2C3F49">
+        <path d="M10 300 L14 214 L34 206 L46 218 L44 302 Z"/>
+        <path d="M446 292 L450 210 L470 202 L482 214 L480 296 Z"/>
+      </g>
+      <g stroke="#8CEBF2" stroke-width="1.4" opacity=".55" fill="none">
+        <path d="M20 288 L20 250 L34 240"/><path d="M28 296 L28 264 L38 256"/>
+        <path d="M456 282 L456 246 L468 238"/><path d="M466 290 L466 260 L474 252"/>
+      </g>
+      <g fill="#123A2A" opacity=".92">
+        <path d="M0 0 L64 0 C52 22 30 34 6 38 C26 30 40 16 44 0 L18 0 C14 14 6 24 0 28 Z"/>
+        <path d="M488 0 L424 0 C436 24 458 36 484 40 C462 32 448 18 444 0 L470 0 C474 14 482 24 488 28 Z"/>
+      </g>
+      <g fill="#8CEBF2" opacity=".3">
+        <rect x="150" y="96" width="5" height="5"/><rect x="322" y="72" width="4" height="4"/><rect x="76" y="140" width="4" height="4"/>
+        <rect x="410" y="112" width="5" height="5"/><rect x="252" y="52" width="4" height="4"/><rect x="196" y="160" width="3" height="3"/>
+      </g>
+    </svg></sc-if>
+
+    <!-- CAMADA 2 · PERSONAGENS — PNG 256×256 (chefe 512), pé em (128, 248) -->
+    <sc-for list="{{figs}}" as="g" hint-placeholder-count="8">
+      <div style="position: absolute; left: {{g.x}}; top: {{g.top}}; width: {{g.w}}; height: {{g.w}}; transform: translateX(-50%); opacity: {{g.op}}; filter: {{g.fx}};">
+        <span style="position: absolute; left: 50%; top: 97%; transform: translate(-50%,-50%); width: 64%; height: 10%; border-radius: 50%; background: rgba(18,24,12,.42);"></span>
+        <sc-if value="{{g.is_A1}}" hint-placeholder-val="{{ false }}"><img src="chr-a1.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: auto;"></sc-if>
+        <sc-if value="{{g.is_A2}}" hint-placeholder-val="{{ false }}"><img src="chr-a2.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: auto;"></sc-if>
+        <sc-if value="{{g.is_A3}}" hint-placeholder-val="{{ false }}"><img src="chr-a3.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: auto;"></sc-if>
+        <sc-if value="{{g.is_A4}}" hint-placeholder-val="{{ false }}"><img src="chr-a4.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: auto;"></sc-if>
+        <sc-if value="{{g.is_A5}}" hint-placeholder-val="{{ false }}"><img src="chr-a5.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: auto;"></sc-if>
+        <sc-if value="{{g.is_E1}}" hint-placeholder-val="{{ false }}"><img src="chr-boss.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: auto;"></sc-if>
+        <sc-if value="{{g.is_E2}}" hint-placeholder-val="{{ false }}"><img src="chr-e2.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: auto;"></sc-if>
+        <sc-if value="{{g.is_E3}}" hint-placeholder-val="{{ false }}"><img src="chr-e3.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: auto;"></sc-if>
+        <sc-if value="{{g.is_BOSS}}" hint-placeholder-val="{{ false }}"><img src="chr-boss.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: auto;"></sc-if>
+      </div>
+    </sc-for>
+
+    <!-- CAMADA 3 · PELÍCULA (sempre por cima de cenário + personagens) -->
+    <div style="position: absolute; inset: 0; background: repeating-linear-gradient(180deg, rgba(0,0,0,.15) 0 1px, transparent 1px 3px);"></div>
+    <div style="position: absolute; inset: 0; background: radial-gradient(115% 88% at 50% 42%, rgba(0,0,0,0) 42%, rgba(22,19,13,.62) 100%);"></div>
+
+    <!-- CAMADA 4 · HUD -->
+    <span style="position: absolute; left: 8px; top: 8px; width: 16px; height: 16px; border-left: 1.5px solid rgba(242,163,60,.75); border-top: 1.5px solid rgba(242,163,60,.75);"></span>
+    <span style="position: absolute; right: 8px; top: 8px; width: 16px; height: 16px; border-right: 1.5px solid rgba(242,163,60,.75); border-top: 1.5px solid rgba(242,163,60,.75);"></span>
+    <span style="position: absolute; left: 8px; bottom: 8px; width: 16px; height: 16px; border-left: 1.5px solid rgba(242,163,60,.75); border-bottom: 1.5px solid rgba(242,163,60,.75);"></span>
+    <span style="position: absolute; right: 8px; bottom: 8px; width: 16px; height: 16px; border-right: 1.5px solid rgba(242,163,60,.75); border-bottom: 1.5px solid rgba(242,163,60,.75);"></span>
+    <span class="mono tick" style="position: absolute; left: 30px; top: 11px; color: rgba(242,163,60,.95); text-shadow: 0 1px 4px rgba(0,0,0,.9);">SETOR 03 · ILHA DIGITAL</span>
+    <div style="position: absolute; right: 30px; top: 10px; text-align: right; line-height: 1.7;">
+      <div class="mono tick" style="color: rgba(245,239,226,.7); text-shadow: 0 1px 4px rgba(0,0,0,.9);">A.D. 2003</div>
+      <div class="mono tick" style="color: #F2A33C; text-shadow: 0 1px 4px rgba(0,0,0,.9);">ROUND {{round}}/{{roundMax}}</div>
+    </div>
+
+    <!-- mira sobre o alvo -->
+    <div style="position: absolute; left: {{aimX}}; top: {{aimY}}; transform: translate(-50%,-50%); width: {{aimS}}; height: {{aimS}}; animation: ret 1.4s ease-in-out infinite;">
+      <span style="position: absolute; left: 0; top: 0; width: 17px; height: 17px; border-left: 1.5px solid #FF6B4A; border-top: 1.5px solid #FF6B4A;"></span>
+      <span style="position: absolute; right: 0; top: 0; width: 17px; height: 17px; border-right: 1.5px solid #FF6B4A; border-top: 1.5px solid #FF6B4A;"></span>
+      <span style="position: absolute; left: 0; bottom: 0; width: 17px; height: 17px; border-left: 1.5px solid #FF6B4A; border-bottom: 1.5px solid #FF6B4A;"></span>
+      <span style="position: absolute; right: 0; bottom: 0; width: 17px; height: 17px; border-right: 1.5px solid #FF6B4A; border-bottom: 1.5px solid #FF6B4A;"></span>
+    </div>
+
+    <!-- PLACAS DE INIMIGO (colam embaixo do personagem, e o botão cobre o personagem) -->
+    <sc-for list="{{enemies}}" as="e" hint-placeholder-count="3">
+      <button type="button" onClick="{{e.pick}}" style="position: absolute; left: {{e.x}}; top: {{e.top}}; width: 88px; height: {{e.hit}}; transform: translateX(-50%); background: transparent; border: 0; padding: 0; cursor: pointer; opacity: {{e.dim}};">
+        <span class="plate" style="left: 0; right: 0; bottom: 0; display: block; {{e.frame}}">
+          <span class="r1">
+            <span class="badge" style="background: {{e.badge}};">
+              <svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="rgba(8,14,20,.9)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="{{e.icon}}"></path></svg>
+            </span>
+            <span class="lv"><em>LV</em>{{e.lv}}</span>
+            <span class="bar" style="height: 7px;"><i style="width: {{e.pct}}; background: linear-gradient(180deg, #FF8A6A 0%, #E8402A 50%, #8E1A0E 100%); transition: width .3s;"></i></span>
+          </span>
+        </span>
+        <sc-if value="{{e.warn}}" hint-placeholder-val="{{ true }}">
+          <span class="mono" style="position: absolute; right: -3px; bottom: 14px; width: 15px; height: 15px; border-radius: 4px; background: #FF4A2E; color: #fff; font-size: 8px; font-weight: 600; line-height: 15px; text-align: center; box-shadow: 0 0 10px rgba(255,74,46,.9); animation: fast .8s ease-in-out infinite;">{{e.atk}}</span>
+        </sc-if>
+      </button>
+    </sc-for>
+
+    <!-- PLACAS DE ALIADO -->
+    <sc-for list="{{allies}}" as="a" hint-placeholder-count="5">
+      <button type="button" onClick="{{a.pick}}" style="position: absolute; left: {{a.x}}; top: {{a.top}}; width: 88px; height: {{a.hit}}; transform: translateX(-50%); background: transparent; border: 0; padding: 0; cursor: pointer;">
+        <span class="plate" style="left: 0; right: 0; bottom: 0; display: block; {{a.frame}}">
+          <span class="r1">
+            <span class="badge" style="background: {{a.badge}};">
+              <svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="rgba(8,14,20,.9)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="{{a.icon}}"></path></svg>
+            </span>
+            <span class="lv"><em>LV</em>{{a.lv}}</span>
+          </span>
+          <span class="r2">
+            <span class="sk" style="color: {{a.tagcol}};">{{a.tag}}</span>
+            <span class="bar" style="{{a.glow}}"><i style="width: {{a.pct}}; background: {{a.fill}}; transition: width .3s;"></i><u></u></span>
+          </span>
+        </span>
+      </button>
+    </sc-for>
+
+    <!-- POP-UP DO ALVO (sobe acima do inimigo selecionado) -->
+    <div style="position: absolute; left: {{popX}}; top: {{popY}}; width: 172px; transform: translateX(-50%); padding: 8px 10px 9px; background: rgba(16,13,9,.94); border-radius: 8px; box-shadow: inset 0 0 0 1px rgba(255,107,74,.5), 0 6px 18px rgba(0,0,0,.6); animation: pop .18s ease-out; pointer-events: none;">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <span class="mono tick" style="color: #FF6B4A;">ALVO · LV{{alvoLv}}</span>
+        <span class="mono tick" style="color: rgba(245,239,226,.42);">{{alvoPct}}</span>
+      </div>
+      <div style="font-size: 10.5px; font-weight: 700; margin: 3px 0 5px; letter-spacing: -.2px;">{{alvoNome}}</div>
+      <div class="track" style="height: 5px; background: rgba(245,239,226,.1);"><div style="width: {{alvoPct}}; height: 100%; background: #FF6B4A; transition: width .3s;"></div><span class="maskui" style="background: repeating-linear-gradient(90deg, transparent 0 5px, #100D09 5px 7px);"></span></div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+        <span class="mono" style="font-size: 8px; color: rgba(245,239,226,.55);">{{alvoHp}} / {{alvoMax}} HP</span>
+        <span style="display: inline-flex; align-items: center; gap: 4px; height: 15px; padding: 0 5px; border-radius: 4px; box-shadow: inset 0 0 0 1px {{alvoTcol}}; animation: {{alvoTanim}};">
+          <span class="mono tick" style="color: rgba(245,239,226,.45);">ATQ</span>
+          <span style="display: flex; gap: 2px;"><span style="width: 7px; height: 3px; border-radius: 1px; background: {{alvoS1}};"></span><span style="width: 7px; height: 3px; border-radius: 1px; background: {{alvoS2}};"></span><span style="width: 7px; height: 3px; border-radius: 1px; background: {{alvoS3}};"></span></span>
+          <span class="mono" style="font-size: 9px; font-weight: 600; color: {{alvoTcol}};">{{alvoAtk}}</span>
+        </span>
+      </div>
+      <span style="position: absolute; left: 50%; bottom: -5px; transform: translateX(-50%) rotate(45deg); width: 9px; height: 9px; background: rgba(16,13,9,.94); box-shadow: 1px 1px 0 0 rgba(255,107,74,.5);"></span>
+    </div>
+
+    <!-- grade de posições (tweak) -->
+    <sc-if value="{{showSlots}}" hint-placeholder-val="{{ true }}">
+      <sc-for list="{{figs}}" as="s" hint-placeholder-count="8">
+        <span class="mono tick" style="position: absolute; left: {{s.x}}; top: {{s.top}}; transform: translate(-50%,-14px); padding: 1px 4px; border-radius: 3px; background: rgba(242,163,60,.9); color: #1A1105; font-size: 6px;">{{s.id}}</span>
+      </sc-for>
+    </sc-if>
+  </div>
+
+  <!-- ============ HP DA EQUIPE + LÍDER ============ -->
+  <div style="position: absolute; left: 12px; top: 492px; width: 488px; display: flex; align-items: center; gap: 10px;">
+    <span class="mono tick" style="color: {{teamCol}};">EQUIPE HP</span>
+    <div class="track" style="flex: 1 1 auto; height: 6px; background: rgba(245,239,226,.1);"><div style="width: {{teamPct}}; height: 100%; background: {{teamCol}}; transition: width .3s;"></div><span class="maskui"></span></div>
+    <span class="mono" style="font-size: 9.5px; font-weight: 500;">{{teamHp}}<span style="color: rgba(245,239,226,.38);">/{{teamMax}}</span></span>
+    <button type="button" onClick="{{crown}}" style="display: inline-flex; align-items: center; gap: 4px; height: 19px; padding: 0 7px; border: 0; border-radius: 5px; background: {{crownBg}}; cursor: pointer; {{crownFrame}}">
+      <svg viewBox="0 0 24 24" width="11" height="11" fill="{{crownFill}}" stroke="none"><path d="M3 18h18l-1.6-9-4.4 4-3-6-3 6-4.4-4z"/></svg>
+      <span class="mono tick" style="color: {{crownCol}};">{{crownTag}}</span>
+    </button>
+  </div>
+
+  <!-- ============ BANCO DE CARTAS ============ -->
+  <div style="position: absolute; left: 12px; top: 520px; width: 488px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+      <span class="mono tick" style="color: rgba(245,239,226,.5);">BANCO</span>
+      <span style="display: flex; gap: 3px;"><span style="width: 9px; height: 9px; border-radius: 2px; background: {{c1}};"></span><span style="width: 9px; height: 9px; border-radius: 2px; background: {{c2}};"></span><span style="width: 9px; height: 9px; border-radius: 2px; background: {{c3}};"></span></span>
+      <div style="flex: 1 1 auto; height: 1px; background: repeating-linear-gradient(90deg, rgba(242,163,60,.3) 0 3px, transparent 3px 7px);"></div>
+      <span class="mono tick" style="color: rgba(245,239,226,.4);">FILA</span>
+      <div style="display: flex; gap: 3px;">
+        <sc-for list="{{fila}}" as="f" hint-placeholder-count="4">
+          <span style="display: block; width: 16px; height: 19px; opacity: {{f.op}};"><sc-if value="{{f.is_dragon}}" hint-placeholder-val="{{ true }}"><img src="card-dragon.png" style="width: 16px; height: 19px; display: block;"></sc-if><sc-if value="{{f.is_knight}}" hint-placeholder-val="{{ true }}"><img src="card-knight.png" style="width: 16px; height: 19px; display: block;"></sc-if><sc-if value="{{f.is_nature}}" hint-placeholder-val="{{ true }}"><img src="card-nature.png" style="width: 16px; height: 19px; display: block;"></sc-if><sc-if value="{{f.is_light}}" hint-placeholder-val="{{ true }}"><img src="card-light.png" style="width: 16px; height: 19px; display: block;"></sc-if><sc-if value="{{f.is_dark}}" hint-placeholder-val="{{ true }}"><img src="card-dark.png" style="width: 16px; height: 19px; display: block;"></sc-if><sc-if value="{{f.is_capsule}}" hint-placeholder-val="{{ true }}"><img src="card-capsule.png" style="width: 16px; height: 19px; display: block;"></sc-if><sc-if value="{{f.is_wild}}" hint-placeholder-val="{{ true }}"><img src="card-wild.png" style="width: 16px; height: 19px; display: block;"></sc-if></span>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px;">
+      <sc-for list="{{cards}}" as="card" hint-placeholder-count="12">
+        <button type="button" class="card" onClick="{{card.pick}}" style="background: transparent; overflow: visible; {{card.frame}}">
+          <sc-if value="{{card.is_dragon}}" hint-placeholder-val="{{ true }}"><img src="card-dragon.png" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none;"></sc-if>
+          <sc-if value="{{card.is_knight}}" hint-placeholder-val="{{ true }}"><img src="card-knight.png" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none;"></sc-if>
+          <sc-if value="{{card.is_nature}}" hint-placeholder-val="{{ true }}"><img src="card-nature.png" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none;"></sc-if>
+          <sc-if value="{{card.is_light}}" hint-placeholder-val="{{ true }}"><img src="card-light.png" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none;"></sc-if>
+          <sc-if value="{{card.is_dark}}" hint-placeholder-val="{{ true }}"><img src="card-dark.png" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none;"></sc-if>
+          <sc-if value="{{card.is_capsule}}" hint-placeholder-val="{{ true }}"><img src="card-capsule.png" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none;"></sc-if>
+          <sc-if value="{{card.is_wild}}" hint-placeholder-val="{{ true }}"><img src="card-wild.png" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none;"></sc-if>
+          <span class="mono" style="position: absolute; left: 6px; bottom: 5px; padding: 1px 4px; border-radius: 4px; background: rgba(8,6,4,.78); font-size: 9.5px; font-weight: 600; color: #fff; box-shadow: 0 0 0 1px rgba(255,255,255,.25);">{{card.num}}</span>
+          <sc-if value="{{card.selected}}" hint-placeholder-val="{{ true }}">
+            <span class="mono" style="position: absolute; right: 3px; top: 4px; width: 14px; height: 14px; border-radius: 4px; background: #F2A33C; color: #1A1105; font-size: 8px; font-weight: 600; line-height: 14px; text-align: center;">{{card.order}}</span>
+          </sc-if>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ============ NAV ============ -->
+  <div style="position: absolute; left: 12px; right: 12px; bottom: 10px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+    <button type="button" onClick="{{navEquipe}}" style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 9px 0 8px; border: 0; border-radius: 9px; background: #201C13; box-shadow: inset 0 0 0 1px rgba(242,163,60,.2); cursor: pointer;">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="rgba(245,239,226,.65)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 20c0-3.3 2.2-5 5-5s5 1.7 5 5"/><path d="M13.5 15.2c.8-.5 1.6-.7 2.5-.7 2.8 0 5 1.7 5 5"/></svg>
+      <span class="mono tick" style="color: rgba(245,239,226,.65);">EQUIPE</span>
+    </button>
+    <button type="button" onClick="{{navInvoc}}" style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 9px 0 8px; border: 0; border-radius: 9px; background: #201C13; box-shadow: inset 0 0 0 1px rgba(242,163,60,.2); cursor: pointer;">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="rgba(245,239,226,.65)" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2.5l5 5.5-5 13.5-5-13.5z"/><path d="M4.5 8h15"/></svg>
+      <span class="mono tick" style="color: rgba(245,239,226,.65);">INVOCAR</span>
+    </button>
+    <button type="button" onClick="{{navLoja}}" style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 9px 0 8px; border: 0; border-radius: 9px; background: #201C13; box-shadow: inset 0 0 0 1px rgba(242,163,60,.2); cursor: pointer;">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="rgba(245,239,226,.65)" stroke-width="1.8" stroke-linejoin="round"><path d="M4 9h16v10.5H4z"/><path d="M4 9l2-4.5h12L20 9"/><path d="M4 13h16"/></svg>
+      <span class="mono tick" style="color: rgba(245,239,226,.65);">LOJA</span>
+    </button>
+    <button type="button" onClick="{{navFases}}" style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 9px 0 8px; border: 0; border-radius: 9px; background: #F2A33C; box-shadow: 0 4px 16px rgba(242,163,60,.3); cursor: pointer;">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#1A1105" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20h17"/><path d="M4.5 20l5.5-10 3.5 5.5 2.5-3.5L20 20"/><path d="M12 3.5v4"/><path d="M12 3.5l3.5 1.4L12 6.3"/></svg>
+      <span class="mono tick" style="color: #1A1105; font-weight: 600;">FASES</span>
+    </button>
+  </div>
+
+  <!-- ============ AVISO ============ -->
+  <sc-if value="{{toastOn}}" hint-placeholder-val="{{ true }}">
+    <div class="mono" style="position: absolute; left: 50%; top: 452px; transform: translateX(-50%); z-index: 30; padding: 7px 14px; font-size: 9.5px; font-weight: 600; letter-spacing: .3px; white-space: nowrap; color: {{toastCol}}; background: rgba(16,13,9,.96); border-radius: 7px; box-shadow: inset 0 0 0 1px {{toastCol}}, 0 6px 20px rgba(0,0,0,.6); animation: pop .16s ease-out;">{{toast}}</div>
+  </sc-if>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":512,"height":800},"showSlots":{"editor":"boolean","default":false,"section":"Debug"},"soloBoss":{"editor":"boolean","default":false,"section":"Formação"},"cenario":{"editor":"enum","options":["tropical","deserto","vetor"],"default":"tropical","section":"Palco"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.W = 488; this.H = 368;
+
+    this.POW = { dragon: 4, knight: 7, nature: 6, light: 9, dark: 8, wild: 10, capsule: 5 };
+    // cor de UI (ícone, placa, barra) por elemento
+    this.UI = { dragon: '#FF5A3D', knight: '#4DA8FF', nature: '#5BD75B', light: '#FFC93C', dark: '#B06BFF', wild: '#CFCFE4', capsule: '#C89A5A' };
+    // claro / escuro do elemento — brilho do selo e da barra, no estilo das barrinhas originais
+    this.LT = { dragon: '#FF9A7A', knight: '#8FD0FF', nature: '#A0F0A0', light: '#FFE28A', dark: '#D9B6FF' };
+    this.DK = { dragon: '#A02616', knight: '#1A5FA8', nature: '#1F8C2E', light: '#A87C0C', dark: '#6326B0' };
+    // fundo da carta
+    this.BG = {
+      dragon: 'linear-gradient(158deg, #B32E1E 0%, #6E120C 55%, #4A0B07 100%)',
+      knight: 'linear-gradient(158deg, #1E6FAE 0%, #0E3E66 55%, #082840 100%)',
+      nature: 'linear-gradient(158deg, #1F7A38 0%, #0D4420 55%, #072C15 100%)',
+      light:  'linear-gradient(158deg, #B8901A 0%, #6E5209 55%, #493502 100%)',
+      dark:   'linear-gradient(158deg, #6B26B0 0%, #380F64 55%, #22083F 100%)',
+      capsule:'linear-gradient(158deg, #8A6837 0%, #4A3418 55%, #2A1D0B 100%)',
+      wild:   'linear-gradient(158deg, #191922 0%, #0C0C12 55%, #05050A 100%)'
+    };
+    this.TOPBAR = {
+      dragon: '#FF5A3D', knight: '#4DA8FF', nature: '#5BD75B', light: '#FFC93C', dark: '#B06BFF', capsule: '#C89A5A',
+      wild: 'linear-gradient(90deg, #FF5A3D, #FFC93C, #5BD75B, #46E0E8, #4DA8FF, #B06BFF)'
+    };
+    // emblema da carta (silhueta) + detalhe
+    this.EMB = {
+      dragon: ['M0 60 L8 44 L38 36 C40 24 50 16 62 16 L64 0 L76 18 L98 10 L90 30 C99 39 99 52 93 61 L88 80 L74 69 C69 79 58 85 48 84 L44 96 L34 82 L14 76 L24 67 L4 68 Z', 'M30 45 L48 39 L44 54 Z M4 60 L26 62 L20 71 Z', 'rgba(60,8,4,.85)', 'url(#gDragon)'],
+      knight: ['M46 8 C58 8 66 16 66 28 L66 40 L58 46 L64 56 L52 72 L46 96 L38 70 L28 56 L34 46 L26 40 L26 26 C26 16 34 8 46 8 Z M64 18 L88 2 L82 20 L100 14 L88 32 L102 32 L82 46 L64 36 Z', 'M34 30 L58 25 L56 40 L34 44 Z M40 50 L54 47 L50 62 L44 62 Z', 'rgba(5,30,52,.85)', 'url(#gKnight)'],
+      nature: ['M50 6 C60 20 60 32 53 42 L53 90 L47 90 L47 60 C36 50 22 52 14 60 C20 42 38 36 47 46 L47 42 C40 32 40 20 50 6 Z M55 50 C64 38 80 36 90 42 C84 58 66 62 55 56 Z', 'M58 51 L85 46 L85 49 L58 54 Z M24 57 L45 52 L45 55 L24 60 Z', 'rgba(6,40,18,.7)', 'url(#gNature)'],
+      light:  ['M50 2 L56 38 L74 20 L62 44 L98 50 L62 56 L74 80 L56 62 L50 98 L44 62 L26 80 L38 56 L2 50 L38 44 L26 20 L44 38 Z', 'M84 12 L90 22 L80 28 L74 18 Z M18 74 L25 84 L14 90 L8 80 Z', '#FFF0BE', 'url(#gLight)'],
+      dark:   ['M50 94 C33 94 19 81 17 62 L6 26 L26 42 C31 32 39 26 50 26 C61 26 69 32 74 42 L94 26 L83 62 C81 81 67 94 50 94 Z', 'M34 54 L47 60 L34 68 Z M66 54 L53 60 L66 68 Z M42 76 L46 86 L50 76 L54 86 L58 76 Z', 'rgba(30,6,56,.9)', 'url(#gDark)'],
+      capsule:['M22 36 H46 V64 H22 A14 14 0 0 1 22 36 Z M54 36 H78 A14 14 0 0 1 78 64 H54 Z', 'M56 20 h10 v10 h-10 Z M70 10 h7 v7 h-7 Z M44 10 h6 v6 h-6 Z M76 28 h6 v6 h-6 Z M63 34 h5 v5 h-5 Z', 'rgba(255,247,224,.72)', 'url(#gCaps)'],
+      wild:   ['M50 26 L56 44 L74 50 L56 56 L50 74 L44 56 L26 50 L44 44 Z M50 4 L55 14 L50 24 L45 14 Z M89 27 L92 38 L82 40 L81 29 Z M89 73 L81 71 L82 60 L92 62 Z M50 96 L45 86 L50 76 L55 86 Z M11 73 L8 62 L18 60 L19 71 Z M11 27 L19 29 L18 40 L8 38 Z', '', 'none', 'url(#gWild)']
+    };
+    // ícone simples (placa 12px) — só os 5 elementos de personagem
+    this.ICON = {
+      dragon: 'M12 21.5a5.6 5.6 0 0 0 5.6-5.6c0-4.6-5.6-6.1-4.1-13.3-3.1 2.6-7.1 6.1-7.1 13.3A5.6 5.6 0 0 0 12 21.5z',
+      knight: 'M12 2.6 20 5.6v6.6c0 5.1-3.6 8.2-8 9.7-4.4-1.5-8-4.6-8-9.7V5.6z',
+      nature: 'M12 21.4V10.2 M12 13.4c0-3.6-2.6-6.2-6.2-6.2 0 3.6 2.6 6.2 6.2 6.2z M12 10.2c0-3.6 2.6-6.2 6.2-6.2 0 3.6-2.6 6.2-6.2 6.2z',
+      light:  'M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z M12 3v2 M12 19v2 M3 12h2 M19 12h2',
+      dark:   'M16.8 3.4a9.2 9.2 0 1 0 3.8 11.8 7.6 7.6 0 0 1-3.8-11.8z'
+    };
+    // silhuetas provisórias de personagem
+    this.SIL = {
+      quad: 'M18 78 L22 56 C24 42 36 32 52 32 C66 32 76 38 80 48 L90 40 L87 55 L94 62 L82 66 C80 74 74 80 66 82 L68 92 L59 92 L57 82 L38 82 L36 92 L27 92 L27 78 Z',
+      bipe: 'M50 10 C61 10 67 19 64 29 L75 40 L79 62 L70 59 L70 78 L62 78 L60 92 L52 92 L50 78 L44 92 L36 92 L36 76 L27 61 L21 41 L34 30 C31 19 39 10 50 10 Z',
+      alado:'M50 24 C58 24 64 30 64 38 L84 20 L77 45 L92 40 L75 57 L67 61 L69 84 L58 84 L54 94 L46 94 L42 84 L31 84 L33 61 L25 55 L10 40 L23 45 L16 20 L36 38 C36 30 42 24 50 24 Z'
+    };
+
+    // POSIÇÕES FIXAS — x/y do CHÃO de cada personagem, em % do palco 488×368
+    this.POS = {
+      A1: { x: 15, y: 50, w: 75 },
+      A2: { x: 36, y: 46, w: 73 },
+      A3: { x: 27, y: 66, w: 81 },
+      A4: { x: 12, y: 84, w: 88 },
+      A5: { x: 36, y: 86, w: 88 },
+      E1: { x: 78, y: 52, w: 114 },
+      E2: { x: 65, y: 83, w: 83 },
+      E3: { x: 89, y: 85, w: 83 },
+      BOSS: { x: 74, y: 76, w: 170 }
+    };
+
+    this.QSEQ = ['knight','nature','light','dark','wild','dragon','light','nature','dragon','dark','knight','wild','capsule','nature','light','dragon','dark','knight'];
+    this._uid = 0;
+    this.state = this.initial();
+  }
+
+  initial() {
+    const layout = ['dragon','knight','nature','light','dark','wild','capsule','dragon','knight','nature','wild','light'];
+    return {
+      slots: layout.map((e) => this.mk(e)),
+      qp: 0, sel: [], target: 0,
+      teamHp: 2840, teamMax: 3200,
+      round: 3, roundMax: 3,
+      leaderOn: false, leaderCd: 0,
+      toast: '', toastOn: false, toastTone: 'amber',
+      allies: [
+        { slot: 'A1', elem: 'dragon', lv: 38, skill: 45 },
+        { slot: 'A2', elem: 'dark',   lv: 38, skill: 30 },
+        { slot: 'A3', elem: 'knight', lv: 38, skill: 55 },
+        { slot: 'A4', elem: 'light',  lv: 38, skill: 30 },
+        { slot: 'A5', elem: 'nature', lv: 38, skill: 30 }
+      ],
+      enemies: [
+        { slot: 'E1', name: 'Long Ear Guardian', elem: 'light', lv: 40, hp: 1850, max: 4000, dmg: 220, atk: 2, atkMax: 3, alive: true },
+        { slot: 'E2', name: 'Dusk Dragon',    elem: 'dark', lv: 36, hp: 1200, max: 1200, dmg: 130, atk: 1, atkMax: 3, alive: true },
+        { slot: 'E3', name: 'Twin Tail',      elem: 'nature', lv: 36, hp: 1400, max: 1400, dmg: 150, atk: 3, atkMax: 3, alive: true }
+      ]
+    };
+  }
+
+  mk(elem) { return { elem, num: this.POW[elem], key: elem + '-' + (++this._uid) }; }
+  px(p, total) { return Math.round(p / 100 * total); }
+  slotOf(e, solo) { return (solo && e.slot === 'E1') ? this.POS.BOSS : this.POS[e.slot]; }
+
+  flash(msg, tone) {
+    this.setState({ toast: msg, toastOn: true, toastTone: tone || 'amber' });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toastOn: false }), 1900);
+  }
+
+  pick(i) {
+    const sel = this.state.sel.slice();
+    const at = sel.indexOf(i);
+    if (at >= 0) { sel.splice(at, 1); this.setState({ sel }); return; }
+    if (sel.length >= 3) return;
+    sel.push(i);
+    this.setState({ sel });
+    if (sel.length === 3) setTimeout(() => this.resolve(), 280);
+  }
+
+  tick(enemies) {
+    let dmg = 0; const hits = [];
+    enemies.forEach((e) => {
+      if (!e.alive) return;
+      e.atk -= 1;
+      if (e.atk <= 0) { dmg += e.dmg; hits.push(e.name); e.atk = e.atkMax; }
+    });
+    return { dmg, hits };
+  }
+
+  resolve() {
+    const S = this.state;
+    if (S.sel.length !== 3) return;
+    const used = S.sel.slice();
+    const cs = used.map((i) => S.slots[i]);
+    const caps = cs.filter((c) => c.elem === 'capsule').length;
+    const sum = cs.reduce((a, c) => a + c.num, 0);
+
+    if (caps > 0 && caps < 3) { this.flash('COMBO INVÁLIDO · CAPSULE NÃO MISTURA', 'red'); this.setState({ sel: [] }); return; }
+
+    const patch = {};
+    const enemies = S.enemies.map((e) => ({ ...e }));
+
+    if (caps === 3) {
+      const heal = sum * 35;
+      patch.teamHp = Math.min(S.teamMax, S.teamHp + heal);
+      this.flash('CURA +' + heal, 'mint');
+    } else {
+      const els = Array.from(new Set(cs.filter((c) => c.elem !== 'wild').map((c) => c.elem)));
+      if (els.length > 1) { this.flash('COMBO INVÁLIDO · ELEMENTOS DIFERENTES', 'red'); this.setState({ sel: [] }); return; }
+      const el = els[0] || S.allies[0].elem;
+      let dmg = sum * 20;
+      if (S.leaderOn) dmg = Math.round(dmg * 1.25);
+
+      let t = S.target, rem = dmg;
+      while (rem > 0) {
+        const e = enemies[t];
+        if (e && e.alive) {
+          const d = Math.min(e.hp, rem); e.hp -= d; rem -= d;
+          if (e.hp <= 0) { e.hp = 0; e.alive = false; }
+        }
+        if (rem > 0) { const nx = enemies.findIndex((x, j) => j !== t && x.alive); if (nx < 0) break; t = nx; }
+        else break;
+      }
+      patch.leaderOn = false;
+      patch.leaderCd = S.leaderOn ? 3 : Math.max(0, S.leaderCd - 1);
+      if (!enemies[S.target].alive) { const nx = enemies.findIndex((x) => x.alive); patch.target = nx < 0 ? S.target : nx; }
+
+      const allies = S.allies.map((a) => ({ ...a }));
+      const ai = allies.findIndex((a) => a.elem === el);
+      if (ai >= 0) allies[ai].skill = Math.min(100, allies[ai].skill + 34);
+      patch.allies = allies;
+
+      this.flash('DANO ' + dmg + ' · ' + el.toUpperCase(), 'amber');
+    }
+
+    const res = this.tick(enemies);
+    const base = (patch.teamHp != null ? patch.teamHp : S.teamHp);
+    patch.teamHp = Math.max(0, base - res.dmg);
+    patch.enemies = enemies;
+
+    const slots = S.slots.slice();
+    let qp = S.qp;
+    used.forEach((i) => { slots[i] = this.mk(this.QSEQ[qp % this.QSEQ.length]); qp++; });
+    patch.slots = slots; patch.qp = qp; patch.sel = [];
+
+    this.setState(patch, () => {
+      if (this.state.enemies.every((e) => !e.alive)) { this.flash('VITÓRIA · SETOR LIMPO', 'mint'); return; }
+      if (this.state.teamHp <= 0) { this.flash('DERROTA · EQUIPE CAÍDA', 'red'); return; }
+      if (res.hits.length) setTimeout(() => this.flash(res.hits.join(' + ').toUpperCase() + ' ATACOU · -' + res.dmg, 'red'), 950);
+    });
+  }
+
+  target(i) {
+    const e = this.state.enemies[i];
+    if (!e || !e.alive) { this.flash('ALVO ABATIDO', 'red'); return; }
+    this.setState({ target: i });
+    this.flash('ALVO · ' + e.name.toUpperCase(), 'amber');
+  }
+
+  ally(i) {
+    const S = this.state;
+    const a = S.allies[i];
+    if (a.skill < 100) { this.flash('SKILL ' + a.elem.toUpperCase() + ' ' + a.skill + '%', 'amber'); return; }
+    const enemies = S.enemies.map((e) => ({ ...e }));
+    const t = enemies[S.target].alive ? S.target : enemies.findIndex((x) => x.alive);
+    if (t >= 0) {
+      enemies[t].hp = Math.max(0, enemies[t].hp - 600);
+      if (enemies[t].hp === 0) enemies[t].alive = false;
+    }
+    const allies = S.allies.map((x) => ({ ...x }));
+    allies[i].skill = 0;
+    this.setState({ enemies, allies });
+    this.flash('SKILL ' + a.elem.toUpperCase() + ' · -600', 'amber');
+  }
+
+  crown() {
+    const S = this.state;
+    if (S.leaderCd > 0) { this.flash('LIDERANÇA RECARREGA · ' + S.leaderCd, 'red'); return; }
+    const on = !S.leaderOn;
+    this.setState({ leaderOn: on });
+    this.flash(on ? 'LIDERANÇA ATIVA · +25% NESTE TURNO' : 'LIDERANÇA CANCELADA', 'amber');
+  }
+
+  nav(label) {
+    if (label === 'FASES') { this.setState(this.initial()); this.flash('FASES · NOVA PARTIDA', 'amber'); return; }
+    this.flash(label + ' · TELA RESERVADA', 'amber');
+  }
+
+  renderVals() {
+    const S = this.state;
+    const solo = this.props.soloBoss ?? false;
+    const FAINT = 'rgba(242,163,60,.18)';
+    const PLATE_A = 27, PLATE_E = 19;
+    const badgeOf = (el) => 'radial-gradient(circle at 34% 28%, ' + this.LT[el] + ', ' + this.UI[el] + ')';
+    const fillOf = (el) => 'linear-gradient(180deg, ' + this.LT[el] + ' 0%, ' + this.UI[el] + ' 52%, ' + this.DK[el] + ' 100%)';
+
+    const cards = S.slots.map((c, i) => {
+      const on = S.sel.indexOf(i);
+      const E = this.EMB[c.elem];
+      return {
+        key: c.key, num: c.num, is_dragon: c.elem === 'dragon', is_knight: c.elem === 'knight', is_nature: c.elem === 'nature', is_light: c.elem === 'light', is_dark: c.elem === 'dark', is_capsule: c.elem === 'capsule', is_wild: c.elem === 'wild',
+        d: E[0], d2: E[1], d2f: E[2], grad: E[3],
+        rot: c.elem === 'capsule' ? 'rotate(-45 50 50)' : 'rotate(0 50 50)',
+        selected: on >= 0, order: on + 1,
+        pick: () => this.pick(i),
+        frame: on >= 0
+          ? 'box-shadow: 0 0 0 2.5px #F2A33C, 0 0 18px rgba(242,163,60,.6), 0 8px 14px rgba(0,0,0,.55); transform: translateY(-5px);'
+          : 'box-shadow: 0 3px 7px rgba(0,0,0,.5);'
+      };
+    });
+
+    const turnOf = (atk) => {
+      if (atk >= 3) return { c: 'rgba(242,163,60,.75)', s: 'rgba(242,163,60,.55)', a: 'none' };
+      if (atk === 2) return { c: '#F2A33C', s: '#F2A33C', a: 'none' };
+      return { c: '#FF6B4A', s: '#FF6B4A', a: 'fast .8s ease-in-out infinite' };
+    };
+
+    // figuras no palco (aliados + inimigos vivos)
+    const figs = [];
+    const flags = (slot) => ({ is_A1: slot === 'A1', is_A2: slot === 'A2', is_A3: slot === 'A3', is_A4: slot === 'A4', is_A5: slot === 'A5',
+      is_E1: slot === 'E1', is_E2: slot === 'E2', is_E3: slot === 'E3', is_BOSS: slot === 'BOSS' });
+    S.allies.forEach((a) => {
+      const p = this.POS[a.slot];
+      figs.push({ key: a.slot, id: a.slot, x: p.x + '%', top: (this.px(p.y, this.H) - Math.round(p.w * 0.97)) + 'px', w: p.w + 'px',
+        op: '1', fx: 'none', ...flags(a.slot) });
+    });
+    S.enemies.forEach((e) => {
+      if (solo && e.slot !== 'E1') return;
+      const p = this.slotOf(e, solo);
+      const slot = solo ? 'BOSS' : e.slot;
+      figs.push({ key: slot, id: slot, x: p.x + '%', top: (this.px(p.y, this.H) - Math.round(p.w * 0.97)) + 'px', w: p.w + 'px',
+        op: e.alive ? '1' : '0.35', fx: e.alive ? 'none' : 'grayscale(1)', ...flags(slot) });
+    });
+
+    const allies = S.allies.map((a, i) => {
+      const p = this.POS[a.slot];
+      const h = Math.round(p.w * 0.97);
+      const ready = a.skill >= 100;
+      return {
+        key: a.slot, lv: a.lv, pct: a.skill + '%', color: this.UI[a.elem], icon: this.ICON[a.elem],
+        badge: badgeOf(a.elem), fill: fillOf(a.elem),
+        x: p.x + '%', top: (this.px(p.y, this.H) - h) + 'px', hit: (h + PLATE_A) + 'px',
+        tag: ready ? 'PRONTA' : 'SKILL',
+        tagcol: ready ? '#F2A33C' : 'rgba(255,255,255,.62)',
+        frame: ready ? 'box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 0 0 1.3px #F2A33C, 0 0 12px rgba(242,163,60,.55);' : '',
+        glow: ready ? 'box-shadow: inset 0 1px 2px rgba(0,0,0,.9), 0 0 0 1px rgba(242,163,60,.9), 0 0 8px rgba(242,163,60,.6);' : '',
+        pick: () => this.ally(i)
+      };
+    });
+
+    const enemies = S.enemies.map((e, i) => {
+      const p = this.slotOf(e, solo);
+      const h = Math.round(p.w * 0.97);
+      const isT = S.target === i && e.alive;
+      return {
+        key: e.slot, lv: e.lv, atk: e.atk, color: this.UI[e.elem], icon: this.ICON[e.elem],
+        badge: badgeOf(e.elem),
+        x: p.x + '%', top: (this.px(p.y, this.H) - h) + 'px', hit: (h + PLATE_E) + 'px',
+        pct: Math.round(e.hp / e.max * 100) + '%',
+        dim: (solo && e.slot !== 'E1') ? '0' : (e.alive ? '1' : '0.35'),
+        warn: e.alive && e.atk <= 1,
+        frame: isT ? 'box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 0 0 1.4px #FF6B4A, 0 0 12px rgba(255,107,74,.6);' : '',
+        pick: () => this.target(i)
+      };
+    });
+
+    const fila = Array.from({ length: 4 }, (_, k) => {
+      const el = this.QSEQ[(S.qp + k) % this.QSEQ.length];
+      return { key: 'f' + k, is_dragon: el === 'dragon', is_knight: el === 'knight', is_nature: el === 'nature', is_light: el === 'light', is_dark: el === 'dark', is_capsule: el === 'capsule', is_wild: el === 'wild', op: (1 - k * 0.2).toFixed(2) };
+    });
+
+    // alvo + pop-up ancorado acima dele
+    const alvo = S.enemies[S.target] || S.enemies[0];
+    const ap = this.slotOf(alvo, solo);
+    const ah = Math.round(ap.w * 0.97);
+    const apxX = this.px(ap.x, this.W);
+    const apxTop = this.px(ap.y, this.H) - ah;
+    const at = turnOf(alvo.atk);
+    const popW = 172;
+    const clampX = Math.max(popW / 2 + 6, Math.min(this.W - popW / 2 - 6, apxX));
+    const popH = 74;
+
+    const teamRatio = S.teamHp / S.teamMax;
+    const teamCol = teamRatio > 0.4 ? '#6FE3B8' : (teamRatio > 0.2 ? '#F2A33C' : '#FF6B4A');
+    const tones = { amber: '#F2A33C', red: '#FF6B4A', mint: '#6FE3B8' };
+
+    return {
+      cards, enemies, allies, fila, figs,
+      showSlots: this.props.showSlots ?? false,
+      bgTropical: (this.props.cenario ?? 'tropical') === 'tropical',
+      bgDeserto: this.props.cenario === 'deserto',
+      bgVetor: this.props.cenario === 'vetor',
+      round: S.round, roundMax: S.roundMax,
+      aimX: apxX + 'px', aimY: (apxTop + ah / 2) + 'px', aimS: Math.round(ah * 0.96) + 'px',
+      popX: clampX + 'px', popY: Math.max(28, apxTop - popH - 10) + 'px',
+      alvoNome: alvo.name, alvoLv: alvo.lv, alvoHp: alvo.hp, alvoMax: alvo.max, alvoAtk: alvo.atk,
+      alvoPct: Math.round(alvo.hp / alvo.max * 100) + '%',
+      alvoTcol: at.c, alvoTanim: at.a,
+      alvoS1: alvo.atk >= 1 ? at.s : FAINT,
+      alvoS2: alvo.atk >= 2 ? at.s : FAINT,
+      alvoS3: alvo.atk >= 3 ? at.s : FAINT,
+      teamHp: S.teamHp, teamMax: S.teamMax, teamCol,
+      teamPct: Math.round(teamRatio * 100) + '%',
+      crown: () => this.crown(),
+      crownTag: S.leaderOn ? 'LÍDER ON' : (S.leaderCd > 0 ? 'CD ' + S.leaderCd : 'LÍDER'),
+      crownCol: S.leaderOn ? '#1A1105' : (S.leaderCd > 0 ? 'rgba(245,239,226,.35)' : '#F2A33C'),
+      crownFill: S.leaderOn ? '#1A1105' : (S.leaderCd > 0 ? 'rgba(245,239,226,.3)' : '#F2A33C'),
+      crownBg: S.leaderOn ? '#F2A33C' : '#201C13',
+      crownFrame: S.leaderOn ? '' : 'box-shadow: inset 0 0 0 1px rgba(242,163,60,.3);',
+      c1: S.sel.length >= 1 ? '#F2A33C' : FAINT,
+      c2: S.sel.length >= 2 ? '#F2A33C' : FAINT,
+      c3: S.sel.length >= 3 ? '#F2A33C' : FAINT,
+      navEquipe: () => this.nav('EQUIPE'),
+      navInvoc: () => this.nav('INVOCAR'),
+      navLoja: () => this.nav('LOJA'),
+      navFases: () => this.nav('FASES'),
+      toast: S.toast, toastOn: S.toastOn, toastCol: tones[S.toastTone] || '#F2A33C'
+    };
+  }
+}
+</script>
+</body>
+</html>

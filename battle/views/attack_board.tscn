@@ -2,6 +2,9 @@
 [ext_resource type="Script" path="res://battle/views/attack_board.gd" id="script"]
 [ext_resource type="Texture2D" path="res://assets/reference/ilha_digital_approved.png" id="atlas"]
 [ext_resource type="PackedScene" path="res://battle/views/card_view.tscn" id="card"]
+[ext_resource type="Script" path="res://ui/atlas_panel.gd" id="panel_script"]
+[ext_resource type="PackedScene" path="res://ui/atlas_value.tscn" id="value"]
+[ext_resource type="PackedScene" path="res://ui/atlas_gauge.tscn" id="gauge"]
 
 [sub_resource type="StyleBoxEmpty" id="empty"]
 
@@ -83,6 +86,21 @@ mouse_filter = 2
 texture = SubResource("panel")
 expand_mode = 1
 show_behind_parent = true
+script = ExtResource("panel_script")
+clear_regions = Array[Rect2]([Rect2(391, 942, 610, 30), Rect2(28, 982, 150, 160), Rect2(190, 982, 153, 160), Rect2(356, 982, 154, 160), Rect2(522, 982, 154, 160), Rect2(686, 982, 154, 160), Rect2(850, 982, 147, 160), Rect2(28, 1154, 150, 160), Rect2(190, 1154, 153, 160), Rect2(356, 1154, 154, 160), Rect2(522, 1154, 154, 160), Rect2(686, 1154, 154, 160), Rect2(850, 1154, 147, 160)])
+
+[node name="Fields" type="Control" parent="."]
+mouse_filter = 2
+
+[node name="Message" parent="Fields" instance=ExtResource("value")]
+offset_left = 391.0
+offset_top = 22.0
+offset_right = 1001.0
+offset_bottom = 52.0
+source_region = Rect2(391, 942, 610, 30)
+reference_text = "COMBINE CARTAS, LIBERE O PODER DOS SEUS MONSTROS!"
+font_size = 17
+font_color = Color(0.3, 0.8, 1, 1)
 
 [node name="Slots" type="Control" parent="."]
 mouse_filter = 2

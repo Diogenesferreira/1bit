@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="22 34 108 108"><defs><linearGradient id="embC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBF7EE"/><stop offset="1" stop-color="#E6D3B4"/></linearGradient></defs>
+<g transform="translate(76 86) rotate(-42) scale(.9)">
+  <path d="M-4 -19 L-40 -19 A19 19 0 0 0 -40 19 L-4 19 Z" fill="url(#embC)"/>
+  <path d="M4 -19 L40 -19 A19 19 0 0 1 40 19 L4 19 Z" fill="url(#embC)" opacity=".92"/>
+  <path d="M-44 -12 L-8 -12" stroke="#FBF6EA" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+  <path d="M10 -12 L42 -12" stroke="#FBF6EA" stroke-width="5" stroke-linecap="round" opacity=".4"/>
+  <path d="M-4 -19 L-4 19 M4 -19 L4 19" stroke="#2E200C" stroke-width="1.2" opacity=".35"/>
+</g>
+<g stroke-width="1.6">
+  <rect x="58" y="62" fill="#F5EFE2" fill-opacity=".22" stroke="#F5EFE2" stroke-opacity=".8"/>
+  <rect x="70" y="76" width="12" height="12" fill="#2A1C0A" fill-opacity=".35" stroke="#2A1C0A" stroke-opacity=".7"/>
+  <rect x="80" y="58" width="13" height="13" fill="#F5EFE2" fill-opacity=".3" stroke="#F5EFE2" stroke-opacity=".8"/>
+  <rect x="46" y="74" width="10" height="10" fill="#2A1C0A" fill-opacity=".3" stroke="#2A1C0A" stroke-opacity=".6"/>
+  <rect x="64" y="46" width="9" height="9" fill="#F5EFE2" fill-opacity=".45" stroke="#F5EFE2" stroke-opacity=".8"/>
+  <rect x="88" y="80" width="9" height="9" fill="#2A1C0A" fill-opacity=".3" stroke="#2A1C0A" stroke-opacity=".6"/>
+  <rect x="54" y="90" width="7" height="7" fill="#F5EFE2" fill-opacity=".5" stroke="#F5EFE2" stroke-opacity=".8"/>
+  <rect x="94" y="48" width="6" height="6" fill="#F5EFE2" fill-opacity=".4" stroke="#F5EFE2" stroke-opacity=".8"/>
+  <rect x="42" y="58" width="6" height="6" fill="#F5EFE2" fill-opacity=".55" stroke="#F5EFE2" stroke-opacity=".8"/>
+  <rect x="78" y="96" width="5" height="5" fill="#F5EFE2" fill-opacity=".5" stroke="#F5EFE2" stroke-opacity=".8"/>
+</g></svg>

@@ -27,9 +27,9 @@ SaveService="*res://autoload/save_service.gd"
 [display]
 
 window/size/viewport_width=1024
-window/size/viewport_height=1536
+window/size/viewport_height=1600
 window/size/window_width_override=512
-window/size/window_height_override=768
+window/size/window_height_override=800
 window/stretch/mode="canvas_items"
 window/handheld/orientation=1
 

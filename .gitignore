@@ -2,3 +2,6 @@
 build/
 output/
 *.tmp
+design/ilha-digital-godot-kit.zip
+__pycache__/
+*.pyc

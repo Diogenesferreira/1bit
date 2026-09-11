@@ -1,0 +1,89 @@
+{
+ "shell": "#16130D",
+ "surface": "#201C13",
+ "surface_popup": "#100D09",
+ "amber": "#F2A33C",
+ "cream": "#F5EFE2",
+ "cream_emblem": "#F4EEE1",
+ "mint": "#6FE3B8",
+ "danger": "#FF6B4A",
+ "ring_enemy_hp": "#FF4A3A",
+ "danger_imminent_bg": "#FF4A2E",
+ "text_primary": "#F5EFE2",
+ "text_alpha": {
+  "65%": "rgba(245,239,226,.65)",
+  "55%": "rgba(245,239,226,.55)",
+  "45%": "rgba(245,239,226,.45)",
+  "40%": "rgba(245,239,226,.40)",
+  "35%": "rgba(245,239,226,.35)"
+ },
+ "amber_alpha": {
+  "border_20%": "rgba(242,163,60,.20)",
+  "border_28%": "rgba(242,163,60,.28)",
+  "corner_75%": "rgba(242,163,60,.75)",
+  "segment_off_18%": "rgba(242,163,60,.18)"
+ },
+ "element_ui": {
+  "dragon": "#FF5A3D",
+  "knight": "#4DA8FF",
+  "nature": "#5BD75B",
+  "light": "#FFC93C",
+  "dark": "#B06BFF",
+  "capsule": "#C89A5A",
+  "wild": "#CFCFE4"
+ },
+ "element_card": {
+  "dragon": {
+   "mid": "#7E3223",
+   "dark": "#24110B",
+   "glow": "#C0573F",
+   "tint": "#EDB9A9"
+  },
+  "knight": {
+   "mid": "#2E587C",
+   "dark": "#0E1A26",
+   "glow": "#4F88B6",
+   "tint": "#C8DBEA"
+  },
+  "nature": {
+   "mid": "#3A6536",
+   "dark": "#111D10",
+   "glow": "#5E9A56",
+   "tint": "#CDE3C5"
+  },
+  "light": {
+   "mid": "#86692A",
+   "dark": "#241C0B",
+   "glow": "#C49E45",
+   "tint": "#EEDDAE"
+  },
+  "dark": {
+   "mid": "#553A7A",
+   "dark": "#181122",
+   "glow": "#8660B4",
+   "tint": "#D9CAEA"
+  },
+  "capsule": {
+   "mid": "#6A5033",
+   "dark": "#1F170E",
+   "glow": "#9C7B52",
+   "tint": "#E6D3B4"
+  },
+  "wild": {
+   "mid": "#1B1914",
+   "dark": "#080706",
+   "glow": "#3A3527",
+   "tint": "#CFC8B8"
+  }
+ },
+ "team_hp_thresholds": {
+  "above_40%": "#6FE3B8",
+  "40%_to_20%": "#F2A33C",
+  "below_20%": "#FF6B4A"
+ },
+ "turn_counter": {
+  "3": "rgba(242,163,60,.75)",
+  "2": "#F2A33C",
+  "1_imminent": "#FF6B4A (pisca 0.8s)"
+ }
+}

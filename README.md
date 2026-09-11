@@ -1,6 +1,6 @@
-# Ilha Digital
+# Ilha Digital — Terminal
 
-Projeto Godot 4 com a composição visual aprovada em **1024 × 1536** e combate de cartas jogável. A imagem original está em `assets/reference/ilha_digital_approved.png`, sem nenhuma edição.
+Projeto Godot 4 reconstruído com o kit oficial em `design/ilha-digital-godot-kit`, na resolução **1024 × 1600**. A cena inicial atual é a etapa de homologação visual: cenário, personagens, inimigos, anéis, chips, cartas, valores e botões existem como nós separados. O módulo de regras continua no projeto, mas será conectado a esta interface depois da aprovação visual.
 
 ## Abrir e jogar
 
@@ -21,18 +21,12 @@ Instale Godot 4 (versão validada: 4.7.1), importe `project.godot` e pressione F
 
 `build/`, `output/` e `.godot/` são gerados localmente e não acompanham o clone. Para gerar um executável Windows pelo editor, instale os templates de exportação correspondentes à sua versão do Godot, crie a pasta `build` e use o preset **Windows Desktop** em **Projeto → Exportar**. No computador original, a cópia local em `build/` já está pronta.
 
-## Controles
+## Homologação visual
 
-- Clique/toque em três cartas do mesmo elemento. A terceira seleção resolve o combo automaticamente.
-- Toque novamente em uma carta selecionada para desmarcar. Não é necessário que as cartas sejam adjacentes.
-- O infinito substitui qualquer um dos cinco elementos. Três infinitos usam o elemento do líder. Três Capsules curam; coringas não substituem Capsule nesta implementação.
-- Os números fazem parte da potência da carta. Dano de combo = soma dos três números × 20; cura = soma × 35, limitada ao HP máximo.
-- Clique em um inimigo para selecionar o alvo. Dano excedente passa para o próximo inimigo vivo.
-- Combine cartas para encher a skill daquele aliado. Clique no aliado para ativar a skill quando estiver em 100.
-- Clique na coroa para ativar a liderança. Ela fica indisponível por três turnos após o uso.
-- Após vitória ou derrota, **Fases** inicia uma partida com três rounds.
-
-A abertura reproduz deliberadamente o momento do mockup: **round 3/3, 2840/3200 HP e chefe com 1850/4000 HP**. O primeiro trio possível é Dragon da primeira linha + Dragon da segunda linha + qualquer infinito.
+- Clique em qualquer carta para conferir o estado selecionado.
+- Clique nos inimigos para abrir ou fechar a mira e o painel do alvo.
+- **F1:** tela padrão; **F2:** duas cartas e liderança ativa; **F3:** skill pronta; **F4:** alerta; **F5:** deserto; **F6:** chefe sozinho.
+- As capturas reais do Godot ficam em `output/verification/terminal_*.png`. A tela padrão, já composta por controles separados, obteve similaridade RGB global de **98,45%** contra a referência oficial do kit.
 
 ## O que está implementado
 
@@ -44,13 +38,17 @@ A abertura reproduz deliberadamente o momento do mockup: **round 3/3, 2840/3200 
 - Persistência local das recompensas da conta em `user://ilha_digital_profile.json`.
 - Equipe, Invocação e Loja permanecem reservados, conforme o escopo inicial. Não foram criadas telas extras.
 
+O layout anterior foi restaurado após a revisão rejeitada do topo. A UI agora tem componentes independentes: `AtlasValue` mantém um Label para cada texto/valor, `AtlasGauge` é um ProgressBar, e cada carta tem filhos `Face`, `Number` e `Selection`. A BAG usa as mesmas cartas em modo de preview; os botões inferiores possuem sua própria arte. Valores da conta, HP, round, skills e números das cartas são ligados aos dados do jogo.
+
+As molduras usam o atlas original com as áreas dos componentes removidas durante a renderização. Assim, esconder ou mover um componente não deixa uma cópia pintada no fundo. Os valores iguais aos da referência usam sua grafia original, preservando o visual; quando o valor muda, o Label mostra o novo texto no mesmo lugar. As barras sempre têm `value` e `max_value` reais, com a aparência original preservada no estado inicial.
+
 ## Fidelidade e limites da arte
 
 A tela inicial foi capturada no renderizador OpenGL do Godot e comparada em RGB com o PNG aprovado: **zero pixels diferentes** na resolução nativa, com a conta padrão. O resultado verificável está em `output/verification/pixel_report.json`.
 
 O mockup é uma pintura única. Para não recriar nem alterar os personagens, a ilha e as criaturas continuam integradas ao painel fixo do campo. Os slots têm interação e estado de combate, mas não são sprites recortados com transparência. Inimigos derrotados continuam desenhados no cenário, com HP zerado e alvo desativado. Separação real, remoção visual de inimigos e troca de formações exigiriam arte do chão oculto atrás deles. Nenhuma dessas partes foi inventada nesta entrega.
 
-Cartas são recortes independentes da mesma pintura. Abertura idêntica não significa congelar o jogo: depois de uma ação, as cartas, números de HP, preenchimentos das barras e mensagem de combate mudam. Textos numéricos novos usam a fonte de interface do Godot, pois a fonte original do desenho não foi fornecida. Os valores impressos nas sete faces são fixos (4, 7, 6, 9, 8, 5 e 10).
+Cartas usam a arte original, com o número separado em um componente de texto. `CardDefinition.power` é a força usada na gameplay e exibida na UI; `printed_power` registra o número que existia no atlas, para preservar sua grafia quando os valores coincidem. Alterar `power` atualiza o número na carta e na BAG, inclusive sem trocar de elemento. Textos novos usam a fonte padrão do Godot, pois a fonte original do desenho não foi fornecida.
 
 O runtime Windows local usa o binário Godot já instalado e um pacote `.pck` exportado. As licenças do runtime estão junto dele. Não é um APK, e não foi validado em aparelho Android/iOS.
 
@@ -82,10 +80,14 @@ Troque `godot` pelo executável Godot disponível no seu PATH:
 ```powershell
 godot --headless --editor --path . --import
 godot --headless --path . --script res://tests/test_battle.gd -- --test
+godot --headless --path . --script res://tests/test_ui_components.gd -- --test
 godot --path . --script res://tests/capture_layout.gd -- --test
+godot --path . --script res://tests/capture_ui_layers.gd -- --test
 python tools/verify_pixels.py
 ```
 
 A captura exige renderizador gráfico; não use `--headless` nesse comando. A comparação exige Pillow. `--test` evita carregar ou salvar a conta pessoal. Os testes cobrem regras, fila, hitbox real, bloqueio de entrada, skills, cura, rounds, vitória, derrota e cancelamento de resolução ao reiniciar.
+
+`capture_ui_layers.gd` esconde valores, uma barra, uma carta, um preview e um botão, e verifica no framebuffer que a imagem de fundo não mantém esses elementos. A captura `ui_layers_hidden.png` é apenas uma verificação técnica; não é o visual da partida.
 
 Os arquivos já removidos da versão anterior no Git não foram restaurados. Esta implementação não depende deles.

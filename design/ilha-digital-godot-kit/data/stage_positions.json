@@ -1,0 +1,300 @@
+{
+ "visor": {
+  "x": 24,
+  "y": 232,
+  "w": 976,
+  "h": 736,
+  "radius": 32
+ },
+ "foot_anchor_in_png": {
+  "256": [
+   128,
+   248
+  ],
+  "512": [
+   256,
+   504
+  ]
+ },
+ "rules": {
+  "frame_px": "w_pt * 2",
+  "sprite_top_left": "(foot_x - frame/2, foot_y - frame*0.97)",
+  "ring_rx": "frame * 0.34",
+  "ring_ry": "ring_rx * 0.3",
+  "ring_center": "no pe",
+  "chip_top": "foot_y + ring_ry + 2",
+  "hit_area": "largura frame*0.62, altura frame*0.97*0.9, acima do pe"
+ },
+ "slots": {
+  "A1": {
+   "role": "aliado",
+   "name": "Crimson Clamp",
+   "element": "dragon",
+   "sprite": "characters/ally_01_crimson_clamp_256.png",
+   "foot_pct_in_visor": [
+    15,
+    46
+   ],
+   "frame_pt": 100,
+   "foot_px_1024": [
+    170.4,
+    570.6
+   ],
+   "frame_px_1024": 200,
+   "sprite_rect_px_1024": [
+    70.4,
+    376.6,
+    200,
+    200
+   ],
+   "ring_px_1024": {
+    "cx": 170.4,
+    "cy": 570.6,
+    "rx": 68,
+    "ry": 20,
+    "textures": "hud/stage/ring_A1_under|progress|over.png"
+   },
+   "chip_top_px_1024": 592.6
+  },
+  "A2": {
+   "role": "aliado",
+   "name": "Bone Raider",
+   "element": "dark",
+   "sprite": "characters/ally_02_bone_raider_256.png",
+   "foot_pct_in_visor": [
+    37,
+    42
+   ],
+   "frame_pt": 96,
+   "foot_px_1024": [
+    385.1,
+    541.1
+   ],
+   "frame_px_1024": 192,
+   "sprite_rect_px_1024": [
+    289.1,
+    355.1,
+    192,
+    192
+   ],
+   "ring_px_1024": {
+    "cx": 385.1,
+    "cy": 541.1,
+    "rx": 66,
+    "ry": 20,
+    "textures": "hud/stage/ring_A2_under|progress|over.png"
+   },
+   "chip_top_px_1024": 563.1
+  },
+  "A3": {
+   "role": "aliado",
+   "name": "Panda Gunner",
+   "element": "knight",
+   "sprite": "characters/ally_03_panda_gunner_256.png",
+   "foot_pct_in_visor": [
+    26,
+    65
+   ],
+   "frame_pt": 106,
+   "foot_px_1024": [
+    277.8,
+    710.4
+   ],
+   "frame_px_1024": 212,
+   "sprite_rect_px_1024": [
+    171.8,
+    504.4,
+    212,
+    212
+   ],
+   "ring_px_1024": {
+    "cx": 277.8,
+    "cy": 710.4,
+    "rx": 72,
+    "ry": 22,
+    "textures": "hud/stage/ring_A3_under|progress|over.png"
+   },
+   "chip_top_px_1024": 734.4
+  },
+  "A4": {
+   "role": "aliado",
+   "name": "Twin Apes",
+   "element": "light",
+   "sprite": "characters/ally_04_twin_apes_256.png",
+   "foot_pct_in_visor": [
+    12,
+    90
+   ],
+   "frame_pt": 114,
+   "foot_px_1024": [
+    141.1,
+    894.4
+   ],
+   "frame_px_1024": 228,
+   "sprite_rect_px_1024": [
+    27.1,
+    672.4,
+    228,
+    228
+   ],
+   "ring_px_1024": {
+    "cx": 141.1,
+    "cy": 894.4,
+    "rx": 78,
+    "ry": 24,
+    "textures": "hud/stage/ring_A4_under|progress|over.png"
+   },
+   "chip_top_px_1024": 920.4
+  },
+  "A5": {
+   "role": "aliado",
+   "name": "Flora Fairy",
+   "element": "nature",
+   "sprite": "characters/ally_05_flora_fairy_256.png",
+   "foot_pct_in_visor": [
+    40,
+    91
+   ],
+   "frame_pt": 114,
+   "foot_px_1024": [
+    414.4,
+    901.8
+   ],
+   "frame_px_1024": 228,
+   "sprite_rect_px_1024": [
+    300.4,
+    679.8,
+    228,
+    228
+   ],
+   "ring_px_1024": {
+    "cx": 414.4,
+    "cy": 901.8,
+    "rx": 78,
+    "ry": 24,
+    "textures": "hud/stage/ring_A5_under|progress|over.png"
+   },
+   "chip_top_px_1024": 927.8
+  },
+  "E1": {
+   "role": "chefe (trio)",
+   "name": "Long Ear Guardian",
+   "element": "light",
+   "sprite": "enemies/boss_01_long_ear_guardian_512.png",
+   "foot_pct_in_visor": [
+    76,
+    50
+   ],
+   "frame_pt": 168,
+   "foot_px_1024": [
+    765.8,
+    600.0
+   ],
+   "frame_px_1024": 336,
+   "sprite_rect_px_1024": [
+    597.8,
+    274.0,
+    336,
+    336
+   ],
+   "ring_px_1024": {
+    "cx": 765.8,
+    "cy": 600.0,
+    "rx": 114,
+    "ry": 34,
+    "textures": "hud/stage/ring_E1_under|progress|over.png"
+   },
+   "chip_top_px_1024": 636.0
+  },
+  "E2": {
+   "role": "inimigo",
+   "name": "Dusk Dragon",
+   "element": "dark",
+   "sprite": "enemies/enemy_01_dusk_dragon_256.png",
+   "foot_pct_in_visor": [
+    62,
+    88
+   ],
+   "frame_pt": 126,
+   "foot_px_1024": [
+    629.1,
+    879.7
+   ],
+   "frame_px_1024": 252,
+   "sprite_rect_px_1024": [
+    503.1,
+    635.7,
+    252,
+    252
+   ],
+   "ring_px_1024": {
+    "cx": 629.1,
+    "cy": 879.7,
+    "rx": 86,
+    "ry": 26,
+    "textures": "hud/stage/ring_E2_under|progress|over.png"
+   },
+   "chip_top_px_1024": 907.7
+  },
+  "E3": {
+   "role": "inimigo",
+   "name": "Twin Tail",
+   "element": "nature",
+   "sprite": "enemies/enemy_02_twin_tail_256.png",
+   "foot_pct_in_visor": [
+    87,
+    90
+   ],
+   "frame_pt": 126,
+   "foot_px_1024": [
+    873.1,
+    894.4
+   ],
+   "frame_px_1024": 252,
+   "sprite_rect_px_1024": [
+    747.1,
+    650.4,
+    252,
+    252
+   ],
+   "ring_px_1024": {
+    "cx": 873.1,
+    "cy": 894.4,
+    "rx": 86,
+    "ry": 26,
+    "textures": "hud/stage/ring_E3_under|progress|over.png"
+   },
+   "chip_top_px_1024": 922.4
+  },
+  "BOSS": {
+   "role": "chefe sozinho",
+   "name": "Long Ear Guardian",
+   "element": "light",
+   "sprite": "enemies/boss_01_long_ear_guardian_512.png",
+   "foot_pct_in_visor": [
+    72,
+    80
+   ],
+   "frame_pt": 224,
+   "foot_px_1024": [
+    726.7,
+    820.8
+   ],
+   "frame_px_1024": 448,
+   "sprite_rect_px_1024": [
+    502.7,
+    386.8,
+    448,
+    448
+   ],
+   "ring_px_1024": {
+    "cx": 726.7,
+    "cy": 820.8,
+    "rx": 152,
+    "ry": 46,
+    "textures": "hud/stage/ring_BOSS_under|progress|over.png"
+   },
+   "chip_top_px_1024": 868.8
+  }
+ }
+}

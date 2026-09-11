@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@300;400;500;600&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; }
+    a { color: #F2A33C; } a:hover { color: #FFC97A; }
+    .mono { font-family: 'Martian Mono', ui-monospace, 'Consolas', monospace; font-variant-numeric: tabular-nums; }
+    .tick { font-size: 7px; font-weight: 400; letter-spacing: .5px; text-transform: uppercase; }
+    .rule { height: 1px; background: repeating-linear-gradient(90deg, rgba(242,163,60,.3) 0 3px, transparent 3px 7px); }
+    .c1 { position: relative; width: 76px; height: 88px; border-radius: 9px; }
+    .c1 img { display: block; width: 100%; height: 100%; }
+    .val { position: absolute; left: 6px; bottom: 5px; padding: 1px 4px; border-radius: 4px; background: rgba(8,6,4,.78); font-size: 9.5px; font-weight: 600; color: #fff; box-shadow: 0 0 0 1px rgba(255,255,255,.25); }
+    .cap { text-align: center; margin-top: 7px; }
+  </style>
+</helmet>
+
+<div style="width: 720px; height: 640px; background: #16130D; color: #F5EFE2; padding: 20px 20px 0;">
+
+  <div style="display: flex; align-items: baseline; gap: 10px;">
+    <span style="font-size: 17px; font-weight: 700; letter-spacing: -.3px;">Cartas</span>
+    <span class="mono tick" style="color: rgba(245,239,226,.45);">ARTE COMPLETA · FONTE card-*.svg · PNG 1× 2× 4× PARA O GODOT</span>
+  </div>
+  <div class="rule" style="margin: 12px 0 14px;"></div>
+
+  <div class="mono tick" style="color: rgba(245,239,226,.45); margin-bottom: 10px;">OS 7 TIPOS · TAMANHO REAL NO BANCO 76 × 88</div>
+  <div style="display: flex; gap: 12px;">
+    <div><div class="c1" style="box-shadow: 0 3px 7px rgba(0,0,0,.5);"><img src="card-dragon.png"><span class="mono val">4</span></div><div class="mono tick cap" style="color: rgba(245,239,226,.45);">DRAGON</div></div>
+    <div><div class="c1" style="box-shadow: 0 3px 7px rgba(0,0,0,.5);"><img src="card-knight.png"><span class="mono val">7</span></div><div class="mono tick cap" style="color: rgba(245,239,226,.45);">KNIGHT</div></div>
+    <div><div class="c1" style="box-shadow: 0 3px 7px rgba(0,0,0,.5);"><img src="card-nature.png"><span class="mono val">6</span></div><div class="mono tick cap" style="color: rgba(245,239,226,.45);">NATURE</div></div>
+    <div><div class="c1" style="box-shadow: 0 3px 7px rgba(0,0,0,.5);"><img src="card-light.png"><span class="mono val">9</span></div><div class="mono tick cap" style="color: rgba(245,239,226,.45);">LIGHT</div></div>
+    <div><div class="c1" style="box-shadow: 0 3px 7px rgba(0,0,0,.5);"><img src="card-dark.png"><span class="mono val">8</span></div><div class="mono tick cap" style="color: rgba(245,239,226,.45);">DARK</div></div>
+    <div><div class="c1" style="box-shadow: 0 3px 7px rgba(0,0,0,.5);"><img src="card-capsule.png"><span class="mono val">5</span></div><div class="mono tick cap" style="color: rgba(245,239,226,.45);">CAPSULE</div></div>
+    <div><div class="c1" style="box-shadow: 0 3px 7px rgba(0,0,0,.5);"><img src="card-wild.png"><span class="mono val">10</span></div><div class="mono tick cap" style="color: rgba(245,239,226,.45);">WILD</div></div>
+  </div>
+
+  <div class="rule" style="margin: 18px 0 14px;"></div>
+
+  <div style="display: flex; gap: 28px;">
+    <div>
+      <div class="mono tick" style="color: rgba(245,239,226,.45); margin-bottom: 10px;">DETALHE · 2×</div>
+      <div style="display: flex; gap: 12px;">
+        <img src="card-dragon.png" style="width: 152px; height: 176px; display: block; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5));">
+        <img src="card-dark.png" style="width: 152px; height: 176px; display: block; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5));">
+      </div>
+    </div>
+
+    <div style="flex: 1 1 auto; min-width: 0;">
+      <div class="mono tick" style="color: rgba(245,239,226,.45); margin-bottom: 10px;">ESTADOS NO BANCO</div>
+      <div style="display: flex; gap: 14px; align-items: flex-start;">
+        <div><div class="c1" style="box-shadow: 0 3px 7px rgba(0,0,0,.5);"><img src="card-nature.png"><span class="mono val">6</span></div><div class="mono tick cap" style="color: rgba(245,239,226,.4);">PADRÃO</div></div>
+        <div><div class="c1" style="transform: translateY(-5px); box-shadow: 0 0 0 2.5px #F2A33C, 0 0 18px rgba(242,163,60,.6), 0 8px 14px rgba(0,0,0,.55);"><img src="card-nature.png"><span class="mono val">6</span><span class="mono" style="position: absolute; right: 5px; top: 6px; width: 14px; height: 14px; border-radius: 4px; background: #F2A33C; color: #1A1105; font-size: 8px; font-weight: 600; line-height: 14px; text-align: center;">1</span></div><div class="mono tick cap" style="color: #F2A33C; margin-top: 2px;">SELECIONADA</div></div>
+        <div><div class="c1" style="opacity: .38; filter: grayscale(.85);"><img src="card-nature.png"><span class="mono val">6</span></div><div class="mono tick cap" style="color: rgba(245,239,226,.4);">BLOQUEADA</div></div>
+        <div><div style="width: 76px; height: 88px; border-radius: 9px; border: 1px dashed rgba(242,163,60,.3); background: rgba(242,163,60,.04); display: flex; align-items: center; justify-content: center;"><span class="mono tick" style="color: rgba(242,163,60,.5);">VAZIO</span></div><div class="mono tick cap" style="color: rgba(245,239,226,.4);">SLOT</div></div>
+      </div>
+
+      <div class="rule" style="margin: 16px 0 12px;"></div>
+      <div style="font-size: 9.5px; line-height: 1.8; color: rgba(245,239,226,.62);">
+        <div><span class="mono" style="color: #F2A33C;">01</span> &nbsp;Moldura creme apagada, cantoneiras âmbar, anel de instrumento com marcações e película de scanline — a mesma linguagem do visor</div>
+        <div><span class="mono" style="color: #F2A33C;">02</span> &nbsp;Fundo do elemento dessaturado puxado para a casca #16130D; brilho suave atrás do emblema</div>
+        <div><span class="mono" style="color: #F2A33C;">03</span> &nbsp;O número NÃO faz parte da arte — o Godot escreve por cima, então muda sem refazer asset</div>
+        <div><span class="mono" style="color: #F2A33C;">04</span> &nbsp;Capsule é marrom; Wild é preta com símbolo próprio (infinito cruzado por estrela) e só 5 losangos de cor no anel</div>
+        <div><span class="mono" style="color: #F2A33C;">05</span> &nbsp;Arquivos: <span class="mono" style="color: #F5EFE2;">design/battle-screen/export/cards/card-&lt;elemento&gt;@1x|2x|4x.png</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":720,"height":640}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

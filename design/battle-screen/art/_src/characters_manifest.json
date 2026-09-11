@@ -1,0 +1,15 @@
+{
+  "coordinate_system": "top_left_origin",
+  "alpha": "straight_rgba",
+  "shadow_included": false,
+  "characters": [
+    {"file": "ally_01_crimson_clamp_256.png", "role": "ally", "facing": "right", "size": [256, 256], "foot_anchor": [128, 248]},
+    {"file": "ally_02_bone_raider_256.png", "role": "ally", "facing": "right", "size": [256, 256], "foot_anchor": [128, 248]},
+    {"file": "ally_03_panda_gunner_256.png", "role": "ally", "facing": "right", "size": [256, 256], "foot_anchor": [128, 248]},
+    {"file": "ally_04_twin_apes_256.png", "role": "ally", "facing": "right", "size": [256, 256], "foot_anchor": [128, 248]},
+    {"file": "ally_05_flora_fairy_256.png", "role": "ally", "facing": "right", "size": [256, 256], "foot_anchor": [128, 248]},
+    {"file": "enemy_01_dusk_dragon_256.png", "role": "enemy", "facing": "left", "size": [256, 256], "foot_anchor": [128, 248]},
+    {"file": "enemy_02_twin_tail_256.png", "role": "enemy", "facing": "left", "size": [256, 256], "foot_anchor": [128, 248]},
+    {"file": "boss_01_long_ear_guardian_512.png", "role": "boss", "facing": "left", "size": [512, 512], "foot_anchor": [256, 504]}
+  ]
+}

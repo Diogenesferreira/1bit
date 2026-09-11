@@ -1,0 +1,120 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Batalha"
+    },
+    {
+      "id": "page-2",
+      "name": "Componentes"
+    },
+    {
+      "id": "page-3",
+      "name": "Direções"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 512,
+      "h": 800,
+      "page": "page-1",
+      "title": "Tela de batalha · Terminal",
+      "is_interactive": true
+    },
+    {
+      "file": "Simbolos.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 700,
+      "h": 540,
+      "page": "page-2",
+      "title": "Símbolos"
+    },
+    {
+      "file": "Cartas.dc.html",
+      "x": 820,
+      "y": 0,
+      "w": 720,
+      "h": 640,
+      "page": "page-2",
+      "title": "Cartas"
+    },
+    {
+      "file": "Placas.dc.html",
+      "x": 0,
+      "y": 820,
+      "w": 700,
+      "h": 600,
+      "page": "page-2",
+      "title": "Placas de personagem"
+    },
+    {
+      "file": "Barras.dc.html",
+      "x": 820,
+      "y": 820,
+      "w": 640,
+      "h": 560,
+      "page": "page-2",
+      "title": "Barras e nível"
+    },
+    {
+      "file": "Aurora.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 512,
+      "h": 800,
+      "page": "page-3",
+      "title": "A · Aurora (descartada)"
+    },
+    {
+      "file": "Arena.dc.html",
+      "x": 642,
+      "y": 0,
+      "w": 512,
+      "h": 800,
+      "page": "page-3",
+      "title": "B · Arena (descartada)"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "tela",
+      "page": "page-1",
+      "x": 632,
+      "y": 0,
+      "w": 450,
+      "text": "TELA DE BATALHA · TERMINAL\n\nCARTAS NOVAS\nOs símbolos centrais seguem as suas referências; o resto da carta usa a linguagem do Terminal: cores sóbrias, anel de instrumento, cantoneiras âmbar e scanline. A Wild é preta, com símbolo próprio. Cada carta é um SVG completo — o número é escrito por cima, fora da arte.\n\nPLACAS\nColadas embaixo de cada personagem, no estilo das barrinhas originais; a skill do aliado na cor do elemento.\n\nTWEAKS NO TOPO DA PRANCHETA\n· showSlots — mostra as posições fixas (A1…A5, E1…E3)\n· soloBoss — formação de chefe sozinho"
+    },
+    {
+      "id": "posicoes",
+      "page": "page-1",
+      "x": 632,
+      "y": 470,
+      "w": 450,
+      "text": "POSIÇÕES FIXAS DO PALCO — lote 01, escala final\n\nCenário: arte 1024×1600 (2×); o visor mostra x 24–1000 / y 232–968. Tweak \"cenario\": Tropical / Deserto.\nPersonagens: PNG 256 (chefe 512), pé em (128, 248). Posição = onde o pé pisa (x% · y% do visor) + largura do quadro em pt (×2 no Godot).\n\nA1 Crimson Clamp   15% · 46% · 100\nA2 Bone Raider     37% · 42% · 96\nA3 Panda Gunner    26% · 65% · 106\nA4 Twin Apes       12% · 90% · 114\nA5 Flora Fairy     40% · 91% · 114\n\nE1 Long Ear Guardian (chefe no trio)  76% · 50% · 168\nE2 Dusk Dragon   62% · 88% · 126\nE3 Twin Tail     87% · 90% · 126\n\nCHEFE SOZINHO (tweak soloBoss)  72% · 80% · 224\n\nINDICADOR (tweak \"indicador\")\n· anel — base no chão: o anel enche com a skill (cor do elemento) ou a vida (vermelho); chip com o emblema da carta + LV (espaço para 3 dígitos), e turno de ataque nos inimigos\n· minimo — fio fino sob os pés\n· placa — versão anterior, para comparar\n\nPOP-UP DO ALVO: toque no inimigo abre; toque de novo fecha."
+    },
+    {
+      "id": "kit",
+      "page": "page-2",
+      "x": 0,
+      "y": -300,
+      "w": 900,
+      "text": "KIT DE COMPONENTES · TERMINAL\n\nCARTAS\nArte completa em design/battle-screen/cards/card-<elemento>.svg, gerada por build_cards.py. PNGs transparentes prontos para o Godot em design/battle-screen/export/cards/ (1× 76×88, 2×, 4×).\n\nÍCONE DE PLACA\nVersão simplificada do elemento em círculo cheio, para ler a 14 px.\n\nPALETA\nCasca #16130D · superfície #201C13 · âmbar #F2A33C · menta #6FE3B8 · perigo #FF6B4A\nDragon #FF5A3D · Knight #4DA8FF · Nature #5BD75B · Light #FFC93C · Dark #B06BFF\nCapsule #C89A5A (marrom) · Wild preto com arco-íris — as duas são APENAS cartas.\n\nTIPOGRAFIA\nInstrument Sans (interface) + Martian Mono (leituras e números)."
+    },
+    {
+      "id": "descartadas",
+      "page": "page-3",
+      "x": 0,
+      "y": -220,
+      "w": 1154,
+      "text": "DIREÇÕES DESCARTADAS\n\nGuardadas só como histórico da escolha. A direção C · Terminal virou a tela de batalha na página 1.\n\nEssas duas ainda usam recortes do PNG aprovado — por isso as cartas e o cenário delas estão desatualizados."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-1"
+  }
+}

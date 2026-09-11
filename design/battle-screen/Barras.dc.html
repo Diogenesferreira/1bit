@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@300;400;500;600&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; }
+    a { color: #F2A33C; } a:hover { color: #FFC97A; }
+    .mono { font-family: 'Martian Mono', ui-monospace, 'Consolas', monospace; font-variant-numeric: tabular-nums; }
+    .tick { font-size: 7px; font-weight: 400; letter-spacing: .5px; text-transform: uppercase; }
+    .rule { height: 1px; background: repeating-linear-gradient(90deg, rgba(242,163,60,.3) 0 3px, transparent 3px 7px); }
+    .track { position: relative; height: 6px; background: rgba(245,239,226,.1); overflow: hidden; }
+    .mask { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 5px, #16130D 5px 7px); }
+    .row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+    .rl { width: 54px; flex: 0 0 auto; }
+    .rv { width: 74px; flex: 0 0 auto; text-align: right; font-size: 9px; }
+    .lv { display: inline-flex; align-items: center; gap: 5px; height: 19px; padding: 0 7px 0 5px; border-radius: 5px; background: #201C13; }
+    @keyframes crit { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+  </style>
+</helmet>
+
+<div style="width: 640px; height: 560px; background: #16130D; color: #F5EFE2; padding: 20px 20px 0;">
+
+  <div style="display: flex; align-items: baseline; gap: 10px;">
+    <span style="font-size: 17px; font-weight: 700; letter-spacing: -.3px;">Barras e nível</span>
+    <span class="mono tick" style="color: rgba(245,239,226,.45);">SEGMENTO 5 · VÃO 2 · ALTURA 4 / 6 / 8</span>
+  </div>
+  <div class="rule" style="margin: 12px 0 16px;"></div>
+
+  <div style="display: flex; gap: 26px;">
+
+    <!-- ============ COLUNA ESQUERDA: BARRAS ============ -->
+    <div style="flex: 1 1 0; min-width: 0;">
+
+      <div class="mono tick" style="color: #6FE3B8; margin-bottom: 9px;">HP · ALIADO</div>
+      <div class="row"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">CHEIO</span><div class="track" style="flex: 1 1 auto;"><div style="width: 100%; height: 100%; background: #6FE3B8;"></div><span class="mask"></span></div><span class="mono rv">3200/3200</span></div>
+      <div class="row"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">NORMAL</span><div class="track" style="flex: 1 1 auto;"><div style="width: 72%; height: 100%; background: #6FE3B8;"></div><span class="mask"></span></div><span class="mono rv">2304/3200</span></div>
+      <div class="row"><span class="mono tick rl" style="color: #F2A33C;">ALERTA</span><div class="track" style="flex: 1 1 auto;"><div style="width: 34%; height: 100%; background: #F2A33C;"></div><span class="mask"></span></div><span class="mono rv" style="color: #F2A33C;">1088/3200</span></div>
+      <div class="row"><span class="mono tick rl" style="color: #FF6B4A;">CRÍTICO</span><div class="track" style="flex: 1 1 auto;"><div style="width: 13%; height: 100%; background: #FF6B4A; animation: crit 1s ease-in-out infinite;"></div><span class="mask"></span></div><span class="mono rv" style="color: #FF6B4A;">416/3200</span></div>
+      <div class="row"><span class="mono tick rl" style="color: rgba(245,239,226,.3);">VAZIO</span><div class="track" style="flex: 1 1 auto;"><span class="mask"></span></div><span class="mono rv" style="color: rgba(245,239,226,.3);">0/3200</span></div>
+
+      <div class="rule" style="margin: 16px 0 14px;"></div>
+
+      <div class="mono tick" style="color: #FF6B4A; margin-bottom: 9px;">HP · INIMIGO</div>
+      <div class="row"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">CHEIO</span><div class="track" style="flex: 1 1 auto;"><div style="width: 100%; height: 100%; background: #FF6B4A;"></div><span class="mask"></span></div><span class="mono rv">4000/4000</span></div>
+      <div class="row"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">FERIDO</span><div class="track" style="flex: 1 1 auto;"><div style="width: 46%; height: 100%; background: #FF6B4A;"></div><span class="mask"></span></div><span class="mono rv">1850/4000</span></div>
+      <div class="row"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">FINAL</span><div class="track" style="flex: 1 1 auto;"><div style="width: 11%; height: 100%; background: #FF6B4A; animation: crit 1s ease-in-out infinite;"></div><span class="mask"></span></div><span class="mono rv">440/4000</span></div>
+      <div class="row"><span class="mono tick rl" style="color: rgba(245,239,226,.3);">ABATIDO</span><div class="track" style="flex: 1 1 auto;"><span class="mask"></span></div><span class="mono rv" style="color: rgba(245,239,226,.3);">0/4000</span></div>
+
+      <div class="rule" style="margin: 16px 0 14px;"></div>
+
+      <div class="mono tick" style="color: #F2A33C; margin-bottom: 9px;">SKILL · ALIADO</div>
+      <div class="row"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">VAZIA</span><div class="track" style="flex: 1 1 auto; height: 4px;"><span class="mask"></span></div><span class="mono rv" style="color: rgba(245,239,226,.35);">000%</span></div>
+      <div class="row"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">CARGA</span><div class="track" style="flex: 1 1 auto; height: 4px;"><div style="width: 34%; height: 100%; background: #F2A33C;"></div><span class="mask"></span></div><span class="mono rv">034%</span></div>
+      <div class="row"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">CARGA</span><div class="track" style="flex: 1 1 auto; height: 4px;"><div style="width: 68%; height: 100%; background: #F2A33C;"></div><span class="mask"></span></div><span class="mono rv">068%</span></div>
+      <div class="row"><span class="mono tick rl" style="color: #F2A33C;">PRONTA</span><div class="track" style="flex: 1 1 auto; height: 4px; box-shadow: 0 0 12px rgba(242,163,60,.75);"><div style="width: 100%; height: 100%; background: #F2A33C;"></div><span class="mask"></span></div><span class="mono rv" style="color: #F2A33C;">100%</span></div>
+
+      <div class="rule" style="margin: 16px 0 14px;"></div>
+
+      <div class="mono tick" style="color: rgba(245,239,226,.45); margin-bottom: 9px;">EXP · JOGADOR</div>
+      <div class="row" style="margin-bottom: 0;"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">LV 38</span><div class="track" style="flex: 1 1 auto; height: 4px;"><div style="width: 51%; height: 100%; background: #F2A33C;"></div><span class="mask"></span></div><span class="mono rv">6120/12000</span></div>
+    </div>
+
+    <!-- ============ COLUNA DIREITA: NÍVEL + LIMIARES ============ -->
+    <div style="flex: 0 0 232px;">
+
+      <div class="mono tick" style="color: rgba(245,239,226,.45); margin-bottom: 10px;">SELO DE NÍVEL</div>
+
+      <div style="display: flex; flex-direction: column; gap: 9px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="lv" style="box-shadow: inset 0 0 0 1px rgba(242,163,60,.25);">
+            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#FF5A3D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5a5.6 5.6 0 0 0 5.6-5.6c0-4.6-5.6-6.1-4.1-13.3-3.1 2.6-7.1 6.1-7.1 13.3A5.6 5.6 0 0 0 12 21.5z"/></svg>
+            <span class="mono tick" style="color: rgba(245,239,226,.4);">LV</span>
+            <span class="mono" style="font-size: 10px; font-weight: 600;">38</span>
+          </span>
+          <span class="mono tick" style="color: rgba(245,239,226,.4);">ALIADO</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="lv" style="box-shadow: inset 0 0 0 1px rgba(255,107,74,.35);">
+            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#5BD75B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.4V10.2 M12 13.4c0-3.6-2.6-6.2-6.2-6.2 0 3.6 2.6 6.2 6.2 6.2z"/></svg>
+            <span class="mono tick" style="color: #FF6B4A;">LV</span>
+            <span class="mono" style="font-size: 10px; font-weight: 600;">36</span>
+          </span>
+          <span class="mono tick" style="color: rgba(245,239,226,.4);">INIMIGO</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="lv" style="height: 23px; padding: 0 9px 0 6px; box-shadow: inset 0 0 0 1px rgba(255,107,74,.55), 0 0 14px rgba(255,107,74,.22);">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#FF5A3D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5a5.6 5.6 0 0 0 5.6-5.6c0-4.6-5.6-6.1-4.1-13.3-3.1 2.6-7.1 6.1-7.1 13.3A5.6 5.6 0 0 0 12 21.5z"/></svg>
+            <span class="mono tick" style="color: #FF6B4A;">CHEFE LV</span>
+            <span class="mono" style="font-size: 12px; font-weight: 600;">40</span>
+          </span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="lv" style="opacity: .4;">
+            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="rgba(245,239,226,.5)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.4V10.2 M12 13.4c0-3.6-2.6-6.2-6.2-6.2 0 3.6 2.6 6.2 6.2 6.2z"/></svg>
+            <span class="mono tick" style="color: rgba(245,239,226,.4);">LV</span>
+            <span class="mono" style="font-size: 10px; font-weight: 600;">36</span>
+          </span>
+          <span class="mono tick" style="color: rgba(245,239,226,.4);">ABATIDO</span>
+        </div>
+      </div>
+
+      <div class="rule" style="margin: 18px 0 14px;"></div>
+
+      <div class="mono tick" style="color: rgba(245,239,226,.45); margin-bottom: 11px;">LIMIARES DE COR</div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 9px;">
+          <span style="width: 22px; height: 8px; background: #6FE3B8; flex: 0 0 auto;"></span>
+          <span class="mono tick" style="color: rgba(245,239,226,.6);">ACIMA DE 40% · NORMAL</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 9px;">
+          <span style="width: 22px; height: 8px; background: #F2A33C; flex: 0 0 auto;"></span>
+          <span class="mono tick" style="color: rgba(245,239,226,.6);">40% A 20% · ALERTA</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 9px;">
+          <span style="width: 22px; height: 8px; background: #FF6B4A; flex: 0 0 auto;"></span>
+          <span class="mono tick" style="color: rgba(245,239,226,.6);">ABAIXO DE 20% · CRÍTICO + PULSO</span>
+        </div>
+      </div>
+
+      <div class="rule" style="margin: 18px 0 14px;"></div>
+
+      <div class="mono tick" style="color: rgba(245,239,226,.45); margin-bottom: 10px;">ALTURAS</div>
+      <div style="display: flex; flex-direction: column; gap: 11px;">
+        <div style="display: flex; align-items: center; gap: 10px;"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">4 · MINI</span><div class="track" style="flex: 1 1 auto; height: 4px;"><div style="width: 65%; height: 100%; background: #6FE3B8;"></div><span class="mask"></span></div></div>
+        <div style="display: flex; align-items: center; gap: 10px;"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">6 · PADRÃO</span><div class="track" style="flex: 1 1 auto; height: 6px;"><div style="width: 65%; height: 100%; background: #6FE3B8;"></div><span class="mask"></span></div></div>
+        <div style="display: flex; align-items: center; gap: 10px;"><span class="mono tick rl" style="color: rgba(245,239,226,.4);">8 · CHEFE</span><div class="track" style="flex: 1 1 auto; height: 8px;"><div style="width: 65%; height: 100%; background: #6FE3B8;"></div><span class="mask"></span></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":640,"height":560}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

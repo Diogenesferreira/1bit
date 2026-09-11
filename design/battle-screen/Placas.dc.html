@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@300;400;500;600&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif; }
+    a { color: #F2A33C; } a:hover { color: #FFC97A; }
+    .mono { font-family: 'Martian Mono', ui-monospace, 'Consolas', monospace; font-variant-numeric: tabular-nums; }
+    .tick { font-size: 7px; font-weight: 400; letter-spacing: .5px; text-transform: uppercase; }
+    .rule { height: 1px; background: repeating-linear-gradient(90deg, rgba(242,163,60,.3) 0 3px, transparent 3px 7px); }
+    .track { position: relative; background: #060A0E; overflow: hidden; border-radius: 2px; box-shadow: inset 0 1px 2px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.24); }
+    .mask { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 8px, rgba(6,10,14,.95) 8px 10px); }
+    .plate { width: 88px; border-radius: 4px; background: linear-gradient(180deg, #1B2833, #0A1119); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 0 0 1px rgba(0,0,0,.7), 0 2px 4px rgba(0,0,0,.55); padding: 2px 3px 3px; }
+    .badge { border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; box-shadow: 0 0 0 1.5px rgba(255,255,255,.6); }
+    .stage { position: relative; border-radius: 8px; overflow: hidden; background: linear-gradient(180deg, #6F8B46 0%, #526C36 100%); }
+    .cap { text-align: center; margin-top: 8px; }
+    .turn { width: 42px; height: 46px; border-radius: 10px; background: rgba(22,19,13,.92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+    .segs { display: flex; gap: 2px; }
+    .segs span { width: 9px; height: 3px; border-radius: 1px; }
+    @keyframes fast { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+  </style>
+</helmet>
+
+<div style="width: 700px; height: 600px; background: #16130D; color: #F5EFE2; padding: 20px 20px 0;">
+
+  <div style="display: flex; align-items: baseline; gap: 10px;">
+    <span style="font-size: 17px; font-weight: 700; letter-spacing: -.3px;">Placas de personagem</span>
+    <span class="mono tick" style="color: rgba(245,239,226,.45);">COLADAS EMBAIXO DO PERSONAGEM · 88 PX DE LARGURA</span>
+  </div>
+  <div class="rule" style="margin: 12px 0 16px;"></div>
+
+  <!-- ============ EM CONTEXTO ============ -->
+  <div class="mono tick" style="color: rgba(245,239,226,.45); margin-bottom: 10px;">EM CONTEXTO · a placa encosta no chão da figura</div>
+  <div style="display: flex; gap: 16px; align-items: flex-start;">
+
+    <div class="stage" style="width: 200px; height: 132px;">
+      <div style="position: absolute; left: 50%; top: 10px; transform: translateX(-50%); width: 68px; height: 71px;">
+        <span style="position: absolute; left: 50%; bottom: -3px; transform: translateX(-50%); width: 78%; height: 9px; border-radius: 50%; background: rgba(20,32,18,.45);"></span>
+        <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; display: block;"><path d="M18 78 L22 56 C24 42 36 32 52 32 C66 32 76 38 80 48 L90 40 L87 55 L94 62 L82 66 C80 74 74 80 66 82 L68 92 L59 92 L57 82 L38 82 L36 92 L27 92 L27 78 Z" fill="rgba(12,22,28,.9)" stroke="#FF5A3D" stroke-width="2.4" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="plate" style="position: absolute; left: 50%; top: 81px; transform: translateX(-50%);">
+        <div style="display: flex; align-items: center; gap: 3px;">
+          <span class="badge" style="width: 14px; height: 14px; background: radial-gradient(circle at 34% 28%, #FF9A7A, #FF5A3D);"><svg viewBox="0 0 24 24" width="8" height="8" fill="none" stroke="rgba(10,14,18,.85)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5a5.6 5.6 0 0 0 5.6-5.6c0-4.6-5.6-6.1-4.1-13.3-3.1 2.6-7.1 6.1-7.1 13.3A5.6 5.6 0 0 0 12 21.5z"/></svg></span>
+          <span style="font-size: 9px; font-weight: 700; color: #fff; text-shadow: 0 1px 0 #000, 0 0 3px rgba(0,0,0,.9); letter-spacing: -.2px;">LV38</span>
+          <span class="mono tick" style="margin-left: auto; font-size: 5.5px; color: rgba(245,239,226,.45);">SKILL</span>
+        </div>
+        <div class="track" style="height: 4px; margin-top: 2px;"><div style="width: 45%; height: 100%; background: linear-gradient(180deg, #FF9A7A 0%, #FF5A3D 52%, #A02616 100%);"></div><span class="mask"></span></div>
+      </div>
+      <span class="mono tick" style="position: absolute; left: 6px; bottom: 5px; color: rgba(255,255,255,.55);">ALIADO</span>
+    </div>
+
+    <div class="stage" style="width: 200px; height: 132px;">
+      <div style="position: absolute; left: 50%; top: 14px; transform: translateX(-50%); width: 64px; height: 67px;">
+        <span style="position: absolute; left: 50%; bottom: -3px; transform: translateX(-50%); width: 78%; height: 9px; border-radius: 50%; background: rgba(20,32,18,.45);"></span>
+        <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; display: block; transform: scaleX(-1);"><path d="M18 78 L22 56 C24 42 36 32 52 32 C66 32 76 38 80 48 L90 40 L87 55 L94 62 L82 66 C80 74 74 80 66 82 L68 92 L59 92 L57 82 L38 82 L36 92 L27 92 L27 78 Z" fill="rgba(12,22,28,.9)" stroke="#5BD75B" stroke-width="2.4" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="plate" style="position: absolute; left: 50%; top: 81px; transform: translateX(-50%);">
+        <div style="display: flex; align-items: center; gap: 3px;">
+          <span class="badge" style="width: 14px; height: 14px; background: radial-gradient(circle at 34% 28%, #A0F0A0, #5BD75B);"><svg viewBox="0 0 24 24" width="8" height="8" fill="none" stroke="rgba(10,14,18,.85)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.4V10.2 M12 13.4c0-3.6-2.6-6.2-6.2-6.2 0 3.6 2.6 6.2 6.2 6.2z M12 10.2c0-3.6 2.6-6.2 6.2-6.2 0 3.6-2.6 6.2-6.2 6.2z"/></svg></span>
+          <span style="font-size: 9px; font-weight: 700; color: #fff; text-shadow: 0 1px 0 #000, 0 0 3px rgba(0,0,0,.9); letter-spacing: -.2px;">LV36</span>
+          <span class="track" style="flex: 1 1 auto; height: 5px;"><span style="display: block; width: 74%; height: 100%; background: linear-gradient(180deg, #FF8A6A 0%, #E8402A 50%, #8E1A0E 100%);"></span><span class="mask"></span></span>
+        </div>
+      </div>
+      <span class="mono tick" style="position: absolute; left: 6px; bottom: 5px; color: rgba(255,255,255,.55);">INIMIGO</span>
+    </div>
+
+    <div class="stage" style="width: 200px; height: 132px;">
+      <div style="position: absolute; left: 50%; top: 14px; transform: translateX(-50%); width: 64px; height: 67px;">
+        <span style="position: absolute; left: 50%; bottom: -3px; transform: translateX(-50%); width: 78%; height: 9px; border-radius: 50%; background: rgba(20,32,18,.45);"></span>
+        <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; display: block; transform: scaleX(-1);"><path d="M18 78 L22 56 C24 42 36 32 52 32 C66 32 76 38 80 48 L90 40 L87 55 L94 62 L82 66 C80 74 74 80 66 82 L68 92 L59 92 L57 82 L38 82 L36 92 L27 92 L27 78 Z" fill="rgba(12,22,28,.9)" stroke="#FF5A3D" stroke-width="2.4" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="position: absolute; left: 50%; top: 14px; transform: translate(-50%,-50%) translateY(33px); width: 62px; height: 62px;">
+        <span style="position: absolute; left: 0; top: 0; width: 15px; height: 15px; border-left: 1.5px solid #FF6B4A; border-top: 1.5px solid #FF6B4A;"></span>
+        <span style="position: absolute; right: 0; top: 0; width: 15px; height: 15px; border-right: 1.5px solid #FF6B4A; border-top: 1.5px solid #FF6B4A;"></span>
+        <span style="position: absolute; left: 0; bottom: 0; width: 15px; height: 15px; border-left: 1.5px solid #FF6B4A; border-bottom: 1.5px solid #FF6B4A;"></span>
+        <span style="position: absolute; right: 0; bottom: 0; width: 15px; height: 15px; border-right: 1.5px solid #FF6B4A; border-bottom: 1.5px solid #FF6B4A;"></span>
+      </div>
+      <div class="plate" style="position: absolute; left: 50%; top: 81px; transform: translateX(-50%); box-shadow: inset 0 0 0 1.2px #FF6B4A, 0 0 12px rgba(255,107,74,.5);">
+        <div style="display: flex; align-items: center; gap: 3px;">
+          <span class="badge" style="width: 14px; height: 14px; background: radial-gradient(circle at 34% 28%, #FF9A7A, #FF5A3D);"><svg viewBox="0 0 24 24" width="8" height="8" fill="none" stroke="rgba(10,14,18,.85)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5a5.6 5.6 0 0 0 5.6-5.6c0-4.6-5.6-6.1-4.1-13.3-3.1 2.6-7.1 6.1-7.1 13.3A5.6 5.6 0 0 0 12 21.5z"/></svg></span>
+          <span style="font-size: 9px; font-weight: 700; color: #fff; text-shadow: 0 1px 0 #000, 0 0 3px rgba(0,0,0,.9); letter-spacing: -.2px;">LV40</span>
+          <span class="track" style="flex: 1 1 auto; height: 5px;"><span style="display: block; width: 46%; height: 100%; background: linear-gradient(180deg, #FF8A6A 0%, #E8402A 50%, #8E1A0E 100%);"></span><span class="mask"></span></span>
+        </div>
+      </div>
+      <span class="mono" style="position: absolute; right: 52px; top: 66px; width: 15px; height: 15px; border-radius: 4px; background: #FF4A2E; color: #fff; font-size: 8px; font-weight: 600; line-height: 15px; text-align: center; box-shadow: 0 0 10px rgba(255,74,46,.9); animation: fast .8s ease-in-out infinite;">1</span>
+      <span class="mono tick" style="position: absolute; left: 6px; bottom: 5px; color: #FF9A88;">ALVO + ATAQUE IMINENTE</span>
+    </div>
+  </div>
+
+  <div class="rule" style="margin: 18px 0 14px;"></div>
+
+  <!-- ============ ESTADOS ============ -->
+  <div style="display: flex; gap: 30px; align-items: flex-start;">
+    <div>
+      <div class="mono tick" style="color: rgba(245,239,226,.45); margin-bottom: 10px;">ESTADOS DA PLACA</div>
+      <div style="display: flex; gap: 12px;">
+        <div>
+          <div class="plate">
+            <div style="display: flex; align-items: center; gap: 3px;">
+              <span class="badge" style="width: 14px; height: 14px; background: radial-gradient(circle at 34% 28%, #8FD0FF, #4DA8FF);"><svg viewBox="0 0 24 24" width="8" height="8" fill="none" stroke="rgba(10,14,18,.85)" stroke-width="3" stroke-linejoin="round"><path d="M12 2.6 20 5.6v6.6c0 5.1-3.6 8.2-8 9.7-4.4-1.5-8-4.6-8-9.7V5.6z"/></svg></span>
+              <span class="mono" style="font-size: 7.5px; font-weight: 600;">LV38</span>
+              <span class="mono tick" style="margin-left: auto; font-size: 5.5px; color: rgba(245,239,226,.45);">SKILL</span>
+            </div>
+            <div class="track" style="height: 4px; margin-top: 2px;"><div style="width: 30%; height: 100%; background: linear-gradient(180deg, #8FD0FF 0%, #4DA8FF 52%, #1A5FA8 100%);"></div><span class="mask"></span></div>
+          </div>
+          <div class="mono tick cap" style="color: rgba(245,239,226,.4);">CARREGANDO</div>
+        </div>
+        <div>
+          <div class="plate" style="box-shadow: inset 0 0 0 1.2px #F2A33C, 0 0 12px rgba(242,163,60,.55);">
+            <div style="display: flex; align-items: center; gap: 3px;">
+              <span class="badge" style="width: 14px; height: 14px; background: radial-gradient(circle at 34% 28%, #A0F0A0, #5BD75B);"><svg viewBox="0 0 24 24" width="8" height="8" fill="none" stroke="rgba(10,14,18,.85)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.4V10.2 M12 13.4c0-3.6-2.6-6.2-6.2-6.2 0 3.6 2.6 6.2 6.2 6.2z M12 10.2c0-3.6 2.6-6.2 6.2-6.2 0 3.6-2.6 6.2-6.2 6.2z"/></svg></span>
+              <span class="mono" style="font-size: 7.5px; font-weight: 600;">LV38</span>
+              <span class="mono tick" style="margin-left: auto; font-size: 5.5px; color: #F2A33C;">PRONTA</span>
+            </div>
+            <div class="track" style="height: 4px; margin-top: 2px; box-shadow: 0 0 8px rgba(242,163,60,.6);"><div style="width: 100%; height: 100%; background: linear-gradient(180deg, #A0F0A0 0%, #5BD75B 52%, #1F8C2E 100%);"></div><span class="mask"></span></div>
+          </div>
+          <div class="mono tick cap" style="color: #F2A33C;">SKILL PRONTA</div>
+        </div>
+        <div>
+          <div class="plate" style="opacity: .35;">
+            <div style="display: flex; align-items: center; gap: 3px;">
+              <span class="badge" style="width: 14px; height: 14px; background: radial-gradient(circle at 34% 28%, #9C9A92, #6C6A62);"><svg viewBox="0 0 24 24" width="8" height="8" fill="none" stroke="rgba(10,14,18,.85)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16.8 3.4a9.2 9.2 0 1 0 3.8 11.8 7.6 7.6 0 0 1-3.8-11.8z"/></svg></span>
+              <span class="mono" style="font-size: 7.5px; font-weight: 600;">LV38</span>
+              <span class="mono tick" style="margin-left: auto; font-size: 5.5px; color: rgba(245,239,226,.45);">CAÍDO</span>
+            </div>
+            <div class="track" style="height: 4px; margin-top: 2px;"><span class="mask"></span></div>
+          </div>
+          <div class="mono tick cap" style="color: rgba(245,239,226,.4);">ABATIDO</div>
+        </div>
+      </div>
+
+      <div class="rule" style="margin: 16px 0 12px;"></div>
+      <div style="font-size: 9.5px; line-height: 1.75; color: rgba(245,239,226,.6); max-width: 380px;">
+        <div><span class="mono" style="color: #F2A33C;">01</span> &nbsp;76 px de largura, fundo <span class="mono">rgba(10,14,18,.82)</span> + contorno branco 1px</div>
+        <div><span class="mono" style="color: #F2A33C;">02</span> &nbsp;Selo do elemento: círculo cheio 12px, ícone simples em cima</div>
+        <div><span class="mono" style="color: #F2A33C;">03</span> &nbsp;Aliado tem 2 linhas (22px). Inimigo tem 1 linha (13px)</div>
+        <div><span class="mono" style="color: #F2A33C;">04</span> &nbsp;A barra de skill usa <b>a cor do elemento</b>; a de HP do inimigo é sempre vermelha</div>
+        <div><span class="mono" style="color: #F2A33C;">05</span> &nbsp;O número de turno só aparece na placa quando o ataque é <b>iminente</b></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="mono tick" style="color: rgba(245,239,226,.45); margin-bottom: 10px;">POP-UP DO ALVO · sobe acima do inimigo</div>
+      <div style="position: relative; width: 172px; padding: 8px 10px 9px; background: rgba(16,13,9,.94); border-radius: 8px; box-shadow: inset 0 0 0 1px rgba(255,107,74,.5), 0 6px 18px rgba(0,0,0,.6);">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span class="mono tick" style="color: #FF6B4A;">ALVO · LV40</span>
+          <span class="mono tick" style="color: rgba(245,239,226,.42);">46%</span>
+        </div>
+        <div style="font-size: 10.5px; font-weight: 700; margin: 3px 0 5px; letter-spacing: -.2px;">Volcanodramon</div>
+        <div class="track" style="height: 5px; background: rgba(245,239,226,.1);"><div style="width: 46%; height: 100%; background: #FF6B4A;"></div><span style="position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 5px, #100D09 5px 7px);"></span></div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+          <span class="mono" style="font-size: 8px; color: rgba(245,239,226,.55);">1850 / 4000 HP</span>
+          <span style="display: inline-flex; align-items: center; gap: 4px; height: 15px; padding: 0 5px; border-radius: 4px; box-shadow: inset 0 0 0 1px #F2A33C;">
+            <span class="mono tick" style="color: rgba(245,239,226,.45);">ATQ</span>
+            <span style="display: flex; gap: 2px;"><span style="width: 7px; height: 3px; border-radius: 1px; background: #F2A33C;"></span><span style="width: 7px; height: 3px; border-radius: 1px; background: #F2A33C;"></span><span style="width: 7px; height: 3px; border-radius: 1px; background: rgba(242,163,60,.18);"></span></span>
+            <span class="mono" style="font-size: 9px; font-weight: 600; color: #F2A33C;">2</span>
+          </span>
+        </div>
+        <span style="position: absolute; left: 50%; bottom: -5px; transform: translateX(-50%) rotate(45deg); width: 9px; height: 9px; background: rgba(16,13,9,.94); box-shadow: 1px 1px 0 0 rgba(255,107,74,.5);"></span>
+      </div>
+
+      <div class="mono tick" style="color: rgba(245,239,226,.45); margin: 22px 0 10px;">CONTADOR DE TURNO · 3 estados</div>
+      <div style="display: flex; gap: 12px;">
+        <div>
+          <div class="turn" style="box-shadow: inset 0 0 0 1.5px rgba(242,163,60,.3);">
+            <div class="segs"><span style="background: rgba(242,163,60,.55);"></span><span style="background: rgba(242,163,60,.55);"></span><span style="background: rgba(242,163,60,.55);"></span></div>
+            <span class="mono" style="font-size: 17px; font-weight: 600; color: rgba(242,163,60,.75); line-height: 1;">3</span>
+            <span class="mono tick" style="color: rgba(245,239,226,.35);">ATQ</span>
+          </div>
+          <div class="mono tick cap" style="color: rgba(245,239,226,.4);">DISTANTE</div>
+        </div>
+        <div>
+          <div class="turn" style="box-shadow: inset 0 0 0 1.5px #F2A33C;">
+            <div class="segs"><span style="background: #F2A33C;"></span><span style="background: #F2A33C;"></span><span style="background: rgba(242,163,60,.18);"></span></div>
+            <span class="mono" style="font-size: 17px; font-weight: 600; color: #F2A33C; line-height: 1;">2</span>
+            <span class="mono tick" style="color: rgba(245,239,226,.45);">ATQ</span>
+          </div>
+          <div class="mono tick cap" style="color: #F2A33C;">APROXIMA</div>
+        </div>
+        <div>
+          <div class="turn" style="background: rgba(255,107,74,.2); box-shadow: inset 0 0 0 1.5px #FF6B4A, 0 0 18px rgba(255,107,74,.45); animation: fast .8s ease-in-out infinite;">
+            <div class="segs"><span style="background: #FF6B4A;"></span><span style="background: rgba(255,107,74,.18);"></span><span style="background: rgba(255,107,74,.18);"></span></div>
+            <span class="mono" style="font-size: 17px; font-weight: 600; color: #FF6B4A; line-height: 1;">1</span>
+            <span class="mono tick" style="color: #FF6B4A;">ATQ</span>
+          </div>
+          <div class="mono tick cap" style="color: #FF6B4A;">IMINENTE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":700,"height":600}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

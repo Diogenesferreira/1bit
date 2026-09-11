@@ -1,8 +1,40 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3]
 [ext_resource type="Script" path="res://battle/views/card_view.gd" id="script"]
+[ext_resource type="Script" path="res://ui/atlas_panel.gd" id="panel"]
+[ext_resource type="PackedScene" path="res://ui/atlas_value.tscn" id="value"]
+[sub_resource type="StyleBoxFlat" id="selection"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 4
+border_width_right = 4
+border_width_top = 4
+border_width_bottom = 4
+border_color = Color(0.91, 0.99, 1, 1)
+draw_center = false
 [node name="CardView" type="Button"]
 offset_right = 150.0
 offset_bottom = 160.0
 focus_mode = 0
 flat = true
 script = ExtResource("script")
+
+[node name="Face" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+expand_mode = 1
+script = ExtResource("panel")
+
+[node name="Number" parent="." instance=ExtResource("value")]
+
+[node name="Selection" type="Panel" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("selection")

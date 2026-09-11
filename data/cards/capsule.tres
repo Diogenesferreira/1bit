@@ -18,5 +18,6 @@ script = ExtResource("script")
 kind = 5
 display_name = "Capsule"
 power = 5
+printed_power = 5
 artwork = SubResource("face")
 preview = SubResource("preview")

@@ -1,12 +1,35 @@
 [gd_scene format=3]
 [ext_resource type="Script" path="res://ui/bottom_navigation.gd" id="script"]
 [ext_resource type="Texture2D" path="res://assets/reference/ilha_digital_approved.png" id="atlas"]
+[ext_resource type="Script" path="res://ui/atlas_panel.gd" id="panel_script"]
+[ext_resource type="PackedScene" path="res://ui/atlas_value.tscn" id="value"]
+[ext_resource type="PackedScene" path="res://ui/atlas_gauge.tscn" id="gauge"]
 
 [sub_resource type="StyleBoxEmpty" id="empty"]
 
 [sub_resource type="AtlasTexture" id="panel"]
 atlas = ExtResource("atlas")
 region = Rect2(0, 1350, 1024, 186)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="navigation_0"]
+atlas = ExtResource("atlas")
+region = Rect2(6, 1359, 246, 166)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="navigation_1"]
+atlas = ExtResource("atlas")
+region = Rect2(262, 1359, 246, 166)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="navigation_2"]
+atlas = ExtResource("atlas")
+region = Rect2(518, 1359, 246, 166)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="navigation_3"]
+atlas = ExtResource("atlas")
+region = Rect2(774, 1359, 246, 166)
 filter_clip = true
 
 [node name="BottomNavigation" type="Control"]
@@ -22,6 +45,11 @@ mouse_filter = 2
 texture = SubResource("panel")
 expand_mode = 1
 show_behind_parent = true
+script = ExtResource("panel_script")
+clear_regions = Array[Rect2]([Rect2(6, 1359, 246, 166), Rect2(262, 1359, 246, 166), Rect2(518, 1359, 246, 166), Rect2(774, 1359, 246, 166)])
+
+[node name="Fields" type="Control" parent="."]
+mouse_filter = 2
 
 [node name="Buttons" type="Control" parent="."]
 mouse_filter = 2
@@ -41,6 +69,12 @@ theme_override_styles/disabled = SubResource("empty")
 theme_override_styles/focus = SubResource("empty")
 flat = true
 
+[node name="Artwork" type="TextureRect" parent="Buttons/Equipe"]
+offset_right = 246.0
+offset_bottom = 166.0
+mouse_filter = 2
+texture = SubResource("navigation_0")
+
 [node name="Invocacao" type="Button" parent="Buttons"]
 offset_left = 262.0
 offset_top = 9.0
@@ -55,6 +89,12 @@ theme_override_styles/pressed = SubResource("empty")
 theme_override_styles/disabled = SubResource("empty")
 theme_override_styles/focus = SubResource("empty")
 flat = true
+
+[node name="Artwork" type="TextureRect" parent="Buttons/Invocacao"]
+offset_right = 246.0
+offset_bottom = 166.0
+mouse_filter = 2
+texture = SubResource("navigation_1")
 
 [node name="Loja" type="Button" parent="Buttons"]
 offset_left = 518.0
@@ -71,6 +111,12 @@ theme_override_styles/disabled = SubResource("empty")
 theme_override_styles/focus = SubResource("empty")
 flat = true
 
+[node name="Artwork" type="TextureRect" parent="Buttons/Loja"]
+offset_right = 246.0
+offset_bottom = 166.0
+mouse_filter = 2
+texture = SubResource("navigation_2")
+
 [node name="Fases" type="Button" parent="Buttons"]
 offset_left = 774.0
 offset_top = 9.0
@@ -85,3 +131,9 @@ theme_override_styles/pressed = SubResource("empty")
 theme_override_styles/disabled = SubResource("empty")
 theme_override_styles/focus = SubResource("empty")
 flat = true
+
+[node name="Artwork" type="TextureRect" parent="Buttons/Fases"]
+offset_right = 246.0
+offset_bottom = 166.0
+mouse_filter = 2
+texture = SubResource("navigation_3")

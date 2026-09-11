@@ -1,6 +1,9 @@
 [gd_scene format=3]
 [ext_resource type="Script" path="res://battle/views/combat_hud.gd" id="script"]
 [ext_resource type="Texture2D" path="res://assets/reference/ilha_digital_approved.png" id="atlas"]
+[ext_resource type="Script" path="res://ui/atlas_panel.gd" id="panel_script"]
+[ext_resource type="PackedScene" path="res://ui/atlas_value.tscn" id="value"]
+[ext_resource type="PackedScene" path="res://ui/atlas_gauge.tscn" id="gauge"]
 
 [sub_resource type="StyleBoxEmpty" id="empty"]
 
@@ -22,3 +25,68 @@ mouse_filter = 2
 texture = SubResource("panel")
 expand_mode = 1
 show_behind_parent = true
+script = ExtResource("panel_script")
+clear_regions = Array[Rect2]([Rect2(281, 761, 133, 24), Rect2(807, 761, 147, 24), Rect2(646, 732, 163, 25), Rect2(464, 754, 109, 39), Rect2(88, 764, 186, 14), Rect2(646, 764, 155, 14)])
+
+[node name="Fields" type="Control" parent="."]
+mouse_filter = 2
+
+[node name="PartyHP" parent="Fields" instance=ExtResource("value")]
+offset_left = 281.0
+offset_top = 44.0
+offset_right = 414.0
+offset_bottom = 68.0
+source_region = Rect2(281, 761, 133, 24)
+reference_text = "2840 / 3200"
+font_size = 20
+font_color = Color(1, 1, 1, 1)
+
+[node name="EnemyHP" parent="Fields" instance=ExtResource("value")]
+offset_left = 807.0
+offset_top = 44.0
+offset_right = 954.0
+offset_bottom = 68.0
+source_region = Rect2(807, 761, 147, 24)
+reference_text = "1850 / 4000"
+font_size = 20
+font_color = Color(1, 1, 1, 1)
+
+[node name="Target" parent="Fields" instance=ExtResource("value")]
+offset_left = 646.0
+offset_top = 15.0
+offset_right = 809.0
+offset_bottom = 40.0
+source_region = Rect2(646, 732, 163, 25)
+reference_text = "CHEFE HP"
+font_size = 19
+font_color = Color(0.93, 0.14, 0.22, 1)
+
+[node name="Round" parent="Fields" instance=ExtResource("value")]
+offset_left = 464.0
+offset_top = 37.0
+offset_right = 573.0
+offset_bottom = 76.0
+source_region = Rect2(464, 754, 109, 39)
+reference_text = "3 / 3"
+font_size = 30
+font_color = Color(1, 1, 1, 1)
+
+[node name="PartyBar" parent="Fields" instance=ExtResource("gauge")]
+offset_left = 88.0
+offset_top = 47.0
+offset_right = 274.0
+offset_bottom = 61.0
+source_region = Rect2(88, 764, 186, 14)
+reference_value = 2840.0
+reference_max = 3200.0
+fill_color = Color(0.13, 0.84, 0.2, 1)
+
+[node name="EnemyBar" parent="Fields" instance=ExtResource("gauge")]
+offset_left = 646.0
+offset_top = 47.0
+offset_right = 801.0
+offset_bottom = 61.0
+source_region = Rect2(646, 764, 155, 14)
+reference_value = 1850.0
+reference_max = 4000.0
+fill_color = Color(0.93, 0.14, 0.22, 1)

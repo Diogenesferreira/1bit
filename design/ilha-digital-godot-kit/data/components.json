@@ -1,0 +1,2102 @@
+[
+ {
+  "file": "assets/background/visor_film_scanline_976x736.png",
+  "part": "visor_film_scanline",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 24,
+   "y": 232,
+   "w": 976,
+   "h": 736
+  },
+  "node_rect_1024": {
+   "x": 24,
+   "y": 232,
+   "w": 976,
+   "h": 736
+  },
+  "corner_radius_1024": 0.0,
+  "note": "camada 3: por cima do cenario e dos personagens"
+ },
+ {
+  "file": "assets/background/visor_film_vignette_976x736.png",
+  "part": "visor_film_vignette",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 24,
+   "y": 232,
+   "w": 976,
+   "h": 736
+  },
+  "node_rect_1024": {
+   "x": 24,
+   "y": 232,
+   "w": 976,
+   "h": 736
+  },
+  "corner_radius_1024": 0.0,
+  "note": "camada 3: por cima do scanline"
+ },
+ {
+  "file": "assets/hud/header/avatar_frame.png",
+  "part": "header_avatar",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 26,
+   "y": 18,
+   "w": 96,
+   "h": 96
+  },
+  "node_rect_1024": {
+   "x": 32,
+   "y": 24,
+   "w": 84,
+   "h": 84
+  },
+  "corner_radius_1024": 0.0,
+  "note": "moldura + cantoneiras; a foto vai por baixo"
+ },
+ {
+  "file": "assets/hud/header/avatar_placeholder.png",
+  "part": "header_avatar_img",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 32,
+   "y": 24,
+   "w": 84,
+   "h": 84
+  },
+  "node_rect_1024": {
+   "x": 32,
+   "y": 24,
+   "w": 84,
+   "h": 84
+  },
+  "corner_radius_1024": 24.0,
+  "note": "foto provisoria do jogador"
+ },
+ {
+  "file": "assets/hud/header/xp_bar_under.png",
+  "part": "header_xp_bar",
+  "state": "padrao",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 140,
+   "y": 86,
+   "w": 296,
+   "h": 8
+  },
+  "node_rect_1024": {
+   "x": 140,
+   "y": 87.0,
+   "w": 296,
+   "h": 8
+  },
+  "corner_radius_1024": 2.0,
+  "note": "TextureProgressBar esquerda->direita; segmentos ja desenhados"
+ },
+ {
+  "file": "assets/hud/header/xp_bar_progress.png",
+  "part": "header_xp_bar",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 140,
+   "y": 86,
+   "w": 296,
+   "h": 8
+  },
+  "node_rect_1024": {
+   "x": 140,
+   "y": 87.0,
+   "w": 296,
+   "h": 8
+  },
+  "corner_radius_1024": 2.0,
+  "note": "TextureProgressBar esquerda->direita; segmentos ja desenhados"
+ },
+ {
+  "file": "assets/hud/header/sync_dot.png",
+  "part": "header_sync_dot",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 848,
+   "y": 43,
+   "w": 46,
+   "h": 46
+  },
+  "node_rect_1024": {
+   "x": 873.2,
+   "y": 60,
+   "w": 12,
+   "h": 12
+  },
+  "corner_radius_1024": null,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/header/header_ref.png",
+  "part": "header",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 26,
+   "y": 18,
+   "w": 960,
+   "h": 96
+  },
+  "node_rect_1024": {
+   "x": 0,
+   "y": 0,
+   "w": 1024,
+   "h": 132
+  },
+  "corner_radius_1024": 0.0,
+  "note": "referencia com textos"
+ },
+ {
+  "file": "assets/hud/strip/strip_bg.png",
+  "part": "strip",
+  "state": "padrao",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 0,
+   "y": 132,
+   "w": 1024,
+   "h": 92
+  },
+  "node_rect_1024": {
+   "x": 0,
+   "y": 132,
+   "w": 1024,
+   "h": 92
+  },
+  "corner_radius_1024": 0.0,
+  "note": "faixa de instrumentos: fundo + linhas topo/base"
+ },
+ {
+  "file": "assets/hud/strip/strip_rule.png",
+  "part": "strip_rule_1",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 340,
+   "y": 148,
+   "w": 2,
+   "h": 54
+  },
+  "node_rect_1024": {
+   "x": 340,
+   "y": 148,
+   "w": 2,
+   "h": 60
+  },
+  "corner_radius_1024": 0.0,
+  "note": "divisor vertical tracejado"
+ },
+ {
+  "file": "assets/hud/strip/strip_ref.png",
+  "part": "strip",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 0,
+   "y": 132,
+   "w": 1024,
+   "h": 92
+  },
+  "node_rect_1024": {
+   "x": 0,
+   "y": 132,
+   "w": 1024,
+   "h": 92
+  },
+  "corner_radius_1024": 0.0,
+  "note": "referencia com textos"
+ },
+ {
+  "file": "assets/hud/visor/visor_frame.png",
+  "part": "visor",
+  "state": "padrao",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 0,
+   "y": 185,
+   "w": 1024,
+   "h": 870
+  },
+  "node_rect_1024": {
+   "x": 24,
+   "y": 232,
+   "w": 976,
+   "h": 736
+  },
+  "corner_radius_1024": 32.0,
+  "note": "contorno ambar interno + sombra externa; conteudo recortado em raio 32"
+ },
+ {
+  "file": "assets/hud/visor/visor_corner_tl.png",
+  "part": "visor_corner_tl",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 40,
+   "y": 248,
+   "w": 32,
+   "h": 32
+  },
+  "node_rect_1024": {
+   "x": 40,
+   "y": 248,
+   "w": 32,
+   "h": 32
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/visor/visor_corner_tr.png",
+  "part": "visor_corner_tr",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 952,
+   "y": 248,
+   "w": 32,
+   "h": 32
+  },
+  "node_rect_1024": {
+   "x": 952,
+   "y": 248,
+   "w": 32,
+   "h": 32
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/visor/visor_corner_bl.png",
+  "part": "visor_corner_bl",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 40,
+   "y": 920,
+   "w": 32,
+   "h": 32
+  },
+  "node_rect_1024": {
+   "x": 40,
+   "y": 920,
+   "w": 32,
+   "h": 32
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/visor/visor_corner_br.png",
+  "part": "visor_corner_br",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 952,
+   "y": 920,
+   "w": 32,
+   "h": 32
+  },
+  "node_rect_1024": {
+   "x": 952,
+   "y": 920,
+   "w": 32,
+   "h": 32
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/visor/visor_sector_ref.png",
+  "part": "visor_sector",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 76,
+   "y": 249,
+   "w": 263,
+   "h": 31
+  },
+  "node_rect_1024": {
+   "x": 84,
+   "y": 254,
+   "w": 200.1,
+   "h": 16
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/visor/visor_round_ref.png",
+  "part": "visor_round",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 834,
+   "y": 250,
+   "w": 114,
+   "h": 56
+  },
+  "node_rect_1024": {
+   "x": 861.7,
+   "y": 252,
+   "w": 78.3,
+   "h": 47.6
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/visor/aim_chefe.png",
+  "part": "visor_aim",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 610,
+   "y": 281,
+   "w": 312,
+   "h": 312
+  },
+  "node_rect_1024": {
+   "x": 610,
+   "y": 281.0,
+   "w": 312,
+   "h": 312
+  },
+  "corner_radius_1024": 0.0,
+  "note": "mira no chefe (E1)"
+ },
+ {
+  "file": "assets/hud/visor/aim_inimigo.png",
+  "part": "visor_aim",
+  "state": "alvo_inimigo",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 513,
+   "y": 641,
+   "w": 234,
+   "h": 234
+  },
+  "node_rect_1024": {
+   "x": 513.0,
+   "y": 641.0,
+   "w": 234,
+   "h": 234
+  },
+  "corner_radius_1024": 0.0,
+  "note": "mira em E2/E3"
+ },
+ {
+  "file": "assets/hud/visor/aim_chefe_sozinho.png",
+  "part": "visor_aim",
+  "state": "chefe_sozinho",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 518,
+   "y": 395,
+   "w": 416,
+   "h": 416
+  },
+  "node_rect_1024": {
+   "x": 518,
+   "y": 395.0,
+   "w": 416,
+   "h": 416
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/stage/ring_A1_under.png",
+  "part": "stage_ring_A1",
+  "state": "padrao",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 97,
+   "y": 545,
+   "w": 146,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 90.4,
+   "y": 538,
+   "w": 160,
+   "h": 64
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A1_progress.png",
+  "part": "stage_ring_A1",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 97,
+   "y": 545,
+   "w": 146,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 90.4,
+   "y": 538,
+   "w": 160,
+   "h": 64
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A1_over.png",
+  "part": "stage_ring_A1",
+  "state": "padrao",
+  "mode": "over",
+  "texture_rect_1024": {
+   "x": 97,
+   "y": 545,
+   "w": 146,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 90.4,
+   "y": 538,
+   "w": 160,
+   "h": 64
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A2_under.png",
+  "part": "stage_ring_A2",
+  "state": "padrao",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 314,
+   "y": 517,
+   "w": 142,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 307.1,
+   "y": 510,
+   "w": 156,
+   "h": 64
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A2_progress.png",
+  "part": "stage_ring_A2",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 314,
+   "y": 517,
+   "w": 142,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 307.1,
+   "y": 510,
+   "w": 156,
+   "h": 64
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A2_over.png",
+  "part": "stage_ring_A2",
+  "state": "padrao",
+  "mode": "over",
+  "texture_rect_1024": {
+   "x": 314,
+   "y": 517,
+   "w": 142,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 307.1,
+   "y": 510,
+   "w": 156,
+   "h": 64
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A3_under.png",
+  "part": "stage_ring_A3",
+  "state": "padrao",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 201,
+   "y": 683,
+   "w": 154,
+   "h": 54
+  },
+  "node_rect_1024": {
+   "x": 193.8,
+   "y": 676,
+   "w": 168,
+   "h": 68
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A3_progress.png",
+  "part": "stage_ring_A3",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 201,
+   "y": 683,
+   "w": 154,
+   "h": 54
+  },
+  "node_rect_1024": {
+   "x": 193.8,
+   "y": 676,
+   "w": 168,
+   "h": 68
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A3_over.png",
+  "part": "stage_ring_A3",
+  "state": "padrao",
+  "mode": "over",
+  "texture_rect_1024": {
+   "x": 201,
+   "y": 683,
+   "w": 154,
+   "h": 54
+  },
+  "node_rect_1024": {
+   "x": 193.8,
+   "y": 676,
+   "w": 168,
+   "h": 68
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A4_under.png",
+  "part": "stage_ring_A4",
+  "state": "padrao",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 58,
+   "y": 865,
+   "w": 166,
+   "h": 58
+  },
+  "node_rect_1024": {
+   "x": 51.1,
+   "y": 858,
+   "w": 180,
+   "h": 72
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A4_progress.png",
+  "part": "stage_ring_A4",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 58,
+   "y": 865,
+   "w": 166,
+   "h": 58
+  },
+  "node_rect_1024": {
+   "x": 51.1,
+   "y": 858,
+   "w": 180,
+   "h": 72
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A4_over.png",
+  "part": "stage_ring_A4",
+  "state": "padrao",
+  "mode": "over",
+  "texture_rect_1024": {
+   "x": 58,
+   "y": 865,
+   "w": 166,
+   "h": 58
+  },
+  "node_rect_1024": {
+   "x": 51.1,
+   "y": 858,
+   "w": 180,
+   "h": 72
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A5_under.png",
+  "part": "stage_ring_A5",
+  "state": "padrao",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 331,
+   "y": 873,
+   "w": 166,
+   "h": 58
+  },
+  "node_rect_1024": {
+   "x": 324.4,
+   "y": 866,
+   "w": 180,
+   "h": 72
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A5_progress.png",
+  "part": "stage_ring_A5",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 331,
+   "y": 873,
+   "w": 166,
+   "h": 58
+  },
+  "node_rect_1024": {
+   "x": 324.4,
+   "y": 866,
+   "w": 180,
+   "h": 72
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_A5_over.png",
+  "part": "stage_ring_A5",
+  "state": "padrao",
+  "mode": "over",
+  "texture_rect_1024": {
+   "x": 331,
+   "y": 873,
+   "w": 166,
+   "h": 58
+  },
+  "node_rect_1024": {
+   "x": 324.4,
+   "y": 866,
+   "w": 180,
+   "h": 72
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_E1_under.png",
+  "part": "stage_ring_E1",
+  "state": "padrao",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 647,
+   "y": 561,
+   "w": 238,
+   "h": 78
+  },
+  "node_rect_1024": {
+   "x": 639.8,
+   "y": 554,
+   "w": 252,
+   "h": 92
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_E1_progress.png",
+  "part": "stage_ring_E1",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 647,
+   "y": 561,
+   "w": 238,
+   "h": 78
+  },
+  "node_rect_1024": {
+   "x": 639.8,
+   "y": 554,
+   "w": 252,
+   "h": 92
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_E1_over.png",
+  "part": "stage_ring_E1",
+  "state": "padrao",
+  "mode": "over",
+  "texture_rect_1024": {
+   "x": 647,
+   "y": 561,
+   "w": 238,
+   "h": 78
+  },
+  "node_rect_1024": {
+   "x": 639.8,
+   "y": 554,
+   "w": 252,
+   "h": 92
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_E2_under.png",
+  "part": "stage_ring_E2",
+  "state": "padrao",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 538,
+   "y": 849,
+   "w": 182,
+   "h": 62
+  },
+  "node_rect_1024": {
+   "x": 531.1,
+   "y": 842,
+   "w": 196,
+   "h": 76
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_E2_progress.png",
+  "part": "stage_ring_E2",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 538,
+   "y": 849,
+   "w": 182,
+   "h": 62
+  },
+  "node_rect_1024": {
+   "x": 531.1,
+   "y": 842,
+   "w": 196,
+   "h": 76
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_E2_over.png",
+  "part": "stage_ring_E2",
+  "state": "padrao",
+  "mode": "over",
+  "texture_rect_1024": {
+   "x": 538,
+   "y": 849,
+   "w": 182,
+   "h": 62
+  },
+  "node_rect_1024": {
+   "x": 531.1,
+   "y": 842,
+   "w": 196,
+   "h": 76
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_E3_under.png",
+  "part": "stage_ring_E3",
+  "state": "padrao",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 782,
+   "y": 863,
+   "w": 182,
+   "h": 62
+  },
+  "node_rect_1024": {
+   "x": 775.1,
+   "y": 856,
+   "w": 196,
+   "h": 76
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_E3_progress.png",
+  "part": "stage_ring_E3",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 782,
+   "y": 863,
+   "w": 182,
+   "h": 62
+  },
+  "node_rect_1024": {
+   "x": 775.1,
+   "y": 856,
+   "w": 196,
+   "h": 76
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_E3_over.png",
+  "part": "stage_ring_E3",
+  "state": "padrao",
+  "mode": "over",
+  "texture_rect_1024": {
+   "x": 782,
+   "y": 863,
+   "w": 182,
+   "h": 62
+  },
+  "node_rect_1024": {
+   "x": 775.1,
+   "y": 856,
+   "w": 196,
+   "h": 76
+  },
+  "corner_radius_1024": 0.0,
+  "note": "TextureProgressBar radial horario, angulo inicial 90; progress branco + tint_progress"
+ },
+ {
+  "file": "assets/hud/stage/ring_BOSS_under.png",
+  "part": "stage_ring_BOSS",
+  "state": "chefe_sozinho",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 570,
+   "y": 769,
+   "w": 314,
+   "h": 102
+  },
+  "node_rect_1024": {
+   "x": 562.7,
+   "y": 762,
+   "w": 328,
+   "h": 116
+  },
+  "corner_radius_1024": 0.0,
+  "note": "anel do chefe sozinho"
+ },
+ {
+  "file": "assets/hud/stage/ring_BOSS_progress.png",
+  "part": "stage_ring_BOSS",
+  "state": "chefe_sozinho",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 570,
+   "y": 769,
+   "w": 314,
+   "h": 102
+  },
+  "node_rect_1024": {
+   "x": 562.7,
+   "y": 762,
+   "w": 328,
+   "h": 116
+  },
+  "corner_radius_1024": 0.0,
+  "note": "anel do chefe sozinho"
+ },
+ {
+  "file": "assets/hud/stage/ring_BOSS_over.png",
+  "part": "stage_ring_BOSS",
+  "state": "chefe_sozinho",
+  "mode": "over",
+  "texture_rect_1024": {
+   "x": 570,
+   "y": 769,
+   "w": 314,
+   "h": 102
+  },
+  "node_rect_1024": {
+   "x": 562.7,
+   "y": 762,
+   "w": 328,
+   "h": 116
+  },
+  "corner_radius_1024": 0.0,
+  "note": "anel do chefe sozinho"
+ },
+ {
+  "file": "assets/hud/stage/chip_ally_box.png",
+  "part": "chip_A1",
+  "state": "padrao",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 114,
+   "y": 586,
+   "w": 112,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 125.5,
+   "y": 592,
+   "w": 89.8,
+   "h": 30
+  },
+  "corner_radius_1024": 16.0,
+  "note": "pilula 9-slice do chip de aliado"
+ },
+ {
+  "file": "assets/hud/stage/chip_enemy_box.png",
+  "part": "chip_E2",
+  "state": "padrao",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 542,
+   "y": 902,
+   "w": 174,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 553.8,
+   "y": 908,
+   "w": 150.5,
+   "h": 30
+  },
+  "corner_radius_1024": 16.0,
+  "note": "pilula 9-slice do chip de inimigo"
+ },
+ {
+  "file": "assets/hud/stage/chip_frame_target.png",
+  "part": "chip_E1",
+  "state": "alvo_chefe",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 667,
+   "y": 612,
+   "w": 198,
+   "h": 78
+  },
+  "node_rect_1024": {
+   "x": 690.5,
+   "y": 636,
+   "w": 150.5,
+   "h": 30
+  },
+  "corner_radius_1024": 16.0,
+  "note": "chip do inimigo selecionado (anel vermelho)"
+ },
+ {
+  "file": "assets/hud/stage/chip_frame_ready.png",
+  "part": "chip_A3",
+  "state": "skill_pronta",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 177,
+   "y": 710,
+   "w": 202,
+   "h": 78
+  },
+  "node_rect_1024": {
+   "x": 205.7,
+   "y": 734,
+   "w": 144.2,
+   "h": 30
+  },
+  "corner_radius_1024": 16.0,
+  "note": "chip do aliado com skill pronta (anel ambar)"
+ },
+ {
+  "file": "assets/hud/stage/chip_ally_ref.png",
+  "part": "chip_A1",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 114,
+   "y": 586,
+   "w": 112,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 125.5,
+   "y": 592,
+   "w": 89.8,
+   "h": 30
+  },
+  "corner_radius_1024": 16.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/stage/chip_ally_ready_ref.png",
+  "part": "chip_A3",
+  "state": "skill_pronta",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 177,
+   "y": 710,
+   "w": 202,
+   "h": 78
+  },
+  "node_rect_1024": {
+   "x": 205.7,
+   "y": 734,
+   "w": 144.2,
+   "h": 30
+  },
+  "corner_radius_1024": 16.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/stage/chip_enemy_ref.png",
+  "part": "chip_E3",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 786,
+   "y": 916,
+   "w": 174,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 797.8,
+   "y": 922,
+   "w": 150.5,
+   "h": 30
+  },
+  "corner_radius_1024": 16.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/stage/chip_enemy_imminent_ref.png",
+  "part": "chip_E2",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 542,
+   "y": 902,
+   "w": 174,
+   "h": 50
+  },
+  "node_rect_1024": {
+   "x": 553.8,
+   "y": 908,
+   "w": 150.5,
+   "h": 30
+  },
+  "corner_radius_1024": 16.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/stage/chip_turn_amber_ref.png",
+  "part": "chip_turn_E1",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 779,
+   "y": 645,
+   "w": 53,
+   "h": 12
+  },
+  "node_rect_1024": {
+   "x": 780.3,
+   "y": 643.0,
+   "w": 50.7,
+   "h": 16
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/stage/chip_turn_red_ref.png",
+  "part": "chip_turn_E2",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 643,
+   "y": 917,
+   "w": 53,
+   "h": 12
+  },
+  "node_rect_1024": {
+   "x": 643.6,
+   "y": 915.0,
+   "w": 50.7,
+   "h": 16
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/popup/popup_target_box.png",
+  "part": "popup_target",
+  "state": "alvo_inimigo",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 414,
+   "y": 466,
+   "w": 432,
+   "h": 232
+  },
+  "node_rect_1024": {
+   "x": 458,
+   "y": 498,
+   "w": 344,
+   "h": 146
+  },
+  "corner_radius_1024": 16.0,
+  "note": "painel 9-slice"
+ },
+ {
+  "file": "assets/hud/popup/popup_target_arrow_down.png",
+  "part": "popup_target_arrow",
+  "state": "alvo_inimigo",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 617,
+   "y": 630,
+   "w": 26,
+   "h": 29
+  },
+  "node_rect_1024": {
+   "x": 617.3,
+   "y": 632.3,
+   "w": 25.5,
+   "h": 25.5
+  },
+  "corner_radius_1024": 0.0,
+  "note": "seta quando o pop-up abre ACIMA do alvo"
+ },
+ {
+  "file": "assets/hud/popup/popup_target_arrow_right.png",
+  "part": "popup_target_arrow",
+  "state": "alvo_chefe",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 610,
+   "y": 344,
+   "w": 29,
+   "h": 26
+  },
+  "node_rect_1024": {
+   "x": 610.3,
+   "y": 344.3,
+   "w": 25.5,
+   "h": 25.5
+  },
+  "corner_radius_1024": 0.0,
+  "note": "seta quando o pop-up abre AO LADO do alvo"
+ },
+ {
+  "file": "assets/hud/popup/popup_hp_under.png",
+  "part": "popup_target_hp_bar",
+  "state": "alvo_inimigo",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 478,
+   "y": 572,
+   "w": 304,
+   "h": 10
+  },
+  "node_rect_1024": {
+   "x": 478,
+   "y": 574,
+   "w": 304,
+   "h": 10
+  },
+  "corner_radius_1024": 2.0,
+  "note": "barra de vida do pop-up"
+ },
+ {
+  "file": "assets/hud/popup/popup_hp_progress.png",
+  "part": "popup_target_hp_bar",
+  "state": "alvo_inimigo",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 478,
+   "y": 572,
+   "w": 304,
+   "h": 10
+  },
+  "node_rect_1024": {
+   "x": 478,
+   "y": 574,
+   "w": 304,
+   "h": 10
+  },
+  "corner_radius_1024": 2.0,
+  "note": "barra de vida do pop-up"
+ },
+ {
+  "file": "assets/hud/popup/popup_turn_box_amber.png",
+  "part": "popup_target_turn",
+  "state": "alvo_chefe",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 471,
+   "y": 384,
+   "w": 131,
+   "h": 30
+  },
+  "node_rect_1024": {
+   "x": 480,
+   "y": 386,
+   "w": 122,
+   "h": 30
+  },
+  "corner_radius_1024": 8.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/popup/popup_turn_box_red.png",
+  "part": "popup_target_turn",
+  "state": "alvo_inimigo",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 651,
+   "y": 594,
+   "w": 131,
+   "h": 30
+  },
+  "node_rect_1024": {
+   "x": 660,
+   "y": 596,
+   "w": 122,
+   "h": 30
+  },
+  "corner_radius_1024": 8.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/popup/popup_target_ref_acima.png",
+  "part": "popup_target",
+  "state": "alvo_inimigo",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 414,
+   "y": 466,
+   "w": 432,
+   "h": 232
+  },
+  "node_rect_1024": {
+   "x": 458,
+   "y": 498,
+   "w": 344,
+   "h": 146
+  },
+  "corner_radius_1024": 16.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/popup/popup_target_ref_lado.png",
+  "part": "popup_target",
+  "state": "alvo_chefe",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 234,
+   "y": 256,
+   "w": 432,
+   "h": 232
+  },
+  "node_rect_1024": {
+   "x": 278,
+   "y": 288,
+   "w": 344,
+   "h": 146
+  },
+  "corner_radius_1024": 16.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/team/team_hp_under.png",
+  "part": "team_hp_bar",
+  "state": "padrao",
+  "mode": "under",
+  "texture_rect_1024": {
+   "x": 141,
+   "y": 997,
+   "w": 587,
+   "h": 12
+  },
+  "node_rect_1024": {
+   "x": 122.3,
+   "y": 997.0,
+   "w": 642.2,
+   "h": 12
+  },
+  "corner_radius_1024": 2.0,
+  "note": "acima de 40% menta, 40-20% ambar, abaixo de 20% vermelho"
+ },
+ {
+  "file": "assets/hud/team/team_hp_progress.png",
+  "part": "team_hp_bar",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 141,
+   "y": 997,
+   "w": 587,
+   "h": 12
+  },
+  "node_rect_1024": {
+   "x": 122.3,
+   "y": 997.0,
+   "w": 642.2,
+   "h": 12
+  },
+  "corner_radius_1024": 2.0,
+  "note": "acima de 40% menta, 40-20% ambar, abaixo de 20% vermelho"
+ },
+ {
+  "file": "assets/hud/team/team_hp_progress_mint.png",
+  "part": "team_hp_bar",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 141,
+   "y": 997,
+   "w": 587,
+   "h": 12
+  },
+  "node_rect_1024": {
+   "x": 122.3,
+   "y": 997.0,
+   "w": 642.2,
+   "h": 12
+  },
+  "corner_radius_1024": 2.0,
+  "note": "acima de 40% menta, 40-20% ambar, abaixo de 20% vermelho"
+ },
+ {
+  "file": "assets/hud/team/team_hp_progress_amber.png",
+  "part": "team_hp_bar",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 141,
+   "y": 997,
+   "w": 587,
+   "h": 12
+  },
+  "node_rect_1024": {
+   "x": 122.3,
+   "y": 997.0,
+   "w": 642.2,
+   "h": 12
+  },
+  "corner_radius_1024": 2.0,
+  "note": "acima de 40% menta, 40-20% ambar, abaixo de 20% vermelho"
+ },
+ {
+  "file": "assets/hud/team/team_hp_progress_red.png",
+  "part": "team_hp_bar",
+  "state": "padrao",
+  "mode": "progress",
+  "texture_rect_1024": {
+   "x": 141,
+   "y": 997,
+   "w": 587,
+   "h": 12
+  },
+  "node_rect_1024": {
+   "x": 122.3,
+   "y": 997.0,
+   "w": 642.2,
+   "h": 12
+  },
+  "corner_radius_1024": 2.0,
+  "note": "acima de 40% menta, 40-20% ambar, abaixo de 20% vermelho"
+ },
+ {
+  "file": "assets/hud/team/team_ref.png",
+  "part": "team",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 25,
+   "y": 984,
+   "w": 975,
+   "h": 38
+  },
+  "node_rect_1024": {
+   "x": 24,
+   "y": 984,
+   "w": 976,
+   "h": 38
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/bank/bank_rule.png",
+  "part": "bank_rule",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 176,
+   "y": 1058,
+   "w": 603,
+   "h": 2
+  },
+  "node_rect_1024": {
+   "x": 165.5,
+   "y": 1058,
+   "w": 621.7,
+   "h": 2
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/bank/bank_combo_off.png",
+  "part": "bank_combo",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 94,
+   "y": 1050,
+   "w": 66,
+   "h": 18
+  },
+  "node_rect_1024": {
+   "x": 83.5,
+   "y": 1050,
+   "w": 66,
+   "h": 18
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/bank/bank_combo_2of3.png",
+  "part": "bank_combo",
+  "state": "cartas_selecionadas",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 94,
+   "y": 1050,
+   "w": 66,
+   "h": 18
+  },
+  "node_rect_1024": {
+   "x": 83.5,
+   "y": 1050,
+   "w": 66,
+   "h": 18
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/bank/bank_header_ref.png",
+  "part": "bank_header",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 25,
+   "y": 1040,
+   "w": 975,
+   "h": 38
+  },
+  "node_rect_1024": {
+   "x": 24,
+   "y": 1040,
+   "w": 976,
+   "h": 38
+  },
+  "corner_radius_1024": 0.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/toast/toast_amber_ref.png",
+  "part": "toast",
+  "state": "alertas",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 317,
+   "y": 867,
+   "w": 389,
+   "h": 149
+  },
+  "node_rect_1024": {
+   "x": 390.1,
+   "y": 904,
+   "w": 243.8,
+   "h": 50
+  },
+  "corner_radius_1024": 14.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/toast/toast_red_ref.png",
+  "part": "toast",
+  "state": "aviso_vermelho",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 220,
+   "y": 867,
+   "w": 584,
+   "h": 149
+  },
+  "node_rect_1024": {
+   "x": 312.8,
+   "y": 904,
+   "w": 398.4,
+   "h": 50
+  },
+  "corner_radius_1024": 14.0,
+  "note": ""
+ },
+ {
+  "file": "assets/hud/toast/toast_mint_ref.png",
+  "part": "toast",
+  "state": "aviso_menta",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 373,
+   "y": 867,
+   "w": 278,
+   "h": 149
+  },
+  "node_rect_1024": {
+   "x": 434.3,
+   "y": 904,
+   "w": 155.4,
+   "h": 50
+  },
+  "corner_radius_1024": 14.0,
+  "note": ""
+ },
+ {
+  "file": "assets/buttons/button_nav_normal.png",
+  "part": "button_nav_equipe",
+  "state": "padrao",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 24,
+   "y": 1479,
+   "w": 232,
+   "h": 101
+  },
+  "node_rect_1024": {
+   "x": 24,
+   "y": 1480,
+   "w": 232,
+   "h": 100
+  },
+  "corner_radius_1024": 18.0,
+  "note": "EQUIPE / INVOCAR / LOJA"
+ },
+ {
+  "file": "assets/buttons/button_nav_primary.png",
+  "part": "button_nav_fases",
+  "state": "padrao",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 734,
+   "y": 1453,
+   "w": 290,
+   "h": 147
+  },
+  "node_rect_1024": {
+   "x": 768,
+   "y": 1480,
+   "w": 232,
+   "h": 100
+  },
+  "corner_radius_1024": 18.0,
+  "note": "FASES (botao principal)"
+ },
+ {
+  "file": "assets/buttons/button_nav_equipe_ref.png",
+  "part": "button_nav_equipe",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 24,
+   "y": 1479,
+   "w": 232,
+   "h": 101
+  },
+  "node_rect_1024": {
+   "x": 24,
+   "y": 1480,
+   "w": 232,
+   "h": 100
+  },
+  "corner_radius_1024": 18.0,
+  "note": ""
+ },
+ {
+  "file": "assets/buttons/button_nav_invocar_ref.png",
+  "part": "button_nav_invocar",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 272,
+   "y": 1479,
+   "w": 232,
+   "h": 101
+  },
+  "node_rect_1024": {
+   "x": 272,
+   "y": 1480,
+   "w": 232,
+   "h": 100
+  },
+  "corner_radius_1024": 18.0,
+  "note": ""
+ },
+ {
+  "file": "assets/buttons/button_nav_loja_ref.png",
+  "part": "button_nav_loja",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 520,
+   "y": 1479,
+   "w": 232,
+   "h": 101
+  },
+  "node_rect_1024": {
+   "x": 520,
+   "y": 1480,
+   "w": 232,
+   "h": 100
+  },
+  "corner_radius_1024": 18.0,
+  "note": ""
+ },
+ {
+  "file": "assets/buttons/button_nav_fases_ref.png",
+  "part": "button_nav_fases",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 734,
+   "y": 1453,
+   "w": 290,
+   "h": 147
+  },
+  "node_rect_1024": {
+   "x": 768,
+   "y": 1480,
+   "w": 232,
+   "h": 100
+  },
+  "corner_radius_1024": 18.0,
+  "note": ""
+ },
+ {
+  "file": "assets/buttons/button_leader_normal.png",
+  "part": "button_leader",
+  "state": "padrao",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 888,
+   "y": 984,
+   "w": 112,
+   "h": 38
+  },
+  "node_rect_1024": {
+   "x": 898.5,
+   "y": 984,
+   "w": 101.5,
+   "h": 38
+  },
+  "corner_radius_1024": 10.0,
+  "note": ""
+ },
+ {
+  "file": "assets/buttons/button_leader_active.png",
+  "part": "button_leader",
+  "state": "cartas_selecionadas",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 856,
+   "y": 984,
+   "w": 144,
+   "h": 38
+  },
+  "node_rect_1024": {
+   "x": 872.4,
+   "y": 984,
+   "w": 127.6,
+   "h": 38
+  },
+  "corner_radius_1024": 10.0,
+  "note": ""
+ },
+ {
+  "file": "assets/buttons/button_leader_cooldown.png",
+  "part": "button_leader",
+  "state": "alertas",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 899,
+   "y": 984,
+   "w": 101,
+   "h": 38
+  },
+  "node_rect_1024": {
+   "x": 907.2,
+   "y": 984,
+   "w": 92.8,
+   "h": 38
+  },
+  "corner_radius_1024": 10.0,
+  "note": ""
+ },
+ {
+  "file": "assets/buttons/button_leader_normal_ref.png",
+  "part": "button_leader",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 888,
+   "y": 984,
+   "w": 112,
+   "h": 38
+  },
+  "node_rect_1024": {
+   "x": 898.5,
+   "y": 984,
+   "w": 101.5,
+   "h": 38
+  },
+  "corner_radius_1024": 10.0,
+  "note": ""
+ },
+ {
+  "file": "assets/buttons/button_leader_active_ref.png",
+  "part": "button_leader",
+  "state": "cartas_selecionadas",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 856,
+   "y": 984,
+   "w": 144,
+   "h": 38
+  },
+  "node_rect_1024": {
+   "x": 872.4,
+   "y": 984,
+   "w": 127.6,
+   "h": 38
+  },
+  "corner_radius_1024": 10.0,
+  "note": ""
+ },
+ {
+  "file": "assets/buttons/button_leader_cooldown_ref.png",
+  "part": "button_leader",
+  "state": "alertas",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 899,
+   "y": 984,
+   "w": 101,
+   "h": 38
+  },
+  "node_rect_1024": {
+   "x": 907.2,
+   "y": 984,
+   "w": 92.8,
+   "h": 38
+  },
+  "corner_radius_1024": 10.0,
+  "note": ""
+ },
+ {
+  "file": "assets/cards/card_frame_selected.png",
+  "part": "card_slot_1",
+  "state": "cartas_selecionadas",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 0,
+   "y": 1040,
+   "w": 221,
+   "h": 270
+  },
+  "node_rect_1024": {
+   "x": 24,
+   "y": 1084,
+   "w": 152.7,
+   "h": 176.8
+  },
+  "corner_radius_1024": 18.0,
+  "note": "anel ambar da carta selecionada (a carta sobe 10px)"
+ },
+ {
+  "file": "assets/cards/card_slot_selected_ref.png",
+  "part": "card_slot_1",
+  "state": "cartas_selecionadas",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 0,
+   "y": 1040,
+   "w": 221,
+   "h": 270
+  },
+  "node_rect_1024": {
+   "x": 24,
+   "y": 1084,
+   "w": 152.7,
+   "h": 176.8
+  },
+  "corner_radius_1024": 18.0,
+  "note": ""
+ },
+ {
+  "file": "assets/cards/card_slot_ref.png",
+  "part": "card_slot_2",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 173,
+   "y": 1084,
+   "w": 184,
+   "h": 209
+  },
+  "node_rect_1024": {
+   "x": 188.7,
+   "y": 1094,
+   "w": 152.7,
+   "h": 176.8
+  },
+  "corner_radius_1024": 18.0,
+  "note": ""
+ },
+ {
+  "file": "assets/icons/elements/badge_dragon.png",
+  "part": "chip_badge_A1",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 124,
+   "y": 592,
+   "w": 31,
+   "h": 30
+  },
+  "node_rect_1024": {
+   "x": 127.5,
+   "y": 594,
+   "w": 26,
+   "h": 26
+  },
+  "corner_radius_1024": null,
+  "note": "selo redondo do chip (13pt)"
+ },
+ {
+  "file": "assets/icons/elements/badge_dark.png",
+  "part": "chip_badge_A2",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 339,
+   "y": 564,
+   "w": 31,
+   "h": 30
+  },
+  "node_rect_1024": {
+   "x": 342.2,
+   "y": 566,
+   "w": 26,
+   "h": 26
+  },
+  "corner_radius_1024": null,
+  "note": "selo redondo do chip (13pt)"
+ },
+ {
+  "file": "assets/icons/elements/badge_knight.png",
+  "part": "chip_badge_A3",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 232,
+   "y": 734,
+   "w": 31,
+   "h": 30
+  },
+  "node_rect_1024": {
+   "x": 234.9,
+   "y": 736,
+   "w": 26,
+   "h": 26
+  },
+  "corner_radius_1024": null,
+  "note": "selo redondo do chip (13pt)"
+ },
+ {
+  "file": "assets/icons/elements/badge_light.png",
+  "part": "chip_badge_A4",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 95,
+   "y": 920,
+   "w": 31,
+   "h": 30
+  },
+  "node_rect_1024": {
+   "x": 98.2,
+   "y": 922,
+   "w": 26,
+   "h": 26
+  },
+  "corner_radius_1024": null,
+  "note": "selo redondo do chip (13pt)"
+ },
+ {
+  "file": "assets/icons/elements/badge_nature.png",
+  "part": "chip_badge_A5",
+  "state": "padrao",
+  "mode": "completo",
+  "texture_rect_1024": {
+   "x": 368,
+   "y": 928,
+   "w": 31,
+   "h": 30
+  },
+  "node_rect_1024": {
+   "x": 371.5,
+   "y": 930,
+   "w": 26,
+   "h": 26
+  },
+  "corner_radius_1024": null,
+  "note": "selo redondo do chip (13pt)"
+ },
+ {
+  "file": "assets/hud/toast/toast_box_amber.png",
+  "part": "toast",
+  "state": "alertas",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 317,
+   "y": 867,
+   "w": 389,
+   "h": 149
+  },
+  "node_rect_1024": {
+   "x": 390.1,
+   "y": 904,
+   "w": 243.8,
+   "h": 50
+  },
+  "corner_radius_1024": 14.0,
+  "note": "caixa 9-slice do aviso"
+ },
+ {
+  "file": "assets/hud/toast/toast_box_red.png",
+  "part": "toast",
+  "state": "aviso_vermelho",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 220,
+   "y": 867,
+   "w": 584,
+   "h": 149
+  },
+  "node_rect_1024": {
+   "x": 312.8,
+   "y": 904,
+   "w": 398.4,
+   "h": 50
+  },
+  "corner_radius_1024": 14.0,
+  "note": "caixa 9-slice do aviso"
+ },
+ {
+  "file": "assets/hud/toast/toast_box_mint.png",
+  "part": "toast",
+  "state": "aviso_menta",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 373,
+   "y": 867,
+   "w": 278,
+   "h": 149
+  },
+  "node_rect_1024": {
+   "x": 434.3,
+   "y": 904,
+   "w": 155.4,
+   "h": 50
+  },
+  "corner_radius_1024": 14.0,
+  "note": "caixa 9-slice do aviso"
+ },
+ {
+  "file": "assets/cards/card_order_badge.png",
+  "part": "card_order_1",
+  "state": "cartas_selecionadas",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 143,
+   "y": 1092,
+   "w": 28,
+   "h": 28
+  },
+  "node_rect_1024": {
+   "x": 142.7,
+   "y": 1092,
+   "w": 28,
+   "h": 28
+  },
+  "corner_radius_1024": 8.0,
+  "note": "selo do indice do combo"
+ },
+ {
+  "file": "assets/cards/card_value_plate.png",
+  "part": "card_value_1",
+  "state": "padrao",
+  "mode": "caixa",
+  "texture_rect_1024": {
+   "x": 34,
+   "y": 1232,
+   "w": 33,
+   "h": 31
+  },
+  "node_rect_1024": {
+   "x": 36,
+   "y": 1234.8,
+   "w": 26.5,
+   "h": 26
+  },
+  "corner_radius_1024": 8.0,
+  "note": "placa do numero de poder"
+ }
+]

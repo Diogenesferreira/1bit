@@ -12,7 +12,15 @@ func _ready() -> void:
 	controller.message_changed.connect($AttackBoard.show_message)
 	controller.battle_finished.connect(_on_battle_finished)
 	$BottomNavigation.navigation_requested.connect(_navigate)
-	# Não redesenha os números da composição aprovada na abertura.
+	_render()
+	$AttackBoard.show_message("3 CARTAS = COMBO | INIMIGOS EM 3")
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_Z:
+			controller.undo_selection()
+		elif event.keycode == KEY_F6:
+			controller.load_test_hand()
 
 func _render() -> void:
 	$AttackBoard.render(controller.state, controller.definitions)
