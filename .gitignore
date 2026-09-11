@@ -3,5 +3,7 @@ build/
 output/
 *.tmp
 design/ilha-digital-godot-kit.zip
+docs/ilha-digital-godot-kit.zip
+docs/ilha-digital-godot-kit/
 __pycache__/
 *.pyc

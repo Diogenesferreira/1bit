@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 
 HERE = Path(__file__).resolve().parent
 SCREEN = HERE.parent
-KIT = SCREEN.parent / "ilha-digital-godot-kit"
+KIT = SCREEN.parent.parent / "docs" / "ilha-digital-godot-kit"
 DATA = KIT / "data"
 DOCS = KIT / "docs"
 
@@ -43,9 +43,9 @@ PALETTE = {
         "dragon": {"mid": "#7E3223", "dark": "#24110B", "glow": "#C0573F", "tint": "#EDB9A9"},
         "knight": {"mid": "#2E587C", "dark": "#0E1A26", "glow": "#4F88B6", "tint": "#C8DBEA"},
         "nature": {"mid": "#3A6536", "dark": "#111D10", "glow": "#5E9A56", "tint": "#CDE3C5"},
-        "light": {"mid": "#86692A", "dark": "#241C0B", "glow": "#C49E45", "tint": "#EEDDAE"},
+        "light": {"mid": "#AC8A12", "dark": "#2B2204", "glow": "#EEC42C", "tint": "#F9ECA5"},
         "dark": {"mid": "#553A7A", "dark": "#181122", "glow": "#8660B4", "tint": "#D9CAEA"},
-        "capsule": {"mid": "#6A5033", "dark": "#1F170E", "glow": "#9C7B52", "tint": "#E6D3B4"},
+        "capsule": {"mid": "#5E3A24", "dark": "#1A0F09", "glow": "#94593A", "tint": "#E4C4AC"},
         "wild": {"mid": "#1B1914", "dark": "#080706", "glow": "#3A3527", "tint": "#CFC8B8"},
     },
     "team_hp_thresholds": {"above_40%": "#6FE3B8", "40%_to_20%": "#F2A33C", "below_20%": "#FF6B4A"},
@@ -97,6 +97,16 @@ def main():
     comps = json.loads((DATA / "components.json").read_text(encoding="utf-8"))
     typo = json.loads((DATA / "typography.json").read_text(encoding="utf-8"))
     L = lay["padrao"]
+
+    # pelicula de scanline: o recorte por alfa perde as 2 ultimas linhas transparentes -> volta ao tamanho do visor
+    scan = KIT / "assets" / "background" / "visor_film_scanline_976x736.png"
+    im = Image.open(scan).convert("RGBA")
+    if im.size != (976, 736):
+        full = Image.new("RGBA", (976, 736), (0, 0, 0, 0)); full.paste(im, (0, 0)); full.save(scan, optimize=True)
+        for c in comps:
+            if c["file"].endswith("visor_film_scanline_976x736.png"):
+                c["texture_rect_1024"].update({"x": 24, "y": 232, "w": 976, "h": 736})
+        (DATA / "components.json").write_text(json.dumps(comps, ensure_ascii=False, indent=1), encoding="utf-8")
 
     (DATA / "palette.json").write_text(json.dumps(PALETTE, ensure_ascii=False, indent=1), encoding="utf-8")
     sp = stage_positions()
@@ -151,7 +161,8 @@ assets/
   buttons/      botões de navegação (normal/principal) e botão de líder (normal/ativo/recarga)                     ({counts.get('buttons', 0)})
 fonts/          Instrument Sans e Martian Mono (variáveis, OFL)
 data/           layout medido por estado, tipografia, paleta, posições do palco, cartas, personagens, componentes
-reference/      a tela inteira em cada estado + overlay com os retângulos das peças
+reference/      a tela inteira em cada estado, overlay com os retângulos das peças e
+                sequences/ — cada interação quadro a quadro (cartas, líder, skill, ataque, HP, abatido, pop-up, avisos)
 source/         SVG-fonte das cartas
 docs/           guia completo
 ```
@@ -163,6 +174,7 @@ docs/           guia completo
 4. `docs/04_componentes.md` — cada componente, estados e texturas
 5. `docs/05_palco.md` — cenário, personagens, anel de chão, mira e pop-up
 6. `docs/06_godot.md` — como importar e montar no Godot 4
+7. `docs/07_interacoes_e_animacoes.md` — o que cada toque faz, estados, tempos, curvas e as referências quadro a quadro
 """
     (KIT / "README.md").write_text(readme, encoding="utf-8")
 
@@ -400,6 +412,9 @@ O `texture_rect` e o `node` de cada textura estão em `data/components.json`: a 
 - Posição: use o `texture_rect` do `components.json` (as 3 camadas compartilham o mesmo retângulo).
 
 ## Animações que já existem no mockup (para a etapa de animação)
+
+Resumo abaixo. O detalhamento completo — gatilhos, estados, linha do tempo do combo, textos dos avisos e referências quadro a quadro — está em **`07_interacoes_e_animacoes.md`**.
+
 - Mira: opacidade 0.6 ↔ 1.0, 1.4s, ease-in-out, loop
 - Ataque iminente (chip, caixa ATQ): opacidade 1 ↔ 0.5, 0.8s, loop
 - Pop-up e aviso: entrada com opacidade 0→1 e deslocamento 10px→0 em 0.16–0.18s
@@ -407,6 +422,9 @@ O `texture_rect` e o `node` de cada textura estão em `data/components.json`: a 
 - Barras e anéis: transição do valor em 0.3s
 """
     (DOCS / "06_godot.md").write_text(d6, encoding="utf-8")
+    import shutil
+    for f in (HERE / "static_docs").glob("*.md"):
+        shutil.copy(f, DOCS / f.name)
     print("docs + data ok")
 
 

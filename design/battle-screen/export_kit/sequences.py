@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw
 
 from render import Renderer, SCREEN
 
-KIT = SCREEN.parent / "ilha-digital-godot-kit"
+KIT = SCREEN.parent.parent / "docs" / "ilha-digital-godot-kit"
 OUT = KIT / "reference" / "sequences"
 rd = Renderer()
 

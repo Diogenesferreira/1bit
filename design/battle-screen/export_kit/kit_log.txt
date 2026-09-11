@@ -1,0 +1,196 @@
+background
+   assets\background\visor_film_scanline_976x736.png
+   assets\background\visor_film_vignette_976x736.png
+hud
+   assets\hud\header\avatar_frame.png
+   assets\hud\header\avatar_placeholder.png
+   assets\hud\header\xp_bar_under.png
+   assets\hud\header\xp_bar_progress.png
+   assets\hud\header\sync_dot.png
+   assets\hud\header\header_ref.png
+   assets\hud\strip\strip_bg.png
+   assets\hud\strip\strip_rule.png
+   assets\hud\strip\strip_ref.png
+   assets\hud\visor\visor_frame.png
+   assets\hud\visor\visor_corner_tl.png
+   assets\hud\visor\visor_corner_tr.png
+   assets\hud\visor\visor_corner_bl.png
+   assets\hud\visor\visor_corner_br.png
+   assets\hud\visor\visor_sector_ref.png
+   assets\hud\visor\visor_round_ref.png
+   assets\hud\visor\aim_chefe.png
+   assets\hud\visor\aim_inimigo.png
+   assets\hud\visor\aim_chefe_sozinho.png
+  anel de chao
+   assets\hud\stage\ring_A1_under.png
+   assets\hud\stage\ring_A1_progress.png
+   assets\hud\stage\ring_A1_over.png
+   assets\hud\stage\ring_A2_under.png
+   assets\hud\stage\ring_A2_progress.png
+   assets\hud\stage\ring_A2_over.png
+   assets\hud\stage\ring_A3_under.png
+   assets\hud\stage\ring_A3_progress.png
+   assets\hud\stage\ring_A3_over.png
+   assets\hud\stage\ring_A4_under.png
+   assets\hud\stage\ring_A4_progress.png
+   assets\hud\stage\ring_A4_over.png
+   assets\hud\stage\ring_A5_under.png
+   assets\hud\stage\ring_A5_progress.png
+   assets\hud\stage\ring_A5_over.png
+   assets\hud\stage\ring_E1_under.png
+   assets\hud\stage\ring_E1_progress.png
+   assets\hud\stage\ring_E1_over.png
+   assets\hud\stage\ring_E2_under.png
+   assets\hud\stage\ring_E2_progress.png
+   assets\hud\stage\ring_E2_over.png
+   assets\hud\stage\ring_E3_under.png
+   assets\hud\stage\ring_E3_progress.png
+   assets\hud\stage\ring_E3_over.png
+   assets\hud\stage\ring_BOSS_under.png
+   assets\hud\stage\ring_BOSS_progress.png
+   assets\hud\stage\ring_BOSS_over.png
+   assets\hud\stage\chip_ally_box.png
+   assets\hud\stage\chip_enemy_box.png
+   assets\hud\stage\chip_frame_target.png
+   assets\hud\stage\chip_frame_ready.png
+   assets\hud\stage\chip_ally_ref.png
+   assets\hud\stage\chip_ally_ready_ref.png
+   assets\hud\stage\chip_enemy_ref.png
+   assets\hud\stage\chip_enemy_imminent_ref.png
+   assets\hud\stage\chip_turn_amber_ref.png
+   assets\hud\stage\chip_turn_red_ref.png
+   assets\hud\popup\popup_target_box.png
+   assets\hud\popup\popup_target_arrow_down.png
+   assets\hud\popup\popup_target_arrow_right.png
+   assets\hud\popup\popup_hp_under.png
+   assets\hud\popup\popup_hp_progress.png
+   assets\hud\popup\popup_turn_box_amber.png
+   assets\hud\popup\popup_turn_box_red.png
+   assets\hud\popup\popup_target_ref_acima.png
+   assets\hud\popup\popup_target_ref_lado.png
+   assets\hud\team\team_hp_under.png
+   assets\hud\team\team_hp_progress.png
+   assets\hud\team\team_hp_progress_mint.png
+   assets\hud\team\team_hp_progress_amber.png
+   assets\hud\team\team_hp_progress_red.png
+   assets\hud\team\team_ref.png
+   assets\hud\bank\bank_rule.png
+   assets\hud\bank\bank_combo_off.png
+   assets\hud\bank\bank_combo_2of3.png
+   assets\hud\bank\bank_header_ref.png
+   assets\hud\toast\toast_box_amber.png
+   assets\hud\toast\toast_box_red.png
+   assets\hud\toast\toast_box_mint.png
+   assets\hud\toast\toast_amber_ref.png
+   assets\hud\toast\toast_red_ref.png
+   assets\hud\toast\toast_mint_ref.png
+buttons
+   assets\buttons\button_nav_normal.png
+   assets\buttons\button_nav_primary.png
+   assets\buttons\button_nav_equipe_ref.png
+   assets\buttons\button_nav_invocar_ref.png
+   assets\buttons\button_nav_loja_ref.png
+   assets\buttons\button_nav_fases_ref.png
+   assets\buttons\button_leader_normal.png
+   assets\buttons\button_leader_active.png
+   assets\buttons\button_leader_cooldown.png
+   assets\buttons\button_leader_normal_ref.png
+   assets\buttons\button_leader_active_ref.png
+   assets\buttons\button_leader_cooldown_ref.png
+cards
+   assets\cards\card_frame_selected.png
+   assets\cards\card_order_badge.png
+   assets\cards\card_value_plate.png
+   assets\cards\card_slot_selected_ref.png
+   assets\cards\card_slot_ref.png
+characters
+icons
+   assets\icons\currency\icon_bits.svg
+   assets\icons\currency\icon_gems.svg
+   assets\icons\currency\icon_energy.svg
+   assets\icons\ui\icon_menu.svg
+   assets\icons\ui\icon_crown_normal.svg
+   assets\icons\ui\icon_crown_active.svg
+   assets\icons\ui\icon_crown_cooldown.svg
+   assets\icons\nav\icon_nav_equipe.svg
+   assets\icons\nav\icon_nav_invocar.svg
+   assets\icons\nav\icon_nav_loja.svg
+   assets\icons\nav\icon_nav_fases_primary.svg
+   assets\icons\nav\icon_nav_fases_normal.svg
+   assets\icons\elements\emblem_dragon.svg
+   assets\icons\elements\emblem_knight.svg
+   assets\icons\elements\emblem_nature.svg
+   assets\icons\elements\emblem_light.svg
+   assets\icons\elements\emblem_dark.svg
+   assets\icons\elements\emblem_wild.svg
+   assets\icons\elements\emblem_capsule.svg
+   assets\icons\elements\badge_dragon.png
+   assets\icons\elements\badge_dark.png
+   assets\icons\elements\badge_knight.png
+   assets\icons\elements\badge_light.png
+   assets\icons\elements\badge_nature.png
+fonts
+reference + data
+   screen padrao
+   screen alvo_chefe
+   screen alvo_inimigo
+   screen chefe_sozinho
+   screen deserto
+   screen cartas_selecionadas
+   screen skill_pronta
+   screen alertas
+   screen aviso_vermelho
+   screen aviso_menta
+   screen indicador_minimo
+   screen indicador_placa
+fim: 105 texturas recortadas
+docs + data ok
+01_selecao_de_cartas f0_nenhuma ['bank', 'team', 'chip_A1', 'chip_E1', 'chip_E2', 'chip_E3']
+01_selecao_de_cartas f1_uma_carta ['bank', 'team', 'chip_A1', 'chip_E1', 'chip_E2', 'chip_E3']
+01_selecao_de_cartas f2_duas_cartas ['bank', 'team', 'chip_A1', 'chip_E1', 'chip_E2', 'chip_E3']
+01_selecao_de_cartas f3_tres_cartas_antes_de_resolver ['bank', 'team', 'chip_A1', 'chip_E1', 'chip_E2', 'chip_E3']
+01_selecao_de_cartas f4_depois_do_combo ['bank', 'team', 'chip_A1', 'chip_E1', 'chip_E2', 'chip_E3', 'toast']
+01_selecao_de_cartas f5_desmarcar_toque_de_novo ['bank', 'team', 'chip_A1', 'chip_E1', 'chip_E2', 'chip_E3']
+02_lider f0_disponivel ['button_leader']
+02_lider f1_ativado ['button_leader', 'toast']
+02_lider f2_cancelado ['button_leader', 'toast']
+02_lider f3_combo_com_lider_recarga_3 ['button_leader', 'toast']
+02_lider f4_recarga_2 ['button_leader']
+02_lider f5_recarga_1 ['button_leader']
+02_lider f6_toque_durante_recarga ['button_leader', 'toast']
+03_skill_do_aliado f0_carga_45 ['stage_fig_A1', 'chip_A1']
+03_skill_do_aliado f1_carga_79_depois_de_combo_dragon ['stage_fig_A1', 'chip_A1', 'toast']
+03_skill_do_aliado f2_pronta_100 ['stage_fig_A1', 'chip_A1']
+03_skill_do_aliado f3_toque_antes_de_pronta ['stage_fig_A1', 'chip_A1', 'toast']
+03_skill_do_aliado f4_disparo_600 ['stage_fig_A1', 'chip_A1', 'toast']
+04_contador_de_ataque f0_turno_atual ['chip_E1', 'chip_E2', 'chip_E3', 'popup_target', 'team']
+04_contador_de_ataque f1_depois_do_combo_E2_atacou ['chip_E1', 'chip_E2', 'chip_E3', 'popup_target', 'team', 'toast']
+04_contador_de_ataque f2_aviso_do_ataque ['chip_E1', 'chip_E2', 'chip_E3', 'popup_target', 'team', 'toast']
+04_contador_de_ataque f3_proximo_turno ['chip_E1', 'chip_E2', 'chip_E3', 'popup_target', 'team']
+05_hp_da_equipe f0_89pct_menta ['team']
+05_hp_da_equipe f1_41pct_menta ['team']
+05_hp_da_equipe f2_34pct_ambar ['team']
+05_hp_da_equipe f3_16pct_vermelho ['team']
+05_hp_da_equipe f4_0pct ['team']
+06_inimigo_abatido f0_vivo ['stage_fig_E2', 'chip_E2', 'visor']
+06_inimigo_abatido f1_vida_baixa_10pct ['stage_fig_E2', 'chip_E2', 'visor']
+06_inimigo_abatido f2_abatido ['stage_fig_E2', 'chip_E2', 'visor']
+06_inimigo_abatido f3_toque_no_abatido ['stage_fig_E2', 'chip_E2', 'visor', 'toast']
+07_popup_do_alvo f0_fechado ['visor']
+07_popup_do_alvo f1_toque_abre_acima ['visor']
+07_popup_do_alvo f2_toque_de_novo_fecha ['visor']
+07_popup_do_alvo f3_troca_de_alvo ['visor']
+07_popup_do_alvo f4_chefe_abre_ao_lado ['visor']
+08_avisos f0_dano ['toast']
+08_avisos f1_invalido_capsule ['toast']
+08_avisos f2_invalido_elementos ['toast']
+08_avisos f3_cura ['toast']
+08_avisos f4_ataque_sofrido ['toast']
+08_avisos f5_vitoria ['toast']
+08_avisos f6_derrota ['toast']
+08_avisos f7_tela_reservada ['toast']
+08_avisos f8_nova_partida ['toast']
+ok
+zip ok
+KIT_DONE
+exit 0

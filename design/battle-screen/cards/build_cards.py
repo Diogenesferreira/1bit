@@ -17,9 +17,9 @@ PAL = {
     "dragon":  dict(mid="#7E3223", dark="#24110B", glow="#C0573F", tint="#EDB9A9", shade="#3A140C"),
     "knight":  dict(mid="#2E587C", dark="#0E1A26", glow="#4F88B6", tint="#C8DBEA", shade="#0F2233"),
     "nature":  dict(mid="#3A6536", dark="#111D10", glow="#5E9A56", tint="#CDE3C5", shade="#12230F"),
-    "light":   dict(mid="#86692A", dark="#241C0B", glow="#C49E45", tint="#EEDDAE", shade="#2E230C"),
+    "light":   dict(mid="#AC8A12", dark="#2B2204", glow="#EEC42C", tint="#F9ECA5", shade="#2F2504"),
     "dark":    dict(mid="#553A7A", dark="#181122", glow="#8660B4", tint="#D9CAEA", shade="#1D1229"),
-    "capsule": dict(mid="#6A5033", dark="#1F170E", glow="#9C7B52", tint="#E6D3B4", shade="#231A0E"),
+    "capsule": dict(mid="#5E3A24", dark="#1A0F09", glow="#94593A", tint="#E4C4AC", shade="#20110A"),
     "wild":    dict(mid="#1B1914", dark="#080706", glow="#3A3527", tint="#CFC8B8", shade="#050404"),
 }
 

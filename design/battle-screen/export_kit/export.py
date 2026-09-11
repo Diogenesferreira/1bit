@@ -12,7 +12,7 @@ from PIL import Image
 
 from render import Renderer, CHROME, SCREEN
 
-KIT = SCREEN.parent / "ilha-digital-godot-kit"
+KIT = SCREEN.parent.parent / "docs" / "ilha-digital-godot-kit"
 A = KIT / "assets"
 S2 = 2  # tudo em 1024x1600
 
