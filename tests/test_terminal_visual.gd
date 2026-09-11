@@ -19,7 +19,7 @@ func run() -> void:
 	expect(screen.size == Vector2(1024,1600), "Tela usa a resolução oficial do kit")
 	expect(screen.get_node("Visor/Characters").get_child_count() >= 8, "Personagens são nós independentes")
 	expect(screen.get_node("Visor/RingsUnder").get_child_count() >= 8, "Anéis são componentes independentes")
-	expect(screen.get_node("Bank/Cards").get_child_count() == 48, "Cada carta possui botão, moldura, placa e número")
+	expect(screen.get_node("Bank/Cards").get_child_count() == 72, "Cada carta possui arte, moldura, valor e ordem separados")
 	expect(screen.card_nodes.size() == 12, "Doze cartas interativas")
 	for slot in ["A1","A2","A3","A4","A5","E1","E2","E3"]:
 		expect(screen.stage_nodes.has(slot), "%s existe como personagem separado" % slot)

@@ -19,7 +19,7 @@ func _init(seed_value: int = 0) -> void:
 	cards.resize(12)
 	cards.fill(-1)
 	values.resize(12)
-	for i in 6:
+	for i in 9:
 		append_preview()
 	complete_hand()
 

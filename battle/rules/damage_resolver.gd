@@ -11,12 +11,12 @@ static func reduction_for_defense(defense: int) -> float:
 	# O binario confirma reducao percentual, mas a tabela original ainda nao
 	# foi recuperada. Esta curva provisoria e monotona e nunca anula o ataque.
 	var safe_defense := maxi(0, defense)
-	return clampf(float(safe_defense) / (float(safe_defense) + 500.0), 0.0, 0.80)
+	return clampf(float(safe_defense) / (float(safe_defense) + 100.0), 0.0, 0.80)
 
 static func damage_after_defense(amount: int, defense: int) -> int:
 	if amount <= 0:
 		return 0
-	return maxi(1, roundi(amount * (1.0 - reduction_for_defense(defense))))
+	return maxi(1, floori(amount * (1.0 - reduction_for_defense(defense))))
 
 static func apply_damage(state: BattleState, amount: int) -> void:
 	# Dano excedente encadeia para o próximo inimigo vivo.

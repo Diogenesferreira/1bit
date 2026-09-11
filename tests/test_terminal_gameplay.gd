@@ -40,6 +40,8 @@ func run() -> void:
 	expect(controller.state.board.cards[11] == 3 and screen.card_nodes[11].visible, "Segunda compra desce para a outra linha")
 	screen.card_nodes[2].pressed.emit()
 	expect(controller.state.phase == BattleState.Phase.RESOLVING, "Terceira carta bloqueia entrada durante a corrente")
+	await create_timer(0.35).timeout
+	expect(screen.effect_layer.get_child_count() > 0, "Fusão cria efeitos temporários com os assets das cartas")
 	await wait_chain(controller)
 	await process_frame
 	expect(controller.state.last_chain.size() >= 2, "Trio manual dispara cascata automatica")

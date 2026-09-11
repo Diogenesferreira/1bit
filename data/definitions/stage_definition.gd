@@ -10,6 +10,6 @@ extends Resource
 @export var skill_threshold: int = 100
 @export var skill_gain: int = 25
 @export var enemy_attack: int = 65
-@export var enemy_defense: Array[int] = [120, 45, 60]
+@export var enemy_defense: Array[int] = [18, 12, 12]
 @export var damage_per_power: int = 20
 @export var heal_per_power: int = 35

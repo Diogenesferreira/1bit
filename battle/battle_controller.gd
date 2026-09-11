@@ -5,6 +5,7 @@ signal state_changed
 signal selection_changed
 signal message_changed(message: String)
 signal battle_finished(won: bool)
+signal combo_visual_requested(event: Dictionary)
 
 const CARD_PATHS := ["dragon", "knight", "nature", "light", "dark", "capsule", "wild"]
 var definitions: Array[CardDefinition] = []
@@ -16,6 +17,15 @@ var _undo: Array[Dictionary] = []
 const CHAIN_BONUS := 0.3 # Project estimate, not recovered original balance.
 const CRITICAL_MULTIPLIER := 1.5
 const MAX_CHAIN := 100 # Safety guard, not the unconfirmed original limit of 31.
+const ALLY_ATTACK: Array[int] = [38, 36, 34, 40, 42]
+const LAB_ENEMY_MAX_HP: Array[int] = [4000, 1200, 1400]
+const LAB_ENEMY_HP: Array[int] = [1850, 1200, 1400]
+const LAB_ENEMY_DEFENSE: Array[int] = [18, 12, 12]
+const LAB_ENEMY_ATTACK: Array[int] = [220, 130, 150]
+const LAB_ENEMY_COUNTDOWNS: Array[int] = [2, 1, 3]
+const LAB_ENEMY_COUNTDOWN_MAX: Array[int] = [3, 3, 3]
+var selection_resolve_delay := 0.12
+var chain_step_delay := 0.30
 
 func _ready() -> void:
 	for card_name in CARD_PATHS:
@@ -23,15 +33,8 @@ func _ready() -> void:
 	state.party_max_hp = _party_max_hp()
 	state.party_hp = mini(state.party_hp, state.party_max_hp)
 	state.total_rounds = stage.total_rounds
-	state.round_index = 1
-	state.party_hp = state.party_max_hp
-	if not stage.enemies.is_empty():
-		state.enemy_max_hp.clear()
-		for enemy in stage.enemies:
-			state.enemy_max_hp.append(enemy.max_hp)
-	state.enemy_max_hp.assign([1400, 700, 900])
-	state.enemy_hp.assign(state.enemy_max_hp)
-	state.enemy_defense.assign(stage.enemy_defense)
+	state.round_index = state.total_rounds
+	_configure_lab_encounter(true)
 
 func _party_max_hp() -> int:
 	var total := 0
@@ -78,7 +81,7 @@ func select_card(index: int) -> void:
 		_undo.clear()
 		_refresh_selection()
 		var generation := _generation
-		await get_tree().create_timer(0.12).timeout
+		await get_tree().create_timer(selection_resolve_delay).timeout
 		if generation != _generation:
 			return
 		resolve_selected()
@@ -127,6 +130,8 @@ func load_test_hand() -> void:
 	state.board.values.assign([4, 4, 4, 2, 3, 0, 4, 6, 9, 8, 5, 0])
 	state.board.bag.assign([2, 3, 4, 5, 6, 0])
 	state.board.bag_values.assign([6, 9, 8, 5, 7, 4])
+	state.enemy_countdowns.assign([3, 3, 3])
+	_sync_enemy_countdown()
 	_refresh_selection()
 	message_changed.emit("TESTE: TOQUE NOS 3 DRAGONS 4")
 
@@ -154,16 +159,18 @@ func resolve_selected() -> void:
 		var element: int = MatchResolver.resolve(kinds, [0, 1, 2]).element
 		var critical := MatchResolver.critical_score(kinds, numbers) > 0
 		var power := numbers[0] + numbers[1] + numbers[2]
+		combo_visual_requested.emit({"indices": trio.duplicate(), "kinds": kinds.duplicate(), "values": numbers.duplicate(),
+			"element": element, "critical": critical, "chain": state.last_chain.size()})
 		var multiplier := (1.0 + CHAIN_BONUS * state.last_chain.size()) * (CRITICAL_MULTIPLIER if critical else 1.0)
 		var damage := 0
 		var heal := 0
 		if element == 5:
-			heal = roundi(power * stage.heal_per_power * (CRITICAL_MULTIPLIER if critical else 1.0))
+			heal = floori(power * 12.0 * (CRITICAL_MULTIPLIER if critical else 1.0))
 		else:
-			for ally in stage.allies:
-				if state.available_elements[ally.element] and (element == 6 or ally.element == element):
-					damage += roundi(power * stage.damage_per_power * multiplier)
-					state.skill_charge[ally.element] = mini(stage.skill_threshold, state.skill_charge[ally.element] + stage.skill_gain)
+			for ally_element in ALLY_ATTACK.size():
+				if state.available_elements[ally_element] and (element == 6 or ally_element == element):
+					damage += floori((ALLY_ATTACK[ally_element] + power * 10.0) * multiplier)
+					state.skill_charge[ally_element] = mini(stage.skill_threshold, state.skill_charge[ally_element] + stage.skill_gain)
 		total_damage += damage
 		total_heal += heal
 		criticals += int(critical)
@@ -171,7 +178,7 @@ func resolve_selected() -> void:
 		state.selected.clear()
 		state_changed.emit()
 		message_changed.emit("CHAIN %d %s | +%d DANO" % [state.last_chain.size(), "CRITICO" if critical else "", damage])
-		await get_tree().create_timer(0.3).timeout
+		await get_tree().create_timer(chain_step_delay).timeout
 		if generation != _generation:
 			return
 		if 12 - state.board.cards.count(-1) <= 1:
@@ -179,37 +186,52 @@ func resolve_selected() -> void:
 			state.board.complete_hand()
 		trio = MatchResolver.cascade(state.board, state.available_elements)
 	state.board.complete_hand()
+	if state.leader_active and total_damage > 0:
+		total_damage = floori(total_damage * 1.25)
 	DamageResolver.apply_damage(state, total_damage)
 	var actual_heal := mini(total_heal, state.party_max_hp - state.party_hp)
 	state.party_hp += actual_heal
 	state.selected.clear()
 	_marks.clear()
 	_undo.clear()
-	_finish_turn()
+	_finish_turn(true)
 	if state.phase == BattleState.Phase.PLAYER_INPUT:
 		message_changed.emit("CHAIN %d | %d CRIT | -%d / +%d HP | INIMIGO %d" % [state.last_chain.size(), criticals, total_damage, actual_heal, state.enemy_countdown])
 
-func _finish_turn() -> void:
+func _finish_turn(completed_chain := false) -> void:
 	state.selected.clear()
 	selection_changed.emit()
 	state.turn_index += 1
-	state.leader_turns_left = maxi(0, state.leader_turns_left - 1)
+	if completed_chain:
+		if state.leader_active:
+			state.leader_active = false
+			state.leader_turns_left = stage.leader_cooldown
+		elif state.leader_turns_left > 0:
+			state.leader_turns_left -= 1
+	state.last_enemy_attacks.clear()
 	if state.living_enemies().is_empty():
 		if state.round_index >= state.total_rounds:
 			_end_battle(true)
 			return
 		state.round_index += 1
-		state.enemy_max_hp.assign([4000, 900, 1200] if state.round_index == state.total_rounds else [1400, 700, 900])
+		state.enemy_max_hp.assign(LAB_ENEMY_MAX_HP if state.round_index == state.total_rounds else [1400, 700, 900])
 		state.enemy_hp.assign(state.enemy_max_hp)
-		state.enemy_defense.assign(stage.enemy_defense)
+		state.enemy_defense.assign(LAB_ENEMY_DEFENSE)
+		state.enemy_attack.assign(LAB_ENEMY_ATTACK)
+		state.enemy_countdown_max.assign(LAB_ENEMY_COUNTDOWN_MAX)
+		state.enemy_countdowns.assign(LAB_ENEMY_COUNTDOWN_MAX)
 		state.target = 0
-		state.enemy_countdown = 3
+		_sync_enemy_countdown()
 		message_changed.emit("ROUND %d/%d" % [state.round_index, state.total_rounds])
 	else:
-		state.enemy_countdown -= 1
-		if state.enemy_countdown <= 0:
-			state.party_hp = maxi(0, state.party_hp - stage.enemy_attack * state.living_enemies().size())
-			state.enemy_countdown = 3
+		for enemy_index in state.living_enemies():
+			state.enemy_countdowns[enemy_index] -= 1
+			if state.enemy_countdowns[enemy_index] <= 0:
+				var enemy_damage := maxi(5, state.enemy_attack[enemy_index] + state.board.rng.randi_range(-5, 8))
+				state.party_hp = maxi(0, state.party_hp - enemy_damage)
+				state.last_enemy_attacks.append({"enemy": enemy_index, "damage": enemy_damage})
+				state.enemy_countdowns[enemy_index] = state.enemy_countdown_max[enemy_index]
+		_sync_enemy_countdown()
 		if state.party_hp == 0:
 			_end_battle(false)
 			return
@@ -248,11 +270,10 @@ func use_leader_skill() -> void:
 	if state.leader_turns_left > 0:
 		message_changed.emit("LÍDER — AGUARDE %d TURNOS" % state.leader_turns_left)
 		return
-	state.leader_turns_left = stage.leader_cooldown + 1
 	cancel_selection()
-	DamageResolver.apply_damage(state, 400)
-	message_changed.emit("LIDERANÇA  −400 HP")
-	_finish_turn()
+	state.leader_active = not state.leader_active
+	state_changed.emit()
+	message_changed.emit("LIDERANÇA ATIVA · +25% NO PRÓXIMO ATAQUE" if state.leader_active else "LIDERANÇA CANCELADA")
 
 func _end_battle(won: bool) -> void:
 	state.phase = BattleState.Phase.VICTORY if won else BattleState.Phase.DEFEAT
@@ -272,7 +293,26 @@ func restart(from_first_round: bool = true) -> void:
 		state.party_hp = state.party_max_hp
 		state.enemy_max_hp.assign([1400, 700, 900])
 		state.enemy_hp.assign(state.enemy_max_hp)
-		state.enemy_defense.assign(stage.enemy_defense)
+		state.enemy_defense.assign(LAB_ENEMY_DEFENSE)
+		state.enemy_attack.assign(LAB_ENEMY_ATTACK)
+		state.enemy_countdowns.assign(LAB_ENEMY_COUNTDOWN_MAX)
+		state.enemy_countdown_max.assign(LAB_ENEMY_COUNTDOWN_MAX)
+		_sync_enemy_countdown()
 	state_changed.emit()
 	selection_changed.emit()
 	message_changed.emit("COMBINE CARTAS, LIBERE O PODER DOS SEUS MONSTROS!")
+
+func _configure_lab_encounter(use_damaged_state: bool) -> void:
+	state.enemy_max_hp.assign(LAB_ENEMY_MAX_HP)
+	state.enemy_hp.assign(LAB_ENEMY_HP if use_damaged_state else LAB_ENEMY_MAX_HP)
+	state.enemy_defense.assign(LAB_ENEMY_DEFENSE)
+	state.enemy_attack.assign(LAB_ENEMY_ATTACK)
+	state.enemy_countdowns.assign(LAB_ENEMY_COUNTDOWNS if use_damaged_state else LAB_ENEMY_COUNTDOWN_MAX)
+	state.enemy_countdown_max.assign(LAB_ENEMY_COUNTDOWN_MAX)
+	_sync_enemy_countdown()
+
+func _sync_enemy_countdown() -> void:
+	var next_attack := 99
+	for enemy_index in state.living_enemies():
+		next_attack = mini(next_attack, state.enemy_countdowns[enemy_index])
+	state.enemy_countdown = 0 if next_attack == 99 else next_attack
