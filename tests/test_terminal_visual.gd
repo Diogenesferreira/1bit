@@ -21,6 +21,11 @@ func run() -> void:
 	expect(screen.get_node("Visor/RingsUnder").get_child_count() >= 8, "Anéis são componentes independentes")
 	expect(screen.get_node("Bank/Cards").get_child_count() == 72, "Cada carta possui arte, moldura, valor e ordem separados")
 	expect(screen.card_nodes.size() == 12, "Doze cartas interativas")
+	expect(screen.battle_audio.effects.size() == 7, "Sete efeitos de batalha carregados em jogadores independentes")
+	for player in screen.battle_audio.effects.values():
+		expect((player as AudioStreamPlayer).stream != null, "Efeito de batalha possui stream importado")
+	expect(ResourceLoader.exists("res://audio/battle/music/bgm_06_battle_win.ogg"), "Música de vitória importada")
+	expect(ResourceLoader.exists("res://audio/battle/music/bgm_07_battle_lose.ogg"), "Música de derrota importada")
 	for slot in ["A1","A2","A3","A4","A5","E1","E2","E3"]:
 		expect(screen.stage_nodes.has(slot), "%s existe como personagem separado" % slot)
 	screen.set_visual_state("cartas_selecionadas")

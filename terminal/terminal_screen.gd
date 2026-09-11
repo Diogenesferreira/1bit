@@ -2,6 +2,7 @@ class_name TerminalScreen
 extends Control
 
 const BattleFxCanvasScript := preload("res://terminal/battle_fx_canvas.gd")
+const BattleAudioScript := preload("res://terminal/battle_audio.gd")
 const KIT := "res://design/ilha-digital-godot-kit/"
 const CREAM := Color("f5efe2")
 const AMBER := Color("f2a33c")
@@ -53,6 +54,7 @@ var controller: BattleController
 var target_visual_requested := false
 var effect_layer: Control
 var fx_canvas: Control
+var battle_audio: BattleAudio
 var end_layer: Control
 var figure_base_positions := {}
 var previous_enemy_hp: Array[int] = []
@@ -72,6 +74,9 @@ var visual_state := "padrao"
 func _ready() -> void:
 	set_process_unhandled_key_input(true)
 	_build()
+	battle_audio = BattleAudioScript.new()
+	battle_audio.name = "BattleAudio"
+	add_child(battle_audio)
 	controller = get_node("BattleController") as BattleController
 	controller.state_changed.connect(_render_gameplay)
 	controller.message_changed.connect(_show_gameplay_message)
@@ -80,8 +85,9 @@ func _ready() -> void:
 	controller.battle_reset.connect(_reset_visual_tracking)
 	controller.battle_finished.connect(_show_end_screen)
 	controller.skill_visual_requested.connect(_animate_skill_cast)
-	controller.selection_resolve_delay = 0.28
-	controller.chain_step_delay = 1.42
+	controller.renewal_visual_requested.connect(_animate_renewal)
+	controller.selection_resolve_delay = 0.18
+	controller.chain_step_delay = 1.30
 	(stage_nodes.leader as TextureButton).pressed.connect(controller.use_leader_skill)
 	_render_gameplay()
 
@@ -102,6 +108,8 @@ func _reset_visual_tracking() -> void:
 		end_layer.visible = false
 	if fx_canvas:
 		fx_canvas.clear_all()
+	if battle_audio:
+		battle_audio.stop_all()
 	for slot in DRAW_ORDER:
 		var figure: TextureRect = stage_nodes.get(slot) as TextureRect
 		if figure:
@@ -327,7 +335,15 @@ func _toggle_card(index: int) -> void:
 	card_nodes[index].position.y += 10 if index not in selected_cards else -10
 
 func _on_card_pressed(index: int) -> void:
+	if battle_audio:
+		battle_audio.play_effect("se_touch")
 	controller.select_card(index)
+
+func _play_effect_delayed(effect_name: String, delay: float, volume_offset_db := 0.0) -> void:
+	get_tree().create_timer(delay).timeout.connect(func():
+		if is_instance_valid(battle_audio):
+			battle_audio.play_effect(effect_name, volume_offset_db)
+	)
 
 func _on_target_pressed(slot: String) -> void:
 	var enemy_index := ENEMY_SLOTS.find(slot)
@@ -459,6 +475,8 @@ func _animate_combo(event: Dictionary) -> void:
 	battle_critical_total += int(bool(event.critical))
 	var cascade_delay := 0.15 if int(event.chain) > 0 else 0.0
 	fx_canvas.flash(center, 90.0, 0.44, cascade_delay + 0.50)
+	fx_canvas.bloom(center, color, 285.0, 0.74, cascade_delay + 0.38)
+	_play_effect_delayed("se_wildattack1" if int(event.element) == CardDefinition.Kind.WILD else "se_gousei", cascade_delay + 0.84)
 	for i in 3:
 		var index: int = event.indices[i]
 		var clone := _make_effect_card(int(event.kinds[i]), int(event.values[i]), _card_position_for_logic_slot(index))
@@ -478,7 +496,7 @@ func _animate_combo(event: Dictionary) -> void:
 		tween.tween_property(clone, "position", merged, 0.44)
 		tween.parallel().tween_property(clone, "rotation", deg_to_rad((i - 1) * 3.0), 0.22)
 		tween.parallel().tween_method(_set_card_white.bind(clone), 0.0, 1.0, 0.44)
-		tween.tween_property(clone, "rotation", 0.0, 0.12)
+		tween.tween_property(clone, "rotation", 0.0, 0.15)
 		tween.parallel().tween_property(clone, "scale", Vector2.ONE * 1.28, 0.15)
 		if i == 0:
 			tween.tween_callback(_spawn_combo_burst.bind(event, color))
@@ -525,6 +543,7 @@ func _card_position_for_logic_slot(slot: int) -> Vector2:
 func _spawn_combo_burst(event: Dictionary, color: Color) -> void:
 	var center := Vector2(512, 1280)
 	fx_canvas.flash(center, 190.0, 0.22)
+	fx_canvas.bloom(center, color, 350.0, 0.52)
 	fx_canvas.shock(center, color, 300.0, 0.38)
 	fx_canvas.burst(center, color, 56, 180.0, 720.0, 0.62, 320.0)
 	if int(event.chain) > 0:
@@ -542,7 +561,7 @@ func _spawn_combo_burst(event: Dictionary, color: Color) -> void:
 
 func _spawn_energy_orbs(from: Vector2, to: Vector2, color: Color, count := 4, aura_key := "") -> void:
 	for i in count:
-		fx_canvas.orb(from, to, color, 0.56, 120.0, 9.0, 0.07 + i * 0.055)
+		fx_canvas.orb(from, to, color, 0.56, 240.0, 9.0, 0.07 + i * 0.055)
 	var impact_delay := 0.07 + (count - 1) * 0.055 + 0.56
 	get_tree().create_timer(impact_delay).timeout.connect(func():
 		if not is_instance_valid(fx_canvas):
@@ -550,10 +569,12 @@ func _spawn_energy_orbs(from: Vector2, to: Vector2, color: Color, count := 4, au
 		fx_canvas.burst(to, color, 14, 60.0, 300.0, 0.42, 120.0)
 		if not aura_key.is_empty():
 			fx_canvas.set_aura(aura_key, to + Vector2(0, 45), color)
-			_hop_figure(aura_key, 6.0)
+			_hop_figure(aura_key, 12.0)
 	)
 
 func _animate_leader_activation() -> void:
+	if battle_audio:
+		battle_audio.play_effect("se_arrart2")
 	var leader: TextureButton = stage_nodes.leader
 	leader.pivot_offset = leader.size * 0.5
 	var pulse := create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -606,6 +627,11 @@ func _fx_dot(center: Vector2, diameter: float, color: Color) -> ColorRect:
 
 func _spawn_float_text(value: String, at_position: Vector2, color: Color, size: int, delay := 0.0) -> void:
 	var label := _add_label("CombatText", value, Rect2(at_position-Vector2(190,35),Vector2(380,70)), size, color, effect_layer, true, 700)
+	label.add_theme_constant_override("outline_size", 5)
+	label.add_theme_color_override("font_outline_color", Color("110d09"))
+	label.add_theme_constant_override("shadow_offset_x", 3)
+	label.add_theme_constant_override("shadow_offset_y", 4)
+	label.add_theme_color_override("font_shadow_color", Color(0.0,0.0,0.0,0.72))
 	label.pivot_offset = label.size * 0.5
 	label.scale = Vector2.ONE * 1.5
 	if delay > 0.0:
@@ -630,7 +656,7 @@ func _animate_enemy_hit(slot: String, damage: int) -> float:
 	tween.tween_property(figure, "position:x", origin.x - 16.0, 0.05)
 	tween.tween_property(figure, "position:x", origin.x + 14.0, 0.05)
 	tween.tween_property(figure, "position:x", origin.x, 0.07)
-	_spawn_float_text("TOTAL  −%d" % damage, _figure_center(slot) + Vector2(0,-70), DANGER, 34, impact_delay + 0.12)
+	_spawn_float_text("TOTAL  −%d" % damage, _figure_center(slot) + Vector2(0,-70), DANGER, 60, impact_delay + 0.12)
 	return impact_delay
 
 func _animate_enemy_defeat(slot: String, delay: float) -> void:
@@ -673,7 +699,7 @@ func _spawn_attack_streaks(enemy_slot: String) -> float:
 			)
 			var number_offset := Vector2(((shot_index % 3) - 1) * 44.0, -70.0 - (shot_index % 2) * 36.0)
 			_spawn_float_text("%d%s" % [amount, "!" if bool(combo.critical) else ""], destination + number_offset,
-				color, 27 if bool(combo.critical) else 23, delay + 0.30)
+				color, 52 if bool(combo.critical) else 44, delay + 0.30)
 			shot_index += 1
 	return 0.30 + maxf(0.0, (shot_index - 1) * 0.13)
 
@@ -714,6 +740,8 @@ func _animate_abandonment() -> void:
 	_spawn_float_text("ABANDONO · TURNO PASSOU", Vector2(512,1080), DANGER, 21)
 
 func _animate_hand_redistribution(_changed: Array[int]) -> void:
+	if battle_audio:
+		battle_audio.play_effect("se_card_shuffle")
 	var pile := Vector2(512.0 - 76.0, 1280.0 - 88.0)
 	var visible_indices: Array[int] = []
 	for index in 12:
@@ -740,7 +768,23 @@ func _animate_hand_redistribution(_changed: Array[int]) -> void:
 				for card in card_nodes:
 					card.disabled = controller.state.phase != BattleState.Phase.PLAYER_INPUT
 			)
-	_spawn_float_text("REDISTRIBUIÇÃO", Vector2(512,1190), AMBER, 25, 0.18)
+	_spawn_float_text("REDISTRIBUIÇÃO", Vector2(512,1190), AMBER, 34, 0.18)
+
+func _animate_renewal() -> void:
+	if battle_audio:
+		battle_audio.play_effect("se_card_shuffle3")
+	for index in 12:
+		if rendered_cards[index] < 0:
+			continue
+		var clone := _make_effect_card(rendered_cards[index], card_value_labels[index].text.to_int(), _card_position_for_logic_slot(index))
+		var fall := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		fall.tween_interval(index * 0.012)
+		fall.tween_property(clone, "position:y", clone.position.y + 80.0, 0.22)
+		fall.parallel().tween_property(clone, "modulate:a", 0.0, 0.22)
+		fall.tween_callback(clone.queue_free)
+	fx_canvas.bloom(Vector2(512,1280), AMBER, 420.0, 0.72)
+	fx_canvas.shock(Vector2(512,1280), AMBER, 330.0, 0.48)
+	_spawn_float_text("RENOVAÇÃO", Vector2(512,1230), AMBER, 42)
 
 func _set_hp_display(bar: TextureProgressBar, label: Label, hp: int, maximum: int) -> void:
 	bar.value = 100.0 * hp / maxi(1.0, float(maximum))
@@ -792,7 +836,7 @@ func _animate_party_hit(damage: int) -> void:
 		var origin: Vector2 = figure_base_positions[ENEMY_SLOTS[enemy_index]]
 		figure.set_meta("fx_until", Time.get_ticks_msec() + 360)
 		var lunge := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-		lunge.tween_property(figure, "position:x", origin.x - 22.0, 0.16)
+		lunge.tween_property(figure, "position:x", origin.x - 44.0, 0.16)
 		lunge.set_ease(Tween.EASE_IN_OUT)
 		lunge.tween_property(figure, "position:x", origin.x, 0.16)
 	var visor := get_node("Visor") as Control
@@ -833,7 +877,7 @@ func _process(delta: float) -> void:
 		var wave := sin(elapsed_idle * 2.0 + phase)
 		var breath := 1.0 + wave * 0.022
 		figure.scale = Vector2(breath, 1.0 + wave * 0.014)
-		figure.position = figure_base_positions[slot] + Vector2(0, wave * 1.2)
+		figure.position = figure_base_positions[slot] + Vector2(0, wave * 2.4)
 		figure.rotation = deg_to_rad(wave * 0.8) if slot.begins_with("E") else 0.0
 		if fx_canvas:
 			fx_canvas.move_aura(slot, _figure_center(slot) + Vector2(0,45))
@@ -842,6 +886,9 @@ func _show_end_screen(won: bool) -> void:
 	await get_tree().create_timer(0.42).timeout
 	if controller.state.phase not in [BattleState.Phase.VICTORY, BattleState.Phase.DEFEAT]:
 		return
+	if battle_audio:
+		battle_audio.play_result(won)
+	_play_effect_delayed("se_countup", 1.12)
 	for child in end_layer.get_children():
 		child.queue_free()
 	end_layer.visible = true

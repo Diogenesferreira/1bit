@@ -42,6 +42,7 @@ func run() -> void:
 	expect(controller.state.phase == BattleState.Phase.RESOLVING, "Terceira carta bloqueia entrada durante a corrente")
 	await create_timer(0.35).timeout
 	expect(screen.effect_layer.get_child_count() > 0, "Fusão cria efeitos temporários com os assets das cartas")
+	expect(not screen.fx_canvas.blooms.is_empty(), "Fusão cria o halo colorido amplo do Combo Lab")
 	await create_timer(0.95).timeout
 	expect(not screen.fx_canvas.rings.is_empty() or not screen.fx_canvas.particles.is_empty(), "Explosão possui onda de choque e partículas na camada aditiva")
 	await wait_chain(controller)

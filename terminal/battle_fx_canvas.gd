@@ -2,6 +2,7 @@ class_name BattleFxCanvas
 extends Control
 
 var flashes: Array[Dictionary] = []
+var blooms: Array[Dictionary] = []
 var rings: Array[Dictionary] = []
 var particles: Array[Dictionary] = []
 var paths: Array[Dictionary] = []
@@ -15,6 +16,10 @@ func _ready() -> void:
 
 func flash(at: Vector2, radius: float = 190.0, duration := 0.22, delay := 0.0) -> void:
 	flashes.append({"at": at, "radius": radius, "start": _now() + delay, "duration": duration})
+	set_process(true)
+
+func bloom(at: Vector2, color: Color, radius: float = 300.0, duration := 0.55, delay := 0.0) -> void:
+	blooms.append({"at": at, "color": color, "radius": radius, "start": _now() + delay, "duration": duration})
 	set_process(true)
 
 func shock(at: Vector2, color: Color, radius: float = 300.0, duration := 0.38, delay := 0.0) -> void:
@@ -65,6 +70,7 @@ func clear_aura(key: String) -> void:
 
 func clear_all() -> void:
 	flashes.clear()
+	blooms.clear()
 	rings.clear()
 	particles.clear()
 	paths.clear()
@@ -74,11 +80,12 @@ func clear_all() -> void:
 func _process(_delta: float) -> void:
 	var now := _now()
 	_prune(flashes, now)
+	_prune(blooms, now)
 	_prune(rings, now)
 	_prune(particles, now)
 	_prune(paths, now)
 	queue_redraw()
-	if flashes.is_empty() and rings.is_empty() and particles.is_empty() and paths.is_empty() and auras.is_empty():
+	if flashes.is_empty() and blooms.is_empty() and rings.is_empty() and particles.is_empty() and paths.is_empty() and auras.is_empty():
 		set_process(false)
 
 func _prune(items: Array[Dictionary], now: float) -> void:
@@ -90,10 +97,18 @@ func _draw() -> void:
 	var now := _now()
 	for aura in auras.values():
 		_draw_aura(aura, now)
+	for effect in blooms:
+		var p := _progress(effect, now)
+		if p >= 0.0:
+			var pulse := sin(p * PI)
+			_draw_soft_bloom(effect.at, effect.radius * (0.72 + 0.28 * _cubic_out(p)), effect.color, pulse * 0.72)
 	for effect in flashes:
 		var p := _progress(effect, now)
 		if p >= 0.0:
-			_draw_glow(effect.at, lerpf(effect.radius * 0.35, effect.radius, _cubic_out(p)), Color.WHITE, pow(1.0 - p, 1.6))
+			var strength := pow(1.0 - p, 1.6)
+			var radius: float = lerpf(effect.radius * 0.35, effect.radius, _cubic_out(p))
+			_draw_soft_bloom(effect.at, radius, Color.WHITE, strength * 1.15)
+			draw_circle(effect.at, maxf(4.0, radius * 0.075), Color(1,1,1,strength*0.72))
 	for effect in rings:
 		var p := _progress(effect, now)
 		if p >= 0.0:
@@ -119,14 +134,16 @@ func _draw_aura(aura: Dictionary, now: float) -> void:
 	var strength := clampf((now - float(aura.start)) / 0.25, 0.0, 1.0) * float(aura.level)
 	var at: Vector2 = aura.at
 	var color: Color = aura.color
-	for i in range(7, 0, -1):
-		var ratio := i / 7.0
-		draw_circle(at, 92.0 * ratio, Color(color, 0.028 * strength * (1.0-ratio+0.25)))
+	draw_set_transform(at, 0.0, Vector2(1.0, 0.46))
+	for i in range(12, 0, -1):
+		var ratio := i / 12.0
+		draw_circle(Vector2.ZERO, 118.0 * ratio, Color(color, 0.040 * strength * (1.0-ratio+0.22)))
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	for i in 9:
 		var phase := fposmod((now * (0.45 + (i % 3) * 0.12)) + i / 9.0, 1.0)
 		var angle := i * 2.399 + now / 1.4
-		var mote := at + Vector2(cos(angle) * 72.0 * (1.0-phase*0.4), -phase * 150.0)
-		_draw_glow(mote, 4.0 + (i % 2) * 1.5, color, sin(phase * PI) * strength)
+		var mote := at + Vector2(cos(angle) * 82.0 * (1.0-phase*0.4), -phase * 170.0)
+		_draw_glow(mote, 6.0 + (i % 2) * 2.0, color, sin(phase * PI) * strength)
 
 func _draw_orb(path: Dictionary, progress: float) -> void:
 	for i in range(12, -1, -1):
@@ -148,6 +165,13 @@ func _draw_glow(at: Vector2, radius: float, color: Color, alpha: float) -> void:
 		var ratio := i / 6.0
 		draw_circle(at, radius * (0.35 + ratio * 0.65), Color(color, alpha * 0.012 * (1.0-ratio+0.2)))
 	draw_circle(at, maxf(1.5, radius * 0.08), Color(1,1,1,alpha*0.85))
+
+func _draw_soft_bloom(at: Vector2, radius: float, color: Color, alpha: float) -> void:
+	for i in range(18, 0, -1):
+		var ratio := i / 18.0
+		var falloff := pow(1.0 - ratio, 1.8)
+		draw_circle(at, radius * ratio, Color(color, alpha * 0.050 * falloff))
+	draw_circle(at, radius * 0.18, Color(color, alpha * 0.090))
 
 func _quadratic(a: Vector2, b: Vector2, c: Vector2, t: float) -> Vector2:
 	var inv := 1.0 - t

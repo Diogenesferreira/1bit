@@ -9,6 +9,7 @@ signal combo_visual_requested(event: Dictionary)
 signal abandonment_visual_requested
 signal battle_reset
 signal skill_visual_requested(event: Dictionary)
+signal renewal_visual_requested
 
 const CARD_PATHS := ["dragon", "knight", "nature", "light", "dark", "capsule", "wild"]
 var definitions: Array[CardDefinition] = []
@@ -185,10 +186,12 @@ func resolve_selected() -> void:
 		state.selected.clear()
 		state_changed.emit()
 		message_changed.emit("CHAIN %d %s | +%d DANO" % [state.last_chain.size(), "CRITICO" if critical else "", damage])
-		await get_tree().create_timer(chain_step_delay).timeout
+		var visual_wait := chain_step_delay + (0.15 if state.last_chain.size() > 1 else 0.0)
+		await get_tree().create_timer(visual_wait).timeout
 		if generation != _generation:
 			return
 		if 12 - state.board.cards.count(-1) <= 1:
+			renewal_visual_requested.emit()
 			state.board.cards.fill(-1)
 			state.board.complete_hand()
 		trio = MatchResolver.cascade(state.board, state.available_elements)
