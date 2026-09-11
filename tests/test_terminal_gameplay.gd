@@ -42,12 +42,15 @@ func run() -> void:
 	expect(controller.state.phase == BattleState.Phase.RESOLVING, "Terceira carta bloqueia entrada durante a corrente")
 	await create_timer(0.35).timeout
 	expect(screen.effect_layer.get_child_count() > 0, "Fusão cria efeitos temporários com os assets das cartas")
+	await create_timer(0.95).timeout
+	expect(not screen.fx_canvas.rings.is_empty() or not screen.fx_canvas.particles.is_empty(), "Explosão possui onda de choque e partículas na camada aditiva")
 	await wait_chain(controller)
 	await process_frame
 	expect(controller.state.last_chain.size() >= 2, "Trio manual dispara cascata automatica")
 	expect(controller.state.last_chain[0].critical, "Tres numeros iguais geram critico")
 	expect(controller.state.enemy_hp[0] < controller.state.enemy_max_hp[0], "Dano final chega ao inimigo selecionado")
 	expect(controller.state.enemy_countdown == 2, "Corrente inteira consome um turno inimigo")
+	expect(screen.stage_nodes.turn_label_E1.text == "2", "Contador visual acompanha o turno individual do inimigo")
 	expect(controller.state.board.cards.count(-1) == 2, "Mao volta a dez cartas e duas entradas")
 	expect(screen.card_nodes[5].visible == false and screen.card_nodes[11].visible == false, "Entradas visuais esvaziam apos redistribuir")
 	controller.load_test_hand()
@@ -55,10 +58,16 @@ func run() -> void:
 	controller.state.board.values.assign([5,5,9,1,2,0,3,4,5,6,7,0])
 	controller.state.party_hp = 3000
 	controller.state_changed.emit()
+	await create_timer(0.18).timeout
+	var hp_during_loss: float = screen.stage_nodes.party_hp_bar.value
+	expect(hp_during_loss < 100.0 and hp_during_loss > 93.75, "Barra de HP esvazia gradualmente")
 	for index in [0,1,2]:
 		screen.card_nodes[index].pressed.emit()
 	await wait_chain(controller)
 	expect(controller.state.party_hp == controller.state.party_max_hp, "Capsule com Wild cura sem exceder o HP global")
+	await create_timer(0.18).timeout
+	var hp_during_heal: float = screen.stage_nodes.party_hp_bar.value
+	expect(hp_during_heal > 93.75 and hp_during_heal < 100.0, "Barra de HP enche gradualmente durante a cura")
 	print("TERMINAL GAMEPLAY CHECKS: %d | FAILURES: %d" % [checks, failures])
 	screen.queue_free()
 	await process_frame

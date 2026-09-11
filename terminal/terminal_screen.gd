@@ -1,6 +1,7 @@
 class_name TerminalScreen
 extends Control
 
+const BattleFxCanvasScript := preload("res://terminal/battle_fx_canvas.gd")
 const KIT := "res://design/ilha-digital-godot-kit/"
 const CREAM := Color("f5efe2")
 const AMBER := Color("f2a33c")
@@ -51,12 +52,20 @@ var card_base_y: Array[float] = []
 var controller: BattleController
 var target_visual_requested := false
 var effect_layer: Control
+var fx_canvas: Control
+var end_layer: Control
 var figure_base_positions := {}
 var previous_enemy_hp: Array[int] = []
+var previous_enemy_countdowns: Array[int] = []
 var previous_party_hp := -1
+var previous_skill_charge: Array[int] = []
 var previous_leader_active := false
 var elapsed_idle := 0.0
 var rendered_cards: Array[int] = []
+var battle_damage_total := 0
+var battle_combo_total := 0
+var battle_max_chain := 0
+var battle_critical_total := 0
 var tropical := true
 var visual_state := "padrao"
 
@@ -65,13 +74,41 @@ func _ready() -> void:
 	_build()
 	controller = get_node("BattleController") as BattleController
 	controller.state_changed.connect(_render_gameplay)
-	controller.selection_changed.connect(_render_gameplay)
 	controller.message_changed.connect(_show_gameplay_message)
 	controller.combo_visual_requested.connect(_animate_combo)
+	controller.abandonment_visual_requested.connect(_animate_abandonment)
+	controller.battle_reset.connect(_reset_visual_tracking)
+	controller.battle_finished.connect(_show_end_screen)
+	controller.skill_visual_requested.connect(_animate_skill_cast)
 	controller.selection_resolve_delay = 0.28
-	controller.chain_step_delay = 1.22
+	controller.chain_step_delay = 1.42
 	(stage_nodes.leader as TextureButton).pressed.connect(controller.use_leader_skill)
 	_render_gameplay()
+
+func _reset_visual_tracking() -> void:
+	previous_enemy_hp.clear()
+	previous_enemy_countdowns.clear()
+	previous_party_hp = -1
+	previous_skill_charge.clear()
+	rendered_cards.clear()
+	previous_leader_active = false
+	battle_damage_total = 0
+	battle_combo_total = 0
+	battle_max_chain = 0
+	battle_critical_total = 0
+	if end_layer:
+		for child in end_layer.get_children():
+			child.queue_free()
+		end_layer.visible = false
+	if fx_canvas:
+		fx_canvas.clear_all()
+	for slot in DRAW_ORDER:
+		var figure: TextureRect = stage_nodes.get(slot) as TextureRect
+		if figure:
+			figure.position = figure_base_positions[slot]
+			figure.scale = Vector2.ONE
+			figure.rotation = 0.0
+			figure.modulate = Color.WHITE
 
 func _build() -> void:
 	_add_color("Shell", Rect2(0,0,1024,1600), Color("16130d"), self)
@@ -111,7 +148,13 @@ func _build() -> void:
 	stage_nodes["leader"] = leader
 	_build_bank()
 	_build_navigation()
+	end_layer = _section("EndScreen")
+	end_layer.visible = false
 	effect_layer = _section("BattleFX")
+	fx_canvas = BattleFxCanvasScript.new()
+	fx_canvas.name = "LightCanvas"
+	fx_canvas.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	effect_layer.add_child(fx_canvas)
 	var toast := _section("Toast")
 	toast.visible = false
 
@@ -216,14 +259,18 @@ func _build_chip(slot: String, parent: Node) -> void:
 	var level := _add_label("Level", "LV%d" % CHARACTERS[slot][3], Rect2(pos.x+39,pos.y+8,55,32), 16, CREAM, parent, true)
 	nodes.append_array([badge, level])
 	if enemy:
-		if slot == "E3":
-			for node in nodes:
-				node.visible = false
-			var reference := _add_texture("E3Reference", "assets/hud/stage/chip_enemy_ref.png", Rect2(pos.x,pos.y,174,50), parent)
-			nodes.append(reference)
-		else:
-			var turns := _add_texture("Turns", "assets/hud/stage/chip_turn_red_ref.png" if slot == "E2" else "assets/hud/stage/chip_turn_amber_ref.png", Rect2(pos.x+101,pos.y+16,53,12), parent)
-			nodes.append(turns)
+		var initial_count := 2 if slot == "E1" else (3 if slot == "E3" else 1)
+		var counter_bg := _add_color("TurnBackground", Rect2(pos.x+99,pos.y+14,58,17), Color("18150f"), parent)
+		nodes.append(counter_bg)
+		var bars: Array[ColorRect] = []
+		for i in 3:
+			var dash := _add_color("TurnDash%d" % i, Rect2(pos.x+102+i*9,pos.y+20,6,4), AMBER, parent)
+			bars.append(dash)
+			nodes.append(dash)
+		var count_label := _add_label("TurnValue", str(initial_count), Rect2(pos.x+132,pos.y+13,24,18), 12, AMBER, parent, true, 600)
+		nodes.append(count_label)
+		stage_nodes["turn_label_%s" % slot] = count_label
+		stage_nodes["turn_bars_%s" % slot] = bars
 	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stage_nodes["chip_%s" % slot] = nodes
 
@@ -301,11 +348,17 @@ func _render_gameplay() -> void:
 	if first_render:
 		rendered_cards.resize(12)
 		rendered_cards.fill(-2)
+	if previous_skill_charge.is_empty():
+		previous_skill_charge.resize(5)
+		previous_skill_charge.fill(-1)
+	var changed_cards: Array[int] = []
 	selected_cards.assign(state.selected)
 	for i in 12:
 		var kind: int = state.board.cards[i]
 		var previous_kind := rendered_cards[i]
 		var visible := kind >= 0
+		if not first_render and previous_kind >= 0 and kind < 0 and i in BoardState.ENTRIES and state.phase == BattleState.Phase.PLAYER_INPUT:
+			_animate_entry_return(i, previous_kind, card_value_labels[i].text.to_int())
 		card_nodes[i].visible = visible
 		card_value_plates[i].visible = visible
 		card_value_labels[i].visible = visible
@@ -326,6 +379,8 @@ func _render_gameplay() -> void:
 		if visible:
 			card_nodes[i].texture_normal = load(KIT + "assets/cards/card_%s@2x.png" % KIND_NAMES[kind])
 			card_value_labels[i].text = str(state.board.values[i])
+		if not first_render and previous_kind != kind:
+			changed_cards.append(i)
 		if not first_render and previous_kind < 0 and kind >= 0 and i in BoardState.ENTRIES:
 			_animate_entry_drop(i)
 	for i in queue_nodes.size():
@@ -350,23 +405,47 @@ func _render_gameplay() -> void:
 	elif previous_leader_active and not state.leader_active and state.leader_turns_left > 0:
 		_spawn_float_text("LIDERANÇA RECARREGA · %d CORRENTES" % state.leader_turns_left, Vector2(766,952), DANGER, 17)
 	previous_leader_active = state.leader_active
-	var hp_ratio := 100.0 * state.party_hp / maxi(1.0, float(state.party_max_hp))
-	(stage_nodes.party_hp_bar as TextureProgressBar).value = hp_ratio
-	(stage_nodes.party_hp_value as Label).text = "%d/%d" % [state.party_hp, state.party_max_hp]
+	var party_bar: TextureProgressBar = stage_nodes.party_hp_bar
+	var party_label: Label = stage_nodes.party_hp_value
+	if previous_party_hp < 0:
+		_set_hp_display(party_bar, party_label, state.party_hp, state.party_max_hp)
+	elif state.party_hp != previous_party_hp:
+		_tween_hp_display(party_bar, party_label, previous_party_hp, state.party_hp, state.party_max_hp, 0.38, 0.11 if state.party_hp < previous_party_hp else 0.0)
 	for element in 5:
 		var ally_slot: String = ALLY_SLOT_BY_ELEMENT[element]
-		(stage_nodes["ring_%s" % ally_slot] as TextureProgressBar).value = state.skill_charge[element]
+		var ally_ring: TextureProgressBar = stage_nodes["ring_%s" % ally_slot]
+		if previous_skill_charge[element] < 0:
+			ally_ring.value = state.skill_charge[element]
+		elif previous_skill_charge[element] != state.skill_charge[element]:
+			_tween_progress(ally_ring, previous_skill_charge[element], state.skill_charge[element], 0.32, 0.62)
+		previous_skill_charge[element] = state.skill_charge[element]
 	for enemy_index in state.enemy_hp.size():
 		var enemy_slot: String = ENEMY_SLOTS[enemy_index]
 		var alive := state.enemy_hp[enemy_index] > 0
-		var enemy_ratio := 100.0 * state.enemy_hp[enemy_index] / maxi(1.0, float(state.enemy_max_hp[enemy_index]))
-		(stage_nodes["ring_%s" % enemy_slot] as TextureProgressBar).value = enemy_ratio
-		stage_nodes[enemy_slot].modulate = Color.WHITE if alive else Color(0.35, 0.35, 0.35, 0.45)
+		var enemy_ring: TextureProgressBar = stage_nodes["ring_%s" % enemy_slot]
+		_update_enemy_counter(enemy_slot, enemy_index, state.enemy_countdowns[enemy_index])
+		if previous_enemy_hp.size() != state.enemy_hp.size():
+			enemy_ring.value = 100.0 * state.enemy_hp[enemy_index] / maxi(1.0, float(state.enemy_max_hp[enemy_index]))
+		elif state.enemy_hp[enemy_index] != previous_enemy_hp[enemy_index]:
+			_tween_progress(enemy_ring,
+				100.0 * previous_enemy_hp[enemy_index] / maxi(1.0, float(state.enemy_max_hp[enemy_index])),
+				100.0 * state.enemy_hp[enemy_index] / maxi(1.0, float(state.enemy_max_hp[enemy_index])), 0.42, 0.30)
+		var just_defeated := previous_enemy_hp.size() == state.enemy_hp.size() and previous_enemy_hp[enemy_index] > 0 and not alive
+		stage_nodes[enemy_slot].modulate = Color.WHITE if alive or just_defeated else Color(0.35, 0.35, 0.35, 0.45)
 		if previous_enemy_hp.size() == state.enemy_hp.size() and state.enemy_hp[enemy_index] < previous_enemy_hp[enemy_index]:
-			_animate_enemy_hit(enemy_slot, previous_enemy_hp[enemy_index] - state.enemy_hp[enemy_index])
+			var dealt := previous_enemy_hp[enemy_index] - state.enemy_hp[enemy_index]
+			battle_damage_total += dealt
+			var hit_delay := _animate_enemy_hit(enemy_slot, dealt)
+			if just_defeated:
+				_animate_enemy_defeat(enemy_slot, hit_delay + 0.24)
 	if previous_party_hp >= 0 and state.party_hp < previous_party_hp:
 		_animate_party_hit(previous_party_hp - state.party_hp)
+	elif previous_party_hp >= 0 and state.party_hp > previous_party_hp:
+		_animate_party_heal(state.party_hp - previous_party_hp)
+	if changed_cards.size() >= 3 and state.phase == BattleState.Phase.PLAYER_INPUT and not state.last_chain.is_empty():
+		_animate_hand_redistribution(changed_cards)
 	previous_enemy_hp.assign(state.enemy_hp)
+	previous_enemy_countdowns.assign(state.enemy_countdowns)
 	previous_party_hp = state.party_hp
 	rendered_cards.assign(state.board.cards)
 	if target_visual_requested:
@@ -375,12 +454,22 @@ func _render_gameplay() -> void:
 func _animate_combo(event: Dictionary) -> void:
 	var color := _element_color(int(event.element))
 	var center := Vector2(512, 1280)
+	battle_combo_total += 1
+	battle_max_chain = maxi(battle_max_chain, int(event.chain) + 1)
+	battle_critical_total += int(bool(event.critical))
+	var cascade_delay := 0.15 if int(event.chain) > 0 else 0.0
+	fx_canvas.flash(center, 90.0, 0.44, cascade_delay + 0.50)
 	for i in 3:
 		var index: int = event.indices[i]
 		var clone := _make_effect_card(int(event.kinds[i]), int(event.values[i]), _card_position_for_logic_slot(index))
 		var aligned := center - Vector2(76, 88) + Vector2((i - 1) * 92, 0)
 		var merged := center - Vector2(76, 88)
 		var tween := create_tween()
+		if cascade_delay > 0.0:
+			clone.modulate.a = 0.45
+			tween.tween_property(clone, "modulate:a", 1.0, 0.075)
+			tween.tween_property(clone, "modulate:a", 0.55, 0.0375)
+			tween.tween_property(clone, "modulate:a", 1.0, 0.0375)
 		tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 		tween.tween_property(clone, "position", aligned, 0.28)
 		tween.parallel().tween_property(clone, "scale", Vector2.ONE * 1.14, 0.28)
@@ -388,6 +477,7 @@ func _animate_combo(event: Dictionary) -> void:
 		tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		tween.tween_property(clone, "position", merged, 0.44)
 		tween.parallel().tween_property(clone, "rotation", deg_to_rad((i - 1) * 3.0), 0.22)
+		tween.parallel().tween_method(_set_card_white.bind(clone), 0.0, 1.0, 0.44)
 		tween.tween_property(clone, "rotation", 0.0, 0.12)
 		tween.parallel().tween_property(clone, "scale", Vector2.ONE * 1.28, 0.15)
 		if i == 0:
@@ -403,10 +493,29 @@ func _make_effect_card(kind: int, value: int, at_position: Vector2) -> Control:
 	holder.pivot_offset = holder.size * 0.5
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	effect_layer.add_child(holder)
-	_add_texture("Face", "assets/cards/card_%s@2x.png" % KIND_NAMES[kind], Rect2(Vector2.ZERO, holder.size), holder)
+	var face := _add_texture("Face", "assets/cards/card_%s@2x.png" % KIND_NAMES[kind], Rect2(Vector2.ZERO, holder.size), holder)
+	face.material = _fusion_material()
 	_add_texture("ValuePlate", "assets/cards/card_value_plate.png", Rect2(10,138,33,31), holder)
 	_add_label("Value", str(value), Rect2(11,137,31,31), 19, Color.WHITE, holder, true, 600)
 	return holder
+
+func _fusion_material() -> ShaderMaterial:
+	var shader := Shader.new()
+	shader.code = "shader_type canvas_item; uniform float white : hint_range(0.0,1.0) = 0.0; void fragment(){ vec4 t=texture(TEXTURE,UV)*COLOR; t.rgb=mix(t.rgb,vec3(1.0),white*t.a); COLOR=t; }"
+	var material := ShaderMaterial.new()
+	material.shader = shader
+	return material
+
+func _set_card_white(value: float, holder: Control) -> void:
+	var face := holder.get_node_or_null("Face") as TextureRect
+	if face and face.material:
+		(face.material as ShaderMaterial).set_shader_parameter("white", value)
+	var number := holder.get_node_or_null("Value") as Label
+	var plate := holder.get_node_or_null("ValuePlate") as TextureRect
+	if number:
+		number.modulate.a = 1.0 - value
+	if plate:
+		plate.modulate.a = 1.0 - value
 
 func _card_position_for_logic_slot(slot: int) -> Vector2:
 	if slot == 12:
@@ -415,22 +524,9 @@ func _card_position_for_logic_slot(slot: int) -> Vector2:
 
 func _spawn_combo_burst(event: Dictionary, color: Color) -> void:
 	var center := Vector2(512, 1280)
-	var flash := _fx_dot(center, 22.0, Color(1,1,1,0.95))
-	var pulse := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	pulse.tween_property(flash, "scale", Vector2.ONE * 7.5, 0.22)
-	pulse.parallel().tween_property(flash, "modulate:a", 0.0, 0.22)
-	pulse.tween_callback(flash.queue_free)
-	var seeded := RandomNumberGenerator.new()
-	seeded.seed = 9001 + int(event.chain) * 97 + int(event.element) * 17
-	for i in 36:
-		var particle := _fx_dot(center, seeded.randf_range(3.0, 7.0), color)
-		var angle := seeded.randf_range(0.0, TAU)
-		var distance := seeded.randf_range(55.0, 175.0)
-		var destination := center + Vector2(cos(angle), sin(angle)) * distance + Vector2(0, seeded.randf_range(20.0, 80.0))
-		var travel := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		travel.tween_property(particle, "position", destination, seeded.randf_range(0.38, 0.62))
-		travel.parallel().tween_property(particle, "modulate:a", 0.0, 0.62)
-		travel.tween_callback(particle.queue_free)
+	fx_canvas.flash(center, 190.0, 0.22)
+	fx_canvas.shock(center, color, 300.0, 0.38)
+	fx_canvas.burst(center, color, 56, 180.0, 720.0, 0.62, 320.0)
 	if int(event.chain) > 0:
 		_spawn_float_text("CADEIA ×%d" % (int(event.chain) + 1), center + Vector2(0,-118), AMBER, 28)
 	if bool(event.critical):
@@ -439,20 +535,23 @@ func _spawn_combo_burst(event: Dictionary, color: Color) -> void:
 		_spawn_energy_orbs(center, Vector2(512, 1003), color)
 	elif int(event.element) == CardDefinition.Kind.WILD:
 		for slot in ALLY_SLOT_BY_ELEMENT:
-			_spawn_energy_orbs(center, _figure_center(slot), color, 2)
+			_spawn_energy_orbs(center, _figure_center(slot), color, 4, slot)
 	else:
-		_spawn_energy_orbs(center, _figure_center(ALLY_SLOT_BY_ELEMENT[int(event.element)]), color)
+		var slot: String = ALLY_SLOT_BY_ELEMENT[int(event.element)]
+		_spawn_energy_orbs(center, _figure_center(slot), color, 4, slot)
 
-func _spawn_energy_orbs(from: Vector2, to: Vector2, color: Color, count := 4) -> void:
+func _spawn_energy_orbs(from: Vector2, to: Vector2, color: Color, count := 4, aura_key := "") -> void:
 	for i in count:
-		var orb := _fx_dot(from, 9.0, color)
-		orb.modulate.a = 0.9
-		var tween := create_tween()
-		tween.tween_interval(i * 0.055)
-		tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		tween.tween_property(orb, "position", to, 0.56)
-		tween.parallel().tween_property(orb, "scale", Vector2.ONE * 0.35, 0.56)
-		tween.tween_callback(orb.queue_free)
+		fx_canvas.orb(from, to, color, 0.56, 120.0, 9.0, 0.07 + i * 0.055)
+	var impact_delay := 0.07 + (count - 1) * 0.055 + 0.56
+	get_tree().create_timer(impact_delay).timeout.connect(func():
+		if not is_instance_valid(fx_canvas):
+			return
+		fx_canvas.burst(to, color, 14, 60.0, 300.0, 0.42, 120.0)
+		if not aura_key.is_empty():
+			fx_canvas.set_aura(aura_key, to + Vector2(0, 45), color)
+			_hop_figure(aura_key, 6.0)
+	)
 
 func _animate_leader_activation() -> void:
 	var leader: TextureButton = stage_nodes.leader
@@ -461,14 +560,39 @@ func _animate_leader_activation() -> void:
 	pulse.tween_property(leader, "scale", Vector2.ONE * 1.24, 0.16)
 	pulse.tween_property(leader, "scale", Vector2.ONE, 0.22)
 	var origin := leader.position + leader.size * 0.5
+	fx_canvas.flash(origin, 150.0, 0.22)
+	fx_canvas.shock(origin, AMBER, 230.0, 0.38)
+	fx_canvas.burst(origin, AMBER, 34, 120.0, 520.0, 0.52, 120.0)
 	for slot in ALLY_SLOT_BY_ELEMENT:
-		_spawn_energy_orbs(origin, _figure_center(slot), AMBER, 3)
+		_spawn_energy_orbs(origin, _figure_center(slot), AMBER, 3, slot)
 		var figure: TextureRect = stage_nodes[slot]
 		var aura := create_tween()
 		aura.tween_interval(0.50)
 		aura.tween_property(figure, "modulate", Color("ffd36a"), 0.16)
 		aura.tween_property(figure, "modulate", Color.WHITE, 0.28)
 	_spawn_float_text("♛ LIDERANÇA · +25% NESTA CORRENTE", Vector2(720,940), AMBER, 18)
+
+func _hop_figure(slot: String, height: float) -> void:
+	var figure: TextureRect = stage_nodes.get(slot) as TextureRect
+	if figure == null:
+		return
+	var origin: Vector2 = figure_base_positions[slot]
+	figure.set_meta("fx_until", Time.get_ticks_msec() + 300)
+	var hop := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	hop.tween_property(figure, "position:y", origin.y - height, 0.12)
+	hop.set_ease(Tween.EASE_IN)
+	hop.tween_property(figure, "position:y", origin.y, 0.16)
+
+func _animate_skill_cast(event: Dictionary) -> void:
+	var element := int(event.element)
+	var slot: String = ALLY_SLOT_BY_ELEMENT[element]
+	var at := _figure_center(slot)
+	var color := _element_color(element)
+	fx_canvas.flash(at, 150.0, 0.28)
+	fx_canvas.shock(at, color, 210.0, 0.38)
+	fx_canvas.burst(at, color, 32, 100.0, 520.0, 0.52, -80.0)
+	_hop_figure(slot, 10.0)
+	_spawn_float_text("SKILL · %s" % KIND_NAMES[element].to_upper(), at + Vector2(0,-90), color, 23)
 
 func _fx_dot(center: Vector2, diameter: float, color: Color) -> ColorRect:
 	var dot := ColorRect.new()
@@ -480,30 +604,51 @@ func _fx_dot(center: Vector2, diameter: float, color: Color) -> ColorRect:
 	effect_layer.add_child(dot)
 	return dot
 
-func _spawn_float_text(value: String, at_position: Vector2, color: Color, size: int) -> void:
+func _spawn_float_text(value: String, at_position: Vector2, color: Color, size: int, delay := 0.0) -> void:
 	var label := _add_label("CombatText", value, Rect2(at_position-Vector2(190,35),Vector2(380,70)), size, color, effect_layer, true, 700)
 	label.pivot_offset = label.size * 0.5
 	label.scale = Vector2.ONE * 1.5
+	if delay > 0.0:
+		label.modulate.a = 0.0
 	var tween := create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	if delay > 0.0:
+		tween.tween_interval(delay)
+		tween.tween_callback(func(): label.modulate.a = 1.0)
 	tween.tween_property(label, "scale", Vector2.ONE, 0.18)
 	tween.parallel().tween_property(label, "position:y", label.position.y - 24.0, 0.70)
 	tween.tween_interval(0.28)
 	tween.tween_property(label, "modulate:a", 0.0, 0.22)
 	tween.tween_callback(label.queue_free)
 
-func _animate_enemy_hit(slot: String, damage: int) -> void:
+func _animate_enemy_hit(slot: String, damage: int) -> float:
 	var figure: TextureRect = stage_nodes[slot]
-	figure.set_meta("fx_until", Time.get_ticks_msec() + 260)
+	var impact_delay := _spawn_attack_streaks(slot)
+	figure.set_meta("fx_until", Time.get_ticks_msec() + int((impact_delay + 0.24) * 1000.0))
 	var origin: Vector2 = figure_base_positions[slot]
-	_spawn_attack_streaks(slot)
 	var tween := create_tween()
+	tween.tween_interval(impact_delay)
 	tween.tween_property(figure, "position:x", origin.x - 16.0, 0.05)
 	tween.tween_property(figure, "position:x", origin.x + 14.0, 0.05)
 	tween.tween_property(figure, "position:x", origin.x, 0.07)
-	_spawn_float_text("−%d" % damage, _figure_center(slot) + Vector2(0,-70), DANGER, 34)
+	_spawn_float_text("TOTAL  −%d" % damage, _figure_center(slot) + Vector2(0,-70), DANGER, 34, impact_delay + 0.12)
+	return impact_delay
 
-func _spawn_attack_streaks(enemy_slot: String) -> void:
+func _animate_enemy_defeat(slot: String, delay: float) -> void:
+	var figure: TextureRect = stage_nodes[slot]
+	var origin: Vector2 = figure_base_positions[slot]
+	figure.set_meta("fx_until", Time.get_ticks_msec() + int((delay + 0.70) * 1000.0))
+	fx_canvas.flash(_figure_center(slot), 130.0, 0.30, delay)
+	fx_canvas.burst(_figure_center(slot), DANGER, 38, 80.0, 420.0, 0.64, -30.0, delay)
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	tween.tween_interval(delay)
+	tween.tween_property(figure, "position:y", origin.y + 28.0, 0.42)
+	tween.parallel().tween_property(figure, "scale", Vector2.ONE * 0.82, 0.42)
+	tween.parallel().tween_property(figure, "modulate", Color(0.28,0.28,0.28,0.28), 0.42)
+	_spawn_float_text("SINAL PERDIDO", _figure_center(slot) + Vector2(0,-112), DANGER, 20, delay)
+
+func _spawn_attack_streaks(enemy_slot: String) -> float:
 	var destination := _figure_center(enemy_slot)
+	var shot_index := 0
 	for combo in controller.state.last_chain:
 		var element := int(combo.element)
 		if element == CardDefinition.Kind.CAPSULE:
@@ -514,17 +659,23 @@ func _spawn_attack_streaks(enemy_slot: String) -> void:
 		else:
 			sources.append(ALLY_SLOT_BY_ELEMENT[element])
 		for source in sources:
-			var line := Line2D.new()
-			line.points = PackedVector2Array([_figure_center(source), destination])
-			line.width = 9.0
-			line.default_color = _element_color(element)
-			line.begin_cap_mode = Line2D.LINE_CAP_ROUND
-			line.end_cap_mode = Line2D.LINE_CAP_ROUND
-			effect_layer.add_child(line)
-			var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-			tween.tween_property(line, "width", 2.0, 0.26)
-			tween.parallel().tween_property(line, "modulate:a", 0.0, 0.26)
-			tween.tween_callback(line.queue_free)
+			var delay := shot_index * 0.13
+			var color := _element_color(element)
+			var origin := _figure_center(source)
+			var source_element := ALLY_SLOT_BY_ELEMENT.find(source)
+			var amount := int(combo.partials.get(source_element, combo.damage))
+			fx_canvas.clear_aura(source)
+			fx_canvas.streak(origin, destination, color, 0.30, delay)
+			get_tree().create_timer(delay).timeout.connect(_hop_figure.bind(source, 4.2))
+			get_tree().create_timer(delay + 0.30).timeout.connect(func():
+				if is_instance_valid(fx_canvas):
+					fx_canvas.burst(destination, color, 16, 80.0, 400.0, 0.36, 80.0)
+			)
+			var number_offset := Vector2(((shot_index % 3) - 1) * 44.0, -70.0 - (shot_index % 2) * 36.0)
+			_spawn_float_text("%d%s" % [amount, "!" if bool(combo.critical) else ""], destination + number_offset,
+				color, 27 if bool(combo.critical) else 23, delay + 0.30)
+			shot_index += 1
+	return 0.30 + maxf(0.0, (shot_index - 1) * 0.13)
 
 func _animate_entry_drop(index: int) -> void:
 	var button := card_nodes[index]
@@ -546,8 +697,93 @@ func _animate_entry_drop(index: int) -> void:
 		number.visible = controller.state.board.cards[index] >= 0
 	)
 
+func _animate_entry_return(index: int, kind: int, value: int) -> void:
+	var clone := _make_effect_card(kind, value, Vector2(CARD_X[index % 6], card_base_y[index]))
+	var destination := queue_nodes[0].position
+	var tween := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(clone, "position", destination, 0.18)
+	tween.parallel().tween_property(clone, "scale", Vector2.ONE * 0.30, 0.18)
+	tween.parallel().tween_property(clone, "modulate:a", 0.0, 0.18)
+	tween.tween_callback(clone.queue_free)
+
+func _animate_abandonment() -> void:
+	var cards := get_node("Bank/Cards") as Control
+	var tween := create_tween()
+	for offset in [-8.0, 7.0, -5.0, 3.0, 0.0]:
+		tween.tween_property(cards, "position:x", offset, 0.03)
+	_spawn_float_text("ABANDONO · TURNO PASSOU", Vector2(512,1080), DANGER, 21)
+
+func _animate_hand_redistribution(_changed: Array[int]) -> void:
+	var pile := Vector2(512.0 - 76.0, 1280.0 - 88.0)
+	var visible_indices: Array[int] = []
+	for index in 12:
+		if controller.state.board.cards[index] >= 0:
+			visible_indices.append(index)
+	for order in visible_indices.size():
+		var index := visible_indices[order]
+		var face := card_nodes[index]
+		var plate := card_value_plates[index]
+		var number := card_value_labels[index]
+		var destination := Vector2(CARD_X[index % 6], card_base_y[index])
+		face.disabled = true
+		var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		tween.tween_property(face, "position", pile, 0.24)
+		tween.parallel().tween_property(plate, "position", pile + Vector2(10,138), 0.24)
+		tween.parallel().tween_property(number, "position", pile + Vector2(11,137), 0.24)
+		tween.tween_interval(order * 0.026)
+		tween.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tween.tween_property(face, "position", destination, 0.22)
+		tween.parallel().tween_property(plate, "position", destination + Vector2(10,138), 0.22)
+		tween.parallel().tween_property(number, "position", destination + Vector2(11,137), 0.22)
+		if order == visible_indices.size() - 1:
+			tween.tween_callback(func():
+				for card in card_nodes:
+					card.disabled = controller.state.phase != BattleState.Phase.PLAYER_INPUT
+			)
+	_spawn_float_text("REDISTRIBUIÇÃO", Vector2(512,1190), AMBER, 25, 0.18)
+
+func _set_hp_display(bar: TextureProgressBar, label: Label, hp: int, maximum: int) -> void:
+	bar.value = 100.0 * hp / maxi(1.0, float(maximum))
+	label.text = "%d/%d" % [hp, maximum]
+
+func _tween_hp_display(bar: TextureProgressBar, label: Label, from: int, to: int, maximum: int,
+		duration: float, delay := 0.0) -> void:
+	_set_hp_display(bar, label, from, maximum)
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	if delay > 0.0:
+		tween.tween_interval(delay)
+	tween.tween_method(_set_hp_tween_value.bind(bar, label, maximum), float(from), float(to), duration)
+
+func _set_hp_tween_value(value: float, bar: TextureProgressBar, label: Label, maximum: int) -> void:
+	_set_hp_display(bar, label, roundi(value), maximum)
+
+func _tween_progress(bar: TextureProgressBar, from: float, to: float, duration: float, delay := 0.0) -> void:
+	bar.value = from
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	if delay > 0.0:
+		tween.tween_interval(delay)
+	tween.tween_property(bar, "value", to, duration)
+
+func _update_enemy_counter(slot: String, enemy_index: int, value: int) -> void:
+	var color := DANGER if value <= 1 else AMBER
+	var label: Label = stage_nodes["turn_label_%s" % slot]
+	label.text = str(value)
+	label.add_theme_color_override("font_color", color)
+	var bars: Array = stage_nodes["turn_bars_%s" % slot]
+	for i in bars.size():
+		bars[i].color = Color(color, 1.0 if i < value else 0.16)
+	if previous_enemy_countdowns.size() == controller.state.enemy_countdowns.size() and previous_enemy_countdowns[enemy_index] != value:
+		label.pivot_offset = label.size * 0.5
+		label.scale = Vector2.ONE * 1.55
+		create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).tween_property(label, "scale", Vector2.ONE, 0.22)
+
 func _animate_party_hit(damage: int) -> void:
-	_spawn_float_text("−%d" % damage, Vector2(810, 947), DANGER, 30)
+	_spawn_float_text("−%d" % damage, Vector2(810, 947), DANGER, 30, 0.11)
+	var hp_bar: TextureProgressBar = stage_nodes.party_hp_bar
+	hp_bar.modulate = DANGER
+	var hp_pulse := create_tween()
+	hp_pulse.tween_interval(0.11)
+	hp_pulse.tween_property(hp_bar, "modulate", Color.WHITE, 0.26)
 	for attack in controller.state.last_enemy_attacks:
 		var enemy_index := int(attack.enemy)
 		if enemy_index < 0 or enemy_index >= ENEMY_SLOTS.size():
@@ -564,6 +800,15 @@ func _animate_party_hit(damage: int) -> void:
 	tween.tween_property(visor, "position:x", -8.0, 0.05)
 	tween.tween_property(visor, "position:x", 8.0, 0.05)
 	tween.tween_property(visor, "position:x", 0.0, 0.08)
+
+func _animate_party_heal(amount: int) -> void:
+	var at := Vector2(512,1003)
+	fx_canvas.flash(at, 120.0, 0.28)
+	fx_canvas.burst(at, MINT, 24, 50.0, 220.0, 0.50, -80.0)
+	_spawn_float_text("+%d HP" % amount, Vector2(810,947), MINT, 30)
+	var hp_bar: TextureProgressBar = stage_nodes.party_hp_bar
+	hp_bar.modulate = MINT
+	create_tween().tween_property(hp_bar, "modulate", Color.WHITE, 0.42)
 
 func _figure_center(slot: String) -> Vector2:
 	var figure: TextureRect = stage_nodes[slot]
@@ -582,12 +827,92 @@ func _process(delta: float) -> void:
 		var figure := stage_nodes.get(slot) as TextureRect
 		if figure == null or Time.get_ticks_msec() < int(figure.get_meta("fx_until", 0)):
 			continue
+		if slot.begins_with("E") and controller and controller.state.enemy_hp[ENEMY_SLOTS.find(slot)] <= 0:
+			continue
 		var phase := float(slot.unicode_at(1) % 5) * 0.71
 		var wave := sin(elapsed_idle * 2.0 + phase)
 		var breath := 1.0 + wave * 0.022
 		figure.scale = Vector2(breath, 1.0 + wave * 0.014)
 		figure.position = figure_base_positions[slot] + Vector2(0, wave * 1.2)
 		figure.rotation = deg_to_rad(wave * 0.8) if slot.begins_with("E") else 0.0
+		if fx_canvas:
+			fx_canvas.move_aura(slot, _figure_center(slot) + Vector2(0,45))
+
+func _show_end_screen(won: bool) -> void:
+	await get_tree().create_timer(0.42).timeout
+	if controller.state.phase not in [BattleState.Phase.VICTORY, BattleState.Phase.DEFEAT]:
+		return
+	for child in end_layer.get_children():
+		child.queue_free()
+	end_layer.visible = true
+	var overlay_color := Color(0.03,0.025,0.02,0.78) if won else Color(0.10,0.005,0.01,0.82)
+	_add_color("Veil", Rect2(0,232,1024,1221), overlay_color, end_layer)
+	var word := "VITÓRIA" if won else "DERROTA"
+	var title_color := Color("ffd36a") if won else DANGER
+	var letter_width := 76.0
+	var start_x := 512.0 - word.length() * letter_width * 0.5
+	for i in word.length():
+		var letter := _add_label("Letter%d" % i, word.substr(i,1), Rect2(start_x+i*letter_width,410,letter_width,100), 54, title_color, end_layer, true, 700)
+		letter.pivot_offset = letter.size * 0.5
+		letter.position.y -= 38.0 if won else -10.0
+		letter.scale = Vector2.ONE * (2.4 if won else 0.35)
+		letter.modulate.a = 0.0
+		var reveal := create_tween().set_trans(Tween.TRANS_BACK if won else Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		reveal.tween_interval(0.18 + i * 0.075)
+		reveal.tween_property(letter, "modulate:a", 1.0, 0.12)
+		reveal.parallel().tween_property(letter, "position:y", 410.0, 0.42 if won else 0.30)
+		reveal.parallel().tween_property(letter, "scale", Vector2.ONE, 0.42 if won else 0.30)
+	var subtitle := "SETOR 03 · ILHA DIGITAL · LIMPO" if won else "EQUIPE CAÍDA · SINAL PERDIDO"
+	var sub := _add_label("Subtitle", subtitle, Rect2(212,502,600,42), 16, MINT if won else DANGER, end_layer, true, 600)
+	sub.modulate.a = 0.0
+	var sub_tween := create_tween()
+	sub_tween.tween_interval(0.78)
+	sub_tween.tween_property(sub, "modulate:a", 1.0, 0.36)
+	var panel := _add_color("StatsPanel", Rect2(190,1080,644,278), Color(0.055,0.045,0.03,0.96), end_layer)
+	panel.modulate.a = 0.0
+	var panel_tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	panel_tween.tween_interval(1.02)
+	panel_tween.tween_property(panel, "modulate:a", 1.0, 0.42)
+	var stats := [["DANO TOTAL",battle_damage_total],["COMBOS",battle_combo_total],["MAIOR CADEIA",battle_max_chain],["CRÍTICOS",battle_critical_total]]
+	for i in stats.size():
+		var x := 216.0 + (i % 2) * 302.0
+		var y := 1100.0 + (i / 2) * 82.0
+		var caption := _add_label("Caption%d" % i, stats[i][0], Rect2(x,y,250,28), 13, Color(CREAM,0.55), end_layer)
+		var value := _add_label("Stat%d" % i, "0", Rect2(x,y+25,250,42), 27, CREAM, end_layer, false, 700)
+		caption.modulate.a = 0.0
+		value.modulate.a = 0.0
+		var reveal_stat := create_tween()
+		reveal_stat.tween_interval(1.15 + i * 0.08)
+		reveal_stat.tween_callback(func(): caption.modulate.a = 1.0; value.modulate.a = 1.0)
+		reveal_stat.tween_method(func(n: float): value.text = str(roundi(n)), 0.0, float(stats[i][1]), 0.75)
+	var replay := Button.new()
+	replay.name = "Replay"
+	replay.text = "JOGAR DE NOVO" if won else "TENTAR DE NOVO"
+	replay.position = Vector2(322,1282)
+	replay.size = Vector2(380,62)
+	replay.add_theme_font_override("font", _font("fonts/MartianMono-Variable.ttf", 700))
+	replay.add_theme_font_size_override("font_size", 18)
+	replay.add_theme_color_override("font_color", Color("171109"))
+	var button_style := StyleBoxFlat.new()
+	button_style.bg_color = AMBER if won else DANGER
+	button_style.corner_radius_top_left = 8
+	button_style.corner_radius_top_right = 8
+	button_style.corner_radius_bottom_left = 8
+	button_style.corner_radius_bottom_right = 8
+	replay.add_theme_stylebox_override("normal", button_style)
+	replay.pressed.connect(func(): controller.restart(false))
+	end_layer.add_child(replay)
+	if won:
+		fx_canvas.flash(Vector2(512,460), 250.0, 0.42)
+		fx_canvas.shock(Vector2(512,460), title_color, 360.0, 0.55)
+		fx_canvas.burst(Vector2(512,460), title_color, 90, 160.0, 900.0, 1.10, 240.0)
+		for slot in ALLY_SLOT_BY_ELEMENT:
+			_hop_figure(slot, 10.0)
+	else:
+		var visor := get_node("Visor") as Control
+		var defeat_shake := create_tween()
+		for x in [-9.0,8.0,-6.0,4.0,0.0]:
+			defeat_shake.tween_property(visor, "position:x", x, 0.08)
 
 func _update_target_visual(slot: String) -> void:
 	target = slot
@@ -697,7 +1022,7 @@ func _set_boss_only(enabled: bool) -> void:
 			if node:
 				node.visible = not enabled
 		for node in stage_nodes["chip_%s" % slot]:
-			node.visible = not enabled and (slot != "E3" or node.name == "E3Reference")
+			node.visible = not enabled
 	for node in stage_nodes.boss_nodes:
 		node.visible = enabled
 	for node in stage_nodes.chip_BOSS:

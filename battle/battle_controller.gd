@@ -6,6 +6,9 @@ signal selection_changed
 signal message_changed(message: String)
 signal battle_finished(won: bool)
 signal combo_visual_requested(event: Dictionary)
+signal abandonment_visual_requested
+signal battle_reset
+signal skill_visual_requested(event: Dictionary)
 
 const CARD_PATHS := ["dragon", "knight", "nature", "light", "dark", "capsule", "wild"]
 var definitions: Array[CardDefinition] = []
@@ -68,6 +71,7 @@ func select_card(index: int) -> void:
 	var kind := state.board.cards[index]
 	if color >= 0 and kind != 6 and kind != color:
 		# Abandonment consumes a turn; no undo may recover spent enemy turns.
+		abandonment_visual_requested.emit()
 		cancel_selection()
 		_finish_turn()
 		if state.phase != BattleState.Phase.PLAYER_INPUT:
@@ -164,17 +168,20 @@ func resolve_selected() -> void:
 		var multiplier := (1.0 + CHAIN_BONUS * state.last_chain.size()) * (CRITICAL_MULTIPLIER if critical else 1.0)
 		var damage := 0
 		var heal := 0
+		var partials := {}
 		if element == 5:
 			heal = floori(power * 12.0 * (CRITICAL_MULTIPLIER if critical else 1.0))
 		else:
 			for ally_element in ALLY_ATTACK.size():
 				if state.available_elements[ally_element] and (element == 6 or ally_element == element):
-					damage += floori((ALLY_ATTACK[ally_element] + power * 10.0) * multiplier)
+					var partial := floori((ALLY_ATTACK[ally_element] + power * 10.0) * multiplier)
+					damage += partial
+					partials[ally_element] = partial
 					state.skill_charge[ally_element] = mini(stage.skill_threshold, state.skill_charge[ally_element] + stage.skill_gain)
 		total_damage += damage
 		total_heal += heal
 		criticals += int(critical)
-		state.last_chain.append({"element": element, "values": numbers, "critical": critical, "damage": damage, "heal": heal})
+		state.last_chain.append({"element": element, "values": numbers, "critical": critical, "damage": damage, "heal": heal, "partials": partials})
 		state.selected.clear()
 		state_changed.emit()
 		message_changed.emit("CHAIN %d %s | +%d DANO" % [state.last_chain.size(), "CRITICO" if critical else "", damage])
@@ -260,6 +267,10 @@ func use_skill(index: int) -> void:
 		return
 	state.skill_charge[index] = 0
 	cancel_selection()
+	var skill_partials := {}
+	skill_partials[index] = 650
+	state.last_chain.assign([{"element": index, "values": [], "critical": false, "damage": 650, "heal": 0, "partials": skill_partials}])
+	skill_visual_requested.emit({"element": index, "damage": 650})
 	DamageResolver.apply_damage(state, 650)
 	message_changed.emit("SKILL %s  −650 HP" % definitions[index].display_name.to_upper())
 	_finish_turn()
@@ -283,6 +294,7 @@ func _end_battle(won: bool) -> void:
 
 func restart(from_first_round: bool = true) -> void:
 	_generation += 1
+	battle_reset.emit()
 	_marks.clear()
 	_undo.clear()
 	state = BattleState.new()
